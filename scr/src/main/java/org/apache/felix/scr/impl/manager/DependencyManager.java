@@ -22,6 +22,7 @@ package org.apache.felix.scr.impl.manager;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
@@ -352,6 +353,156 @@ public class DependencyManager<S, T> implements Reference
         public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
         {
             return tracker.getTracked( true ).values();
+        }
+    }
+
+    private class SingleDynamicReluctantCustomizer implements Customizer<T> {
+
+        private RefPair<T> refPair;
+
+        public RefPair<T> addingService( ServiceReference<T> serviceReference )
+        {
+            RefPair<T> refPair = new RefPair<T>( serviceReference  );
+            return refPair;
+        }
+
+        public void addedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+        }
+
+        public void modifiedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (isActive())
+            {
+                m_componentManager.update( DependencyManager.this, refPair );
+            }
+        }
+
+        public void removedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (refPair == this.refPair)
+            {
+                if ( isActive() )
+                {
+                    RefPair<T> nextRefPair = null;
+                    ServiceTracker<T, RefPair<T>> tracker = trackerRef.get();
+                    if ( !tracker.isEmpty() )
+                    {
+                        SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+                        nextRefPair = tracked.values().iterator().next();
+                        synchronized ( nextRefPair )
+                        {
+                            if (!m_bindMethods.getBind().getServiceObject( nextRefPair, m_componentManager.getActivator().getBundleContext() ))
+                            {
+                                //TODO error???
+                            }
+                        }
+                        m_componentManager.invokeBindMethod( DependencyManager.this, nextRefPair );
+//                        this.refPair = refPair;
+                    }
+
+                    m_componentManager.invokeUnbindMethod( DependencyManager.this, refPair );
+                    close( null );
+                    this.refPair = nextRefPair;
+                }
+
+
+                m_componentManager.deactivateInternal( ComponentConstants.DEACTIVATION_REASON_REFERENCE, false );
+                m_componentManager.activateInternal();
+            }
+        }
+
+        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            boolean success = m_dependencyMetadata.isOptional();
+            if ( !tracker.isEmpty() )
+            {
+                SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+                RefPair<T> refPair = tracked.values().iterator().next();
+                synchronized ( refPair )
+                {
+                    success |= m_bindMethods.getBind().getServiceObject( refPair, m_componentManager.getActivator().getBundleContext() );
+                }
+                this.refPair = refPair;
+            }
+            return success;
+        }
+
+        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            if ( refPair != null && refPair.getServiceObject() != null )
+            {
+                refPair.setServiceObject( null );
+                m_componentManager.getActivator().getBundleContext().ungetService( refPair.getRef() );
+            }
+            refPair = null;
+        }
+
+        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            return refPair == null? Collections.<RefPair<T>>emptyList(): Collections.singleton( refPair );
+        }
+    }
+
+    private class SingleStaticReluctantCustomizer implements Customizer<T> {
+
+        private RefPair<T> refPair;
+
+        public RefPair<T> addingService( ServiceReference<T> serviceReference )
+        {
+            RefPair<T> refPair = new RefPair<T>( serviceReference  );
+            return refPair;
+        }
+
+        public void addedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+        }
+
+        public void modifiedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (isActive())
+            {
+                m_componentManager.update( DependencyManager.this, refPair );
+            }
+        }
+
+        public void removedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (refPair == this.refPair)
+            {
+                m_componentManager.deactivateInternal( ComponentConstants.DEACTIVATION_REASON_REFERENCE, false );
+                m_componentManager.activateInternal();
+            }
+        }
+
+        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            boolean success = m_dependencyMetadata.isOptional();
+            if ( !tracker.isEmpty() )
+            {
+                SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+                RefPair<T> refPair = tracked.values().iterator().next();
+                synchronized ( refPair )
+                {
+                    success |= m_bindMethods.getBind().getServiceObject( refPair, m_componentManager.getActivator().getBundleContext() );
+                }
+                this.refPair = refPair;
+            }
+            return success;
+        }
+
+        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            if ( refPair != null && refPair.getServiceObject() != null )
+            {
+                refPair.setServiceObject( null );
+                m_componentManager.getActivator().getBundleContext().ungetService( refPair.getRef() );
+            }
+        }
+
+        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            return refPair == null? Collections.<RefPair<T>>emptyList(): Collections.singleton( refPair );
         }
     }
 
@@ -1917,8 +2068,7 @@ public class DependencyManager<S, T> implements Reference
             {
                 if ( isReluctant() )
                 {
-                   //TODO not yet handled
-                    customizer = new MultipleStaticReluctantCustomizer();
+                    customizer = new SingleStaticReluctantCustomizer();
                 }
                 else
                 {
@@ -1930,8 +2080,7 @@ public class DependencyManager<S, T> implements Reference
             {
                 if ( isReluctant() )
                 {
-                   //TODO not yet handled
-                    customizer = new MultipleStaticReluctantCustomizer();
+                    customizer = new SingleDynamicReluctantCustomizer();
                 }
                 else
                 {
