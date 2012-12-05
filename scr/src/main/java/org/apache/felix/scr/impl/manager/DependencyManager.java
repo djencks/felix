@@ -41,6 +41,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServicePermission;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.log.LogService;
 
 
@@ -70,15 +71,8 @@ public class DependencyManager<S, T> implements Reference
     // the target service filter string
     private volatile String m_target;
 
-    // the number of matching services registered in the system
-    private final AtomicInteger m_size = new AtomicInteger();
-
     // the target service filter
     private volatile Filter m_targetFilter;
-
-    private final Object enableLock = new Object();
-    private final Collection<ServiceReference<T>> added = new ArrayList<ServiceReference<T>>();
-    private final Collection<ServiceReference<T>> removed = new ArrayList<ServiceReference<T>>();
 
     private boolean registered;
 
@@ -160,6 +154,172 @@ public class DependencyManager<S, T> implements Reference
             if (refPair.getServiceObject() != null)
             {
                 m_componentManager.getActivator().getBundleContext().ungetService( serviceReference );
+            }
+        }
+
+        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            boolean success = m_dependencyMetadata.isOptional();
+            SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+            for (RefPair<T> refPair: tracked.values())
+            {
+                synchronized (refPair)
+                {
+                    success |= m_bindMethods.getBind().getServiceObject( refPair, m_componentManager.getActivator().getBundleContext());
+                }
+            }
+            return success;
+        }
+
+        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            for ( RefPair<T> ref: getRefs( tracker ))
+            {
+                if ( ref.getServiceObject() != null)
+                {
+                    ref.setServiceObject( null );
+                    m_componentManager.getActivator().getBundleContext().ungetService( ref.getRef() );
+                }
+            }
+        }
+
+        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            return tracker.getTracked( true ).values();
+        }
+    }
+
+    private class MultipleStaticReluctantCustomizer implements Customizer<T> {
+
+        private final Collection<RefPair<T>> refs = new ArrayList<RefPair<T>>();
+
+        public RefPair<T> addingService( ServiceReference<T> serviceReference )
+        {
+            RefPair<T> refPair = new RefPair<T>( serviceReference  );
+            return refPair;
+        }
+
+        public void addedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+        }
+
+        public void modifiedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (isActive())
+            {
+                m_componentManager.update( DependencyManager.this, refPair );
+            }
+        }
+
+        public void removedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if ( isActive() )
+            {
+                if (refs.contains( refPair ))
+                {
+                    m_componentManager.log( LogService.LOG_DEBUG,
+                        "Dependency Manager: Static dependency on {0}/{1} is broken", new Object[]
+                            { m_dependencyMetadata.getName(), m_dependencyMetadata.getInterface() }, null );
+                    m_componentManager.deactivateInternal( ComponentConstants.DEACTIVATION_REASON_REFERENCE, false );
+
+                    // FELIX-2368: immediately try to reactivate
+                    m_componentManager.activateInternal();
+
+                }
+            }
+            if (refPair.getServiceObject() != null)
+            {
+                m_componentManager.getActivator().getBundleContext().ungetService( serviceReference );
+            }
+        }
+
+        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            boolean success = m_dependencyMetadata.isOptional();
+            SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+            for (RefPair<T> refPair: tracked.values())
+            {
+                synchronized (refPair)
+                {
+                    success |= m_bindMethods.getBind().getServiceObject( refPair, m_componentManager.getActivator().getBundleContext());
+                }
+                refs.add(refPair) ;
+            }
+            return success;
+        }
+
+        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            for ( RefPair<T> ref: getRefs( tracker ))
+            {
+                if ( ref.getServiceObject() != null)
+                {
+                    ref.setServiceObject( null );
+                    m_componentManager.getActivator().getBundleContext().ungetService( ref.getRef() );
+                }
+            }
+            refs.clear();
+        }
+
+        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            return refs;
+        }
+    }
+
+    private class MultipleStaticGreedyCustomizer implements Customizer<T> {
+
+
+        public RefPair<T> addingService( ServiceReference<T> serviceReference )
+        {
+            RefPair<T> refPair = new RefPair<T>( serviceReference  );
+            if (isActive())
+            {
+                 m_bindMethods.getBind().getServiceObject( refPair, m_componentManager.getActivator().getBundleContext());
+            }
+            return refPair;
+        }
+
+        public void addedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (isActive())
+            {
+                m_componentManager.log( LogService.LOG_DEBUG,
+                    "Dependency Manager: Static dependency on {0}/{1} is broken", new Object[]
+                        { m_dependencyMetadata.getName(), m_dependencyMetadata.getInterface() }, null );
+                m_componentManager.deactivateInternal( ComponentConstants.DEACTIVATION_REASON_REFERENCE, false );
+
+                // FELIX-2368: immediately try to reactivate
+                m_componentManager.activateInternal();
+            }
+        }
+
+        public void modifiedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if (isActive())
+            {
+                m_componentManager.update( DependencyManager.this, refPair );
+            }
+        }
+
+        public void removedService( ServiceReference<T> serviceReference, RefPair<T> refPair )
+        {
+            if ( isActive() )
+            {
+                    m_componentManager.log( LogService.LOG_DEBUG,
+                        "Dependency Manager: Static dependency on {0}/{1} is broken", new Object[]
+                            { m_dependencyMetadata.getName(), m_dependencyMetadata.getInterface() }, null );
+                    m_componentManager.deactivateInternal( ComponentConstants.DEACTIVATION_REASON_REFERENCE, false );
+            }
+            if (refPair.getServiceObject() != null)
+            {
+                m_componentManager.getActivator().getBundleContext().ungetService( serviceReference );
+            }
+            if ( isActive() )
+            {
+                    // FELIX-2368: immediately try to reactivate
+                    m_componentManager.activateInternal();
+
             }
         }
 
@@ -721,13 +881,11 @@ public class DependencyManager<S, T> implements Reference
 
             m_componentManager.log( LogService.LOG_DEBUG,
                     "Registered for service events, currently {0} service(s) match the filter", new Object[]
-                    {new Integer( m_size.get() )}, null );
+                    {new Integer( size() )}, null );
         }
         else
         {
             // no services available
-            m_size.set( 0 );
-
             m_componentManager.log( LogService.LOG_DEBUG,
                     "Not registered for service events since the bundle has no permission to get service {0}", new Object[]
                     {m_dependencyMetadata.getInterface()}, null );
@@ -753,7 +911,7 @@ public class DependencyManager<S, T> implements Reference
      */
     int size()
     {
-        return m_size.get();
+        return trackerRef.get().getTracked( null ).size();
     }
 
 
@@ -1734,7 +1892,54 @@ public class DependencyManager<S, T> implements Reference
 
     private Customizer<T> newCustomizer()
     {
-        Customizer<T> customizer = new MultipleDynamicCustomizer();
+        Customizer<T> customizer;
+        if ( isMultiple() )
+        {
+            if ( isStatic() )
+            {
+                if ( isReluctant() )
+                {
+                    customizer = new MultipleStaticReluctantCustomizer();
+                }
+                else
+                {
+                    customizer = new MultipleStaticGreedyCustomizer();
+                }
+            }
+            else
+            {
+                customizer = new MultipleDynamicCustomizer();
+            }
+        }
+        else
+        {
+            if ( isStatic() )
+            {
+                if ( isReluctant() )
+                {
+                   //TODO not yet handled
+                    customizer = new MultipleStaticReluctantCustomizer();
+                }
+                else
+                {
+                    //TODO not yet handled
+                    customizer = new MultipleStaticGreedyCustomizer();
+                }
+            }
+            else
+            {
+                if ( isReluctant() )
+                {
+                   //TODO not yet handled
+                    customizer = new MultipleStaticReluctantCustomizer();
+                }
+                else
+                {
+                    //TODO not yet handled
+                    customizer = new MultipleStaticGreedyCustomizer();
+                }
+            }
+        }
         customizerRef.set( customizer );
         return customizer;
     }
