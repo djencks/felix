@@ -507,6 +507,11 @@ public abstract class AbstractComponentManager<S> implements Component, SimpleLo
                 && m_componentMetadata.getServiceMetadata().isServiceFactory();
     }
 
+    public boolean isFactory()
+    {
+        return false;
+    }
+
     public String[] getServices()
     {
         if ( m_componentMetadata.getServiceMetadata() != null )

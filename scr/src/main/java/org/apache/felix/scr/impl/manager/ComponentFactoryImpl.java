@@ -92,9 +92,15 @@ public class ComponentFactoryImpl<S> extends AbstractComponentManager<S> impleme
     }
 
 
+    @Override
+    public boolean isFactory()
+    {
+        return true;
+    }
+
     /* (non-Javadoc)
-     * @see org.osgi.service.component.ComponentFactory#newInstance(java.util.Dictionary)
-     */
+    * @see org.osgi.service.component.ComponentFactory#newInstance(java.util.Dictionary)
+    */
     public ComponentInstance newInstance( Dictionary dictionary )
     {
         final ImmediateComponentManager cm = createComponentManager();

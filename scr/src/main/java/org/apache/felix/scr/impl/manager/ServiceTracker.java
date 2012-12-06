@@ -814,6 +814,16 @@ public class ServiceTracker<S, T> {
 		}
 	}
 
+    void deactivate() {
+        final Tracked t = tracked();
+        if (t == null) { /* if ServiceTracker is not open */
+            return;
+        }
+        synchronized (t) {
+                active = false;
+        }
+    }
+
 	/**
 	 * Return if this {@code ServiceTracker} is empty.
 	 * 
