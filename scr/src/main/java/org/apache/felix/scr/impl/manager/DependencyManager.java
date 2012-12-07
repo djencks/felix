@@ -109,17 +109,32 @@ public class DependencyManager<S, T> implements Reference
 
     private interface Customizer<T> extends ServiceTrackerCustomizer<T, RefPair<T>>
     {
-        boolean open(ServiceTracker<T, RefPair<T>> tracker);
+        boolean open();
 
-        void close(ServiceTracker<T, RefPair<T>> tracker);
+        void close();
 
-        Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker );
+        Collection<RefPair<T>> getRefs();
+        
+        void setTracker( ServiceTracker<T, RefPair<T>> tracker );
+    }
+
+    private abstract class AbstractCustomizer implements Customizer<T>
+    {
+        private ServiceTracker<T, RefPair<T>> tracker;
+
+        public void setTracker( ServiceTracker<T, RefPair<T>> tracker )
+        {
+            this.tracker = tracker;
+        }
+
+        protected ServiceTracker<T, RefPair<T>> getTracker()
+        {
+            return tracker;
+        }
     }
 
 
-
-
-    private class FactoryCustomizer implements Customizer<T> {
+    private class FactoryCustomizer extends AbstractCustomizer {
 
         public RefPair<T> addingService( ServiceReference<T> serviceReference )
         {
@@ -143,44 +158,32 @@ public class DependencyManager<S, T> implements Reference
         {
             if ( !isOptional() )
             {
-                ServiceTracker<T, RefPair<T>> tracker = trackerRef.get();
-                if (tracker != null && tracker.isEmpty())
+                if (getTracker().isEmpty())
                 {
                     m_componentManager.deactivateInternal( ComponentConstants.DEACTIVATION_REASON_REFERENCE, false );
                 }
             }
         }
 
-        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        public boolean open()
         {
-            boolean success = m_dependencyMetadata.isOptional() || !tracker.isEmpty();
-            tracker.getTracked( true );   //TODO activate method??
+            boolean success = m_dependencyMetadata.isOptional() || !getTracker().isEmpty();
+            getTracker().getTracked( true );   //TODO activate method??
             return success;
         }
 
-        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        public void close()
         {
-//            for ( RefPair<T> ref: getRefs( tracker ))
-//            {
-//                if ( ref.getServiceObject() != null)
-//                {
-//                    ref.setServiceObject( null );
-//                    m_componentManager.getActivator().getBundleContext().ungetService( ref.getRef() );
-//                }
-//            }
-            if (tracker != null)
-            {
-                  tracker.deactivate();
-            }
+            getTracker().deactivate();
         }
 
-        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        public Collection<RefPair<T>> getRefs()
         {
             return Collections.emptyList();
         }
     }
 
-    private class MultipleDynamicCustomizer implements Customizer<T> {
+    private class MultipleDynamicCustomizer extends AbstractCustomizer {
 
         public RefPair<T> addingService( ServiceReference<T> serviceReference )
         {
@@ -219,8 +222,7 @@ public class DependencyManager<S, T> implements Reference
                 boolean unbind = true;
                 if ( !isOptional() )
                 {
-                    ServiceTracker tracker = trackerRef.get();
-                    if (tracker.isEmpty())
+                    if (getTracker().isEmpty())
                     {
                         unbind = false;
                     }
@@ -240,10 +242,10 @@ public class DependencyManager<S, T> implements Reference
             }
         }
 
-        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        public boolean open()
         {
             boolean success = m_dependencyMetadata.isOptional();
-            SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+            SortedMap<ServiceReference<T>, RefPair<T>> tracked = getTracker().getTracked( true );
             for (RefPair<T> refPair: tracked.values())
             {
                 synchronized (refPair)
@@ -254,29 +256,26 @@ public class DependencyManager<S, T> implements Reference
             return success;
         }
 
-        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        public void close()
         {
-            if (tracker != null)
+            for ( RefPair<T> ref : getRefs() )
             {
-                for ( RefPair<T> ref: getRefs( tracker ))
+                if ( ref.getServiceObject() != null )
                 {
-                    if ( ref.getServiceObject() != null)
-                    {
-                        ref.setServiceObject( null );
-                        m_componentManager.getActivator().getBundleContext().ungetService( ref.getRef() );
-                    }
+                    ref.setServiceObject( null );
+                    m_componentManager.getActivator().getBundleContext().ungetService( ref.getRef() );
                 }
-                tracker.deactivate();
             }
+            getTracker().deactivate();
         }
 
-        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        public Collection<RefPair<T>> getRefs()
         {
-            return tracker.getTracked( true ).values();
+            return getTracker().getTracked( true ).values();
         }
     }
 
-    private class MultipleStaticGreedyCustomizer implements Customizer<T> {
+    private class MultipleStaticGreedyCustomizer extends AbstractCustomizer {
 
 
         public RefPair<T> addingService( ServiceReference<T> serviceReference )
@@ -323,10 +322,10 @@ public class DependencyManager<S, T> implements Reference
             }
         }
 
-        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        public boolean open()
         {
             boolean success = m_dependencyMetadata.isOptional();
-            SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( success || !tracker.isEmpty() );
+            SortedMap<ServiceReference<T>, RefPair<T>> tracked = getTracker().getTracked( success || !getTracker().isEmpty() );
             for (RefPair<T> refPair: tracked.values())
             {
                 synchronized (refPair)
@@ -337,9 +336,9 @@ public class DependencyManager<S, T> implements Reference
             return success;
         }
 
-        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        public void close()
         {
-            for ( RefPair<T> ref: getRefs( tracker ))
+            for ( RefPair<T> ref: getRefs())
             {
                 if ( ref.getServiceObject() != null)
                 {
@@ -347,19 +346,16 @@ public class DependencyManager<S, T> implements Reference
                     m_componentManager.getActivator().getBundleContext().ungetService( ref.getRef() );
                 }
             }
-            if (tracker != null)
-            {
-                  tracker.deactivate();
-            }
+            getTracker().deactivate();
         }
 
-        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        public Collection<RefPair<T>> getRefs()
         {
-            return tracker.getTracked( null ).values();
+            return getTracker().getTracked( null ).values();
         }
     }
 
-    private class MultipleStaticReluctantCustomizer implements Customizer<T> {
+    private class MultipleStaticReluctantCustomizer extends AbstractCustomizer {
 
         private final Collection<RefPair<T>> refs = new ArrayList<RefPair<T>>();
 
@@ -407,10 +403,10 @@ public class DependencyManager<S, T> implements Reference
             }
         }
 
-        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        public boolean open()
         {
             boolean success = m_dependencyMetadata.isOptional();
-            SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+            SortedMap<ServiceReference<T>, RefPair<T>> tracked = getTracker().getTracked( true );
             for (RefPair<T> refPair: tracked.values())
             {
                 synchronized (refPair)
@@ -422,9 +418,9 @@ public class DependencyManager<S, T> implements Reference
             return success;
         }
 
-        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        public void close()
         {
-            for ( RefPair<T> ref: getRefs( tracker ))
+            for ( RefPair<T> ref: getRefs())
             {
                 if ( ref.getServiceObject() != null)
                 {
@@ -433,19 +429,16 @@ public class DependencyManager<S, T> implements Reference
                 }
             }
             refs.clear();
-            if (tracker != null)
-            {
-                  tracker.deactivate();
-            }
+            getTracker().deactivate();
         }
 
-        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        public Collection<RefPair<T>> getRefs()
         {
             return refs;
         }
     }
 
-    private class SingleDynamicCustomizer implements Customizer<T> {
+    private class SingleDynamicCustomizer extends AbstractCustomizer {
 
         private RefPair<T> refPair;
 
@@ -498,10 +491,9 @@ public class DependencyManager<S, T> implements Reference
                 if ( isActive() )
                 {
                     RefPair<T> nextRefPair = null;
-                    ServiceTracker<T, RefPair<T>> tracker = trackerRef.get();
-                    if ( !tracker.isEmpty() )
+                    if ( !getTracker().isEmpty() )
                     {
-                        SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+                        SortedMap<ServiceReference<T>, RefPair<T>> tracked = getTracker().getTracked( true );
                         nextRefPair = tracked.values().iterator().next();
                         synchronized ( nextRefPair )
                         {
@@ -527,12 +519,12 @@ public class DependencyManager<S, T> implements Reference
             }
         }
 
-        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        public boolean open()
         {
             boolean success = m_dependencyMetadata.isOptional();
-            if ( success || !tracker.isEmpty() )
+            if ( success || !getTracker().isEmpty() )
             {
-                SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+                SortedMap<ServiceReference<T>, RefPair<T>> tracked = getTracker().getTracked( true );
                 if ( !tracked.isEmpty() )
                 {
                     RefPair<T> refPair = tracked.values().iterator().next();
@@ -546,13 +538,10 @@ public class DependencyManager<S, T> implements Reference
             return success;
         }
 
-        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        public void close()
         {
             closeRefPair();
-            if (tracker != null)
-            {
-                  tracker.deactivate();
-            }
+            getTracker().deactivate();
         }
 
         private void closeRefPair()
@@ -565,13 +554,13 @@ public class DependencyManager<S, T> implements Reference
             refPair = null;
         }
 
-        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        public Collection<RefPair<T>> getRefs()
         {
             return refPair == null? Collections.<RefPair<T>>emptyList(): Collections.singleton( refPair );
         }
     }
 
-    private class SingleStaticCustomizer implements Customizer<T>
+    private class SingleStaticCustomizer extends AbstractCustomizer
     {
 
         private RefPair<T> refPair;
@@ -615,12 +604,12 @@ public class DependencyManager<S, T> implements Reference
             }
         }
 
-        public boolean open( ServiceTracker<T, RefPair<T>> tracker )
+        public boolean open()
         {
             boolean success = m_dependencyMetadata.isOptional();
-            if ( success || !tracker.isEmpty() )
+            if ( success || !getTracker().isEmpty() )
             {
-                SortedMap<ServiceReference<T>, RefPair<T>> tracked = tracker.getTracked( true );
+                SortedMap<ServiceReference<T>, RefPair<T>> tracked = getTracker().getTracked( true );
                 if ( !tracked.isEmpty() )
                 {
                     RefPair<T> refPair = tracked.values().iterator().next();
@@ -634,7 +623,7 @@ public class DependencyManager<S, T> implements Reference
             return success;
         }
 
-        public void close( ServiceTracker<T, RefPair<T>> tracker )
+        public void close()
         {
             if ( refPair != null && refPair.getServiceObject() != null )
             {
@@ -642,13 +631,10 @@ public class DependencyManager<S, T> implements Reference
                 m_componentManager.getActivator().getBundleContext().ungetService( refPair.getRef() );
             }
             refPair = null;
-            if ( tracker != null )
-            {
-                tracker.deactivate();
-            }
+            getTracker().deactivate();
         }
 
-        public Collection<RefPair<T>> getRefs( ServiceTracker<T, RefPair<T>> tracker )
+        public Collection<RefPair<T>> getRefs()
         {
             return refPair == null ? Collections.<RefPair<T>>emptyList() : Collections.singleton( refPair );
         }
@@ -1194,7 +1180,7 @@ public class DependencyManager<S, T> implements Reference
 
     void deactivate()
     {
-        customizerRef.get().close( trackerRef.get() );
+        customizerRef.get().close();
     }
 
 
@@ -1371,7 +1357,7 @@ public class DependencyManager<S, T> implements Reference
      */
     public ServiceReference<T>[] getBoundServiceReferences()
     {
-        Collection<RefPair<T>> bound = customizerRef.get().getRefs( trackerRef.get() );
+        Collection<RefPair<T>> bound = customizerRef.get().getRefs();
         if ( bound.isEmpty() )
         {
             return null;
@@ -1391,7 +1377,7 @@ public class DependencyManager<S, T> implements Reference
      */
     private boolean isBound()
     {
-        return !customizerRef.get().getRefs( trackerRef.get() ).isEmpty();
+        return !customizerRef.get().getRefs().isEmpty();
     }
 
 
@@ -1561,7 +1547,7 @@ public class DependencyManager<S, T> implements Reference
     boolean prebind()
     {
 
-        return customizerRef.get().open( trackerRef.get() );
+        return customizerRef.get().open();
 //        // If no references were received, we have to check if the dependency
 //        // is optional, if it is not then the dependency is invalid
 //        if ( !isSatisfied() )
@@ -1668,7 +1654,7 @@ public class DependencyManager<S, T> implements Reference
         // flag being set in the loop below
         boolean success = m_dependencyMetadata.isOptional();
 
-        Collection<RefPair<T>> refs = customizerRef.get().getRefs( trackerRef.get() );
+        Collection<RefPair<T>> refs = customizerRef.get().getRefs();
         m_componentManager.log( LogService.LOG_DEBUG,
             "For dependency {0}, optional: {1}; to bind: {2}",
             new Object[]{ m_dependencyMetadata.getName(), success, refs }, null );
@@ -1716,7 +1702,7 @@ public class DependencyManager<S, T> implements Reference
             // in the delayed component situation) and the unbind method is declared.
             boolean doUnbind = componentInstance != null && m_dependencyMetadata.getUnbind() != null;
 
-            for ( RefPair<T> boundRef : customizerRef.get().getRefs( trackerRef.get() ) )
+            for ( RefPair<T> boundRef : customizerRef.get().getRefs() )
             {
                 if ( doUnbind )
                 {
@@ -2178,7 +2164,9 @@ public class DependencyManager<S, T> implements Reference
 
     private void registerServiceListener() throws InvalidSyntaxException
     {
-        ServiceTracker<T, RefPair<T>> tracker = new ServiceTracker<T, RefPair<T>>( m_componentManager.getActivator().getBundleContext(), m_targetFilter, newCustomizer() );
+        Customizer<T> customizer = newCustomizer();
+        ServiceTracker<T, RefPair<T>> tracker = new ServiceTracker<T, RefPair<T>>( m_componentManager.getActivator().getBundleContext(), m_targetFilter, customizer );
+        customizer.setTracker( tracker );
         tracker.open();
         trackerRef.set( tracker );
         registered = true;
