@@ -793,6 +793,10 @@ public class SingleComponentManager<S> extends AbstractComponentManager<S> imple
 
     public S getService(Bundle bundle, ServiceRegistration<S> serviceRegistration)
     {
+        if ( getActivator().enterCreate( serviceRegistration.getReference() ) )
+        {
+            return null;
+        }
         obtainStateLock();
         try
         {
@@ -805,10 +809,6 @@ public class SingleComponentManager<S> extends AbstractComponentManager<S> imple
         boolean decrement = true;
         try
         {
-            if ( getActivator().enterCreate( serviceRegistration.getReference() ) )
-            {
-                return null;
-            }
             try
             {
                 boolean success = getServiceInternal( serviceRegistration );
@@ -855,7 +855,7 @@ public class SingleComponentManager<S> extends AbstractComponentManager<S> imple
             {
                 log( LogService.LOG_INFO, "Could not obtain all required dependencies, getService returning null",
                     null );
-                success = false;
+                return false;
             }
             obtainStateLock();
             try

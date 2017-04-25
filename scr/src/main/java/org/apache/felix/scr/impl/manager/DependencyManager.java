@@ -1610,6 +1610,11 @@ public class DependencyManager<S, T> implements ReferenceManager<S, T>
 
     public void invokeBindMethodLate(final ServiceReference<T> ref, int trackingCount)
     {
+        if ( m_tracker == null || !m_tracker.isActive() )
+        {
+            m_componentManager.notifyWaiters();
+            return;
+        }
         if ( !isSatisfied() )
         {
             return;

@@ -1087,9 +1087,9 @@ public class ServiceTracker<S, T, U extends ServiceEvent>
 
                 if ( adding.remove( item ) )
                 { /*
-                  * if the item is in the process of
-                  * being added
-                  */
+                    * if the item is in the process of
+                    * being added
+                    */
                     if ( DEBUG )
                     {
                         System.out.println( "AbstractTracked.untrack[being added]: " + item ); //$NON-NLS-1$
