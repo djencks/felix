@@ -53,11 +53,11 @@ public class Felix4188Test extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//                paxRunnerVmOption = DEBUG_VM_OPTION;
+        //                paxRunnerVmOption = DEBUG_VM_OPTION;
         descriptorFile = "/integration_test_FELIX_4188.xml";
-//        restrictedLogging = true;
+        //        restrictedLogging = true;
         //comment to get debug logging if the test fails.
-//        DS_LOGLEVEL = "warn";
+        //        DS_LOGLEVEL = "warn";
     }
 
     @Inject
@@ -66,30 +66,43 @@ public class Felix4188Test extends ComponentTestBase
     @Test
     public void test_concurrent_deactivation() throws Exception
     {
-        final Bundle bundle1 = installBundle("/integration_test_FELIX_4188_1.xml", "org.apache.felix.scr.integration.components", "simplecomponent1");
+        final Bundle bundle1 = installBundle("/integration_test_FELIX_4188_1.xml",
+            "org.apache.felix.scr.integration.components", "simplecomponent1");
         bundle1.start();
 
-        final Bundle bundle2 = installBundle("/integration_test_FELIX_4188_2.xml", "org.apache.felix.scr.integration.components", "simplecomponent2");
+        final Bundle bundle2 = installBundle("/integration_test_FELIX_4188_2.xml",
+            "org.apache.felix.scr.integration.components", "simplecomponent2");
         bundle2.start();
 
-        final ComponentConfigurationDTO aComp1 =
-                findComponentConfigurationByName( bundle1, "org.apache.felix.scr.integration.components.Felix4188Component-1", ComponentConfigurationDTO.SATISFIED);
-        final Object aInst1 = getServiceFromConfigurationInAllClassSpaces(aComp1, Felix4188Component.class.getName());
+        final ComponentConfigurationDTO aComp1 = findComponentConfigurationByName(bundle1,
+            "org.apache.felix.scr.integration.components.Felix4188Component-1",
+            ComponentConfigurationDTO.SATISFIED);
+        final Object aInst1 = getServiceFromConfigurationInAllClassSpaces(aComp1,
+            Felix4188Component.class.getName());
 
-        final ComponentConfigurationDTO aComp2 =
-                findComponentConfigurationByName( bundle2, "org.apache.felix.scr.integration.components.Felix4188Component-2", ComponentConfigurationDTO.SATISFIED);
-        final Object aInst2 = getServiceFromConfigurationInAllClassSpaces(aComp2, Felix4188Component.class.getName());
+        final ComponentConfigurationDTO aComp2 = findComponentConfigurationByName(bundle2,
+            "org.apache.felix.scr.integration.components.Felix4188Component-2",
+            ComponentConfigurationDTO.SATISFIED);
+        final Object aInst2 = getServiceFromConfigurationInAllClassSpaces(aComp2,
+            Felix4188Component.class.getName());
 
         final CountDownLatch latch = new CountDownLatch(1);
 
-        new Thread() {
-            public void run() {
+        new Thread()
+        {
+            public void run()
+            {
                 Bundle scrBundle = scrTracker.getServiceReference().getBundle();
-                try {
+                try
+                {
                     scrBundle.stop();
-                } catch (Throwable t) {
+                }
+                catch (Throwable t)
+                {
                     t.printStackTrace();
-                } finally {
+                }
+                finally
+                {
                     latch.countDown();
                 }
             }
@@ -99,7 +112,7 @@ public class Felix4188Test extends ComponentTestBase
         bundle1.stop();
         bundle2.stop();
         long t1 = System.currentTimeMillis();
-        TestCase.assertTrue(t1 - t0 > 1000);  // It should have taken more than a second
+        TestCase.assertTrue(t1 - t0 > 1000); // It should have taken more than a second
 
         TestCase.assertNull(getField(aInst1, "throwable"));
         TestCase.assertNull(getField(aInst2, "throwable"));
@@ -110,7 +123,8 @@ public class Felix4188Test extends ComponentTestBase
         TestCase.assertNull(getField(aInst2, "throwable"));
     }
 
-    private Object getField(Object instance, String name) throws Exception {
+    private Object getField(Object instance, String name) throws Exception
+    {
         Field field = instance.getClass().getField(name);
         field.setAccessible(true);
         return field.get(instance);
@@ -118,7 +132,8 @@ public class Felix4188Test extends ComponentTestBase
 
     // Note that this test installs two bundles both with the same class in it.
     // This causes multiple class spaces to be created by the framework.
-    private Object getServiceFromConfigurationInAllClassSpaces( ComponentConfigurationDTO dto, String clazz ) throws InvalidSyntaxException
+    private Object getServiceFromConfigurationInAllClassSpaces(
+        ComponentConfigurationDTO dto, String clazz) throws InvalidSyntaxException
     {
         long id = dto.id;
         String filter = "(component.id=" + id + ")";
@@ -132,23 +147,21 @@ public class Felix4188Test extends ComponentTestBase
         return s;
     }
 
-
-    protected Bundle installBundle( final String descriptorFile, String componentPackage, String symbolicname ) throws BundleException
+    protected Bundle installBundle(final String descriptorFile, String componentPackage,
+        String symbolicname) throws BundleException
     {
-        final InputStream bundleStream = bundle()
-                .add("OSGI-INF/components.xml", getClass().getResource(descriptorFile))
-                .add(Felix4188Component.class)
+        final InputStream bundleStream = bundle().add("OSGI-INF/components.xml",
+            getClass().getResource(descriptorFile)).add(Felix4188Component.class)
 
-                .set(Constants.BUNDLE_SYMBOLICNAME, symbolicname)
-                .set(Constants.BUNDLE_VERSION, "0.0.11")
-                .set(Constants.IMPORT_PACKAGE, componentPackage)
-                .set("Service-Component", "OSGI-INF/components.xml")
-                .build(withBnd());
+            .set(Constants.BUNDLE_SYMBOLICNAME, symbolicname).set(
+                Constants.BUNDLE_VERSION, "0.0.11").set(Constants.IMPORT_PACKAGE,
+                    componentPackage).set("Service-Component",
+                        "OSGI-INF/components.xml").build(withBnd());
 
         try
         {
             final String location = "test:SimpleComponent/" + System.currentTimeMillis();
-            return bundleContext.installBundle( location, bundleStream );
+            return bundleContext.installBundle(location, bundleStream);
         }
         finally
         {
@@ -156,7 +169,7 @@ public class Felix4188Test extends ComponentTestBase
             {
                 bundleStream.close();
             }
-            catch ( IOException ioe )
+            catch (IOException ioe)
             {
             }
         }

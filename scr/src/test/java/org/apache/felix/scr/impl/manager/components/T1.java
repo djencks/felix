@@ -18,27 +18,23 @@
  */
 package org.apache.felix.scr.impl.manager.components;
 
-
 import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
-
 
 public class T1
 {
 
     public String callPerformed = null;
 
-
     private void privateT1()
     {
         callPerformed = "privateT1";
     }
 
-
-    private void privateT1SR( ServiceReference sr )
+    private void privateT1SR(ServiceReference sr)
     {
-        if ( sr != null )
+        if (sr != null)
         {
             callPerformed = "privateT1SR";
         }
@@ -48,10 +44,9 @@ public class T1
         }
     }
 
-
-    private void privateT1SI( FakeService si )
+    private void privateT1SI(FakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "privateT1SI";
         }
@@ -61,18 +56,17 @@ public class T1
         }
     }
 
-
-    private void privateT1SIMap( FakeService si, Map props )
+    private void privateT1SIMap(FakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "privateT1SIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "privateT1SIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "privateT1SIMap with null props";
         }
@@ -82,10 +76,9 @@ public class T1
         }
     }
 
-
-    private void privateT1SSI( SuperFakeService si )
+    private void privateT1SSI(SuperFakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "privateT1SSI";
         }
@@ -95,18 +88,17 @@ public class T1
         }
     }
 
-
-    private void privateT1SSIMap( SuperFakeService si, Map props )
+    private void privateT1SSIMap(SuperFakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "privateT1SSIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "privateT1SSIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "privateT1SSIMap with null props";
         }
@@ -116,16 +108,14 @@ public class T1
         }
     }
 
-
     void packageT1()
     {
         callPerformed = "packageT1";
     }
 
-
-    void packageT1SR( ServiceReference sr )
+    void packageT1SR(ServiceReference sr)
     {
-        if ( sr != null )
+        if (sr != null)
         {
             callPerformed = "packageT1SR";
         }
@@ -135,10 +125,9 @@ public class T1
         }
     }
 
-
-    void packageT1SI( FakeService si )
+    void packageT1SI(FakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "packageT1SI";
         }
@@ -148,18 +137,17 @@ public class T1
         }
     }
 
-
-    void packageT1SIMap( FakeService si, Map props )
+    void packageT1SIMap(FakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "packageT1SIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "packageT1SIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "packageT1SIMap with null props";
         }
@@ -169,10 +157,9 @@ public class T1
         }
     }
 
-
-    void packageT1SSI( SuperFakeService si )
+    void packageT1SSI(SuperFakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "packageT1SSI";
         }
@@ -182,18 +169,17 @@ public class T1
         }
     }
 
-
-    void packageT1SSIMap( SuperFakeService si, Map props )
+    void packageT1SSIMap(SuperFakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "packageT1SSIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "packageT1SSIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "packageT1SSIMap with null props";
         }
@@ -203,16 +189,14 @@ public class T1
         }
     }
 
-
     protected void protectedT1()
     {
         callPerformed = "protectedT1";
     }
 
-
-    protected void protectedT1SR( ServiceReference sr )
+    protected void protectedT1SR(ServiceReference sr)
     {
-        if ( sr != null )
+        if (sr != null)
         {
             callPerformed = "protectedT1SR";
         }
@@ -222,10 +206,9 @@ public class T1
         }
     }
 
-
-    protected void protectedT1SI( FakeService si )
+    protected void protectedT1SI(FakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "protectedT1SI";
         }
@@ -235,18 +218,17 @@ public class T1
         }
     }
 
-
-    protected void protectedT1SIMap( FakeService si, Map props )
+    protected void protectedT1SIMap(FakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "protectedT1SIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "protectedT1SIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "protectedT1SIMap with null props";
         }
@@ -256,10 +238,9 @@ public class T1
         }
     }
 
-
-    protected void protectedT1SSI( SuperFakeService si )
+    protected void protectedT1SSI(SuperFakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "protectedT1SSI";
         }
@@ -269,18 +250,17 @@ public class T1
         }
     }
 
-
-    protected void protectedT1SSIMap( SuperFakeService si, Map props )
+    protected void protectedT1SSIMap(SuperFakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "protectedT1SSIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "protectedT1SSIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "protectedT1SSIMap with null props";
         }
@@ -290,16 +270,14 @@ public class T1
         }
     }
 
-
     public void publicT1()
     {
         callPerformed = "publicT1";
     }
 
-
-    public void publicT1SR( ServiceReference sr )
+    public void publicT1SR(ServiceReference sr)
     {
-        if ( sr != null )
+        if (sr != null)
         {
             callPerformed = "publicT1SR";
         }
@@ -309,10 +287,9 @@ public class T1
         }
     }
 
-
-    public void publicT1SI( FakeService si )
+    public void publicT1SI(FakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "publicT1SI";
         }
@@ -322,18 +299,17 @@ public class T1
         }
     }
 
-
-    public void publicT1SIMap( FakeService si, Map props )
+    public void publicT1SIMap(FakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "publicT1SIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "publicT1SIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "publicT1SIMap with null props";
         }
@@ -343,10 +319,9 @@ public class T1
         }
     }
 
-
-    public void publicT1SSI( SuperFakeService si )
+    public void publicT1SSI(SuperFakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "publicT1SSI";
         }
@@ -356,18 +331,17 @@ public class T1
         }
     }
 
-
-    public void publicT1SSIMap( SuperFakeService si, Map props )
+    public void publicT1SSIMap(SuperFakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "publicT1SSIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "publicT1SSIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "publicT1SSIMap with null props";
         }
@@ -377,19 +351,18 @@ public class T1
         }
     }
 
-
-    public void suitable( ServiceReference sr )
+    public void suitable(ServiceReference sr)
     {
         callPerformed = "suitableT1";
     }
-    
+
     void packageT1Map(Map props)
     {
-        if ( props != null && !props.isEmpty())
+        if (props != null && !props.isEmpty())
         {
             callPerformed = "packageT1Map";
         }
-        else if ( props == null)
+        else if (props == null)
         {
             callPerformed = "packageT1Map with null props";
         }
@@ -398,5 +371,5 @@ public class T1
             callPerformed = "packageT1Map with empty props";
         }
     }
-    
+
 }

@@ -27,5 +27,5 @@ public class ConfigurationSupportTest extends TestCase
     {
         assertEquals("foo \\(&\\)", RegionConfigurationSupport.escape("foo (&)"));
     }
-    
+
 }

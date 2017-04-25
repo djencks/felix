@@ -44,7 +44,7 @@ public class Felix3680Test extends ComponentTestBase
         COMPONENT_PACKAGE = COMPONENT_PACKAGE + ".felix3680";
         restrictedLogging = true;
         //comment to get debug logging if the test fails.
-//        DS_LOGLEVEL = "warn";
+        //        DS_LOGLEVEL = "warn";
     }
 
     @Inject
@@ -64,12 +64,13 @@ public class Felix3680Test extends ComponentTestBase
     @Test
     public void test_concurrent_reference_bindings() throws Exception
     {
-        final ComponentDescriptionDTO main = findComponentDescriptorByName( "org.apache.felix.scr.integration.components.felix3680.Main" );
+        final ComponentDescriptionDTO main = findComponentDescriptorByName(
+            "org.apache.felix.scr.integration.components.felix3680.Main");
         enableAndCheck(main);
 
         delay(30);
-        disableAndCheck( main );
-        delay( ); //async deactivate
+        disableAndCheck(main);
+        delay(); //async deactivate
         for (Iterator it = log.foundWarnings().iterator(); it.hasNext();)
         {
             String message = (String) it.next();
@@ -78,6 +79,6 @@ public class Felix3680Test extends ComponentTestBase
                 continue;
             }
             TestCase.fail("unexpected warning or error logged: " + message);
-        }        
+        }
     }
 }

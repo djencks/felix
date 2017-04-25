@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -33,22 +32,20 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
-
 public class MockBundle implements Bundle
 {
 
-    public Enumeration findEntries( String arg0, String arg1, boolean arg2 )
+    public Enumeration findEntries(String arg0, String arg1, boolean arg2)
     {
         return null;
     }
-
 
     public BundleContext getBundleContext()
     {
         return null;
     }
 
-    public Map<X509Certificate, List<X509Certificate>> getSignerCertificates( int i )
+    public Map<X509Certificate, List<X509Certificate>> getSignerCertificates(int i)
     {
         return null;
     }
@@ -58,149 +55,127 @@ public class MockBundle implements Bundle
         return null;
     }
 
-    public <A> A adapt( Class<A> aClass )
+    public <A> A adapt(Class<A> aClass)
     {
         return null;
     }
 
-    public File getDataFile( String s )
+    public File getDataFile(String s)
     {
         return null;
     }
-
 
     public long getBundleId()
     {
         return 0;
     }
 
-
-    public URL getEntry( String name )
+    public URL getEntry(String name)
     {
-        return getClass().getClassLoader().getResource( name );
+        return getClass().getClassLoader().getResource(name);
     }
 
-
-    public Enumeration getEntryPaths( String arg0 )
+    public Enumeration getEntryPaths(String arg0)
     {
         return null;
     }
-
 
     public Dictionary getHeaders()
     {
         return null;
     }
 
-
-    public Dictionary getHeaders( String arg0 )
+    public Dictionary getHeaders(String arg0)
     {
         return null;
     }
-
 
     public long getLastModified()
     {
         return 0;
     }
 
-
     public String getLocation()
     {
         return "test:mockbundle";
     }
-
 
     public ServiceReference[] getRegisteredServices()
     {
         return null;
     }
 
-
-    public URL getResource( String arg0 )
+    public URL getResource(String arg0)
     {
         return null;
     }
 
-
-    public Enumeration getResources( String arg0 )
+    public Enumeration getResources(String arg0)
     {
         return null;
     }
-
 
     public ServiceReference[] getServicesInUse()
     {
         return null;
     }
 
-
     public int getState()
     {
         return 0;
     }
-
 
     public String getSymbolicName()
     {
         return null;
     }
 
-
-    public boolean hasPermission( Object arg0 )
+    public boolean hasPermission(Object arg0)
     {
         return false;
     }
 
-
-    public Class loadClass( String arg0 )
+    public Class loadClass(String arg0)
     {
         return null;
     }
-
 
     public void start()
     {
 
     }
 
-
-    public void start( int options )
+    public void start(int options)
     {
 
     }
-
 
     public void stop()
     {
 
     }
 
-
-    public void stop( int options )
+    public void stop(int options)
     {
 
     }
-
 
     public void uninstall()
     {
 
     }
 
-
     public void update()
     {
 
     }
 
-
-    public void update( InputStream arg0 )
+    public void update(InputStream arg0)
     {
 
     }
 
-    public int compareTo( Bundle bundle )
+    public int compareTo(Bundle bundle)
     {
         return 0;
     }

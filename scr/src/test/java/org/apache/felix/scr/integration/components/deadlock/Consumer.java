@@ -23,22 +23,22 @@ import org.osgi.service.component.ComponentContext;
 
 public class Consumer
 {
-    
+
     private ComponentContext cc;
-    
-    protected void activate(ComponentContext cc) 
+
+    protected void activate(ComponentContext cc)
     {
         this.cc = cc;
     }
-    
+
     protected void setTestComponent(TestComponent tc)
     {
-        tc.doIt( );       
+        tc.doIt();
     }
-    
+
     protected void unsetTestComponent(ServiceReference<TestComponent> sr)
     {
-        
-    }    
+
+    }
 
 }

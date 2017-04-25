@@ -18,16 +18,14 @@
  */
 package org.apache.felix.scr.integration.components.activatesignature;
 
-
 import java.util.Map;
-
 
 public class Signature_Package_Map extends AbstractActivateSignatureTestComponent
 {
 
     @SuppressWarnings({ "unchecked" })
-    void activate( Map config )
+    void activate(Map config)
     {
-        setMethodCalled( config );
+        setMethodCalled(config);
     }
 }

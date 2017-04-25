@@ -38,104 +38,110 @@ import org.osgi.util.tracker.ServiceTracker;
 @RunWith(JUnit4TestRunner.class)
 public class MinimumCardinalityTest extends ComponentTestBase
 {
-    
+
     private static final String pid = "MinimumCardinality";
-    
+
     static
     {
         descriptorFile = "/integration_test_min_cardinality.xml";
         // uncomment to enable debugging of this test class
-//         paxRunnerVmOption = DEBUG_VM_OPTION;
+        //         paxRunnerVmOption = DEBUG_VM_OPTION;
         COMPONENT_PACKAGE = COMPONENT_PACKAGE;
     }
-    
+
     @Test
     public void testMinCardinality() throws Exception
     {
-        ServiceTracker<SimpleComponent, SimpleComponent> tracker = new ServiceTracker<SimpleComponent, SimpleComponent>(bundleContext, SimpleComponent.class, null);
+        ServiceTracker<SimpleComponent, SimpleComponent> tracker = new ServiceTracker<SimpleComponent, SimpleComponent>(
+            bundleContext, SimpleComponent.class, null);
         tracker.open();
         //configuration-policy require
         assertNull(tracker.getService());
-        onePresent( tracker, null );
-        onePresent( tracker, -1 );
-        onePresent( tracker, 2 );
-        onePresent( tracker, "-1" );
-        onePresent( tracker, 'c' );
-        onePresent( tracker, "2" );
-        onePresent( tracker, new int[] {4, 0} );
-        onePresent( tracker, null );
-        
+        onePresent(tracker, null);
+        onePresent(tracker, -1);
+        onePresent(tracker, 2);
+        onePresent(tracker, "-1");
+        onePresent(tracker, 'c');
+        onePresent(tracker, "2");
+        onePresent(tracker, new int[] { 4, 0 });
+        onePresent(tracker, null);
+
         configureOne(1);
         required(tracker, 1);
-        onePresent( tracker, null );
-        
-        getConfigurationAdmin().getConfiguration( pid, null ).delete();
+        onePresent(tracker, null);
+
+        getConfigurationAdmin().getConfiguration(pid, null).delete();
         delay();
         assertNull(tracker.getService());
-        manyPresent( tracker, null );
-        manyPresent( tracker, -1 );
-        manyPresent( tracker, "-1" );
-        manyPresent( tracker, new int[] {-4, 0} );
-        manyPresent( tracker, null );
-        
+        manyPresent(tracker, null);
+        manyPresent(tracker, -1);
+        manyPresent(tracker, "-1");
+        manyPresent(tracker, new int[] { -4, 0 });
+        manyPresent(tracker, null);
+
         configureMany(1);
         required(tracker, 1);
         configureMany(5);
         required(tracker, 5);
-        manyPresent( tracker, null );
+        manyPresent(tracker, null);
     }
-    
-    private void required(ServiceTracker<SimpleComponent, SimpleComponent> tracker, int count)
+
+    private void required(ServiceTracker<SimpleComponent, SimpleComponent> tracker,
+        int count)
     {
         delay();
         List<SimpleServiceImpl> services = new ArrayList<SimpleServiceImpl>();
         for (int i = 0; i < count; i++)
         {
-            assertNull("Expected no tracked with " + i + " services present, count " + count, tracker.getService());
-            services.add(SimpleServiceImpl.create( bundleContext, String.valueOf( i ) ));
+            assertNull(
+                "Expected no tracked with " + i + " services present, count " + count,
+                tracker.getService());
+            services.add(SimpleServiceImpl.create(bundleContext, String.valueOf(i)));
         }
         assertNotNull(tracker.getService());
-        for (SimpleServiceImpl service: services)
+        for (SimpleServiceImpl service : services)
         {
             service.drop();
             assertNull(tracker.getService());
         }
     }
 
-    private void onePresent(ServiceTracker<SimpleComponent, SimpleComponent> tracker, Object value) throws IOException
+    private void onePresent(ServiceTracker<SimpleComponent, SimpleComponent> tracker,
+        Object value) throws IOException
     {
         configureOne(value);
         delay();
         assertNotNull(tracker.getService());
         assertEquals(1, tracker.getServices().length);
     }
-    
-    private void configureOne(Object value ) throws IOException
+
+    private void configureOne(Object value) throws IOException
     {
-        configureTarget( "one.cardinality.minimum", value );
+        configureTarget("one.cardinality.minimum", value);
     }
 
-    private void manyPresent(ServiceTracker<SimpleComponent, SimpleComponent> tracker, Object value) throws IOException
+    private void manyPresent(ServiceTracker<SimpleComponent, SimpleComponent> tracker,
+        Object value) throws IOException
     {
         configureMany(value);
         delay();
         assertNotNull(tracker.getService());
         assertEquals(1, tracker.getServices().length);
     }
-    
-    private void configureMany(Object value ) throws IOException
+
+    private void configureMany(Object value) throws IOException
     {
-        configureTarget( "many.cardinality.minimum", value );
+        configureTarget("many.cardinality.minimum", value);
     }
 
     private void configureTarget(final String targetKey, Object value) throws IOException
     {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
-        if ( value != null )
+        if (value != null)
         {
-            props.put( targetKey, value );
+            props.put(targetKey, value);
         }
-        Configuration config = getConfigurationAdmin().getConfiguration( pid, null );
+        Configuration config = getConfigurationAdmin().getConfiguration(pid, null);
         config.update(props);
     }
 

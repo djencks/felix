@@ -41,23 +41,23 @@ public class Felix5248Test extends ComponentTestBase
     public void test_reconfigurationActivates() throws Exception
     {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
-        props.put( "FAIL", true );
-        Configuration configC = configure( "Component", null, props );
-        log.log( LogService.LOG_INFO, "Component updated with FAIL props" );
+        props.put("FAIL", true);
+        Configuration configC = configure("Component", null, props);
+        log.log(LogService.LOG_INFO, "Component updated with FAIL props");
         delay();
 
         String componentName = "Component";
-        ComponentConfigurationDTO component = findComponentConfigurationByName( componentName,
-            ComponentConfigurationDTO.SATISFIED );
-        log.log( LogService.LOG_INFO, "A checked satisfied (not active)" );
+        ComponentConfigurationDTO component = findComponentConfigurationByName(
+            componentName, ComponentConfigurationDTO.SATISFIED);
+        log.log(LogService.LOG_INFO, "A checked satisfied (not active)");
 
         props.clear();
-        configC.update( props );
-        log.log( LogService.LOG_INFO, "Component updated with no props" );
+        configC.update(props);
+        log.log(LogService.LOG_INFO, "Component updated with no props");
         delay();
 
-        findComponentConfigurationByName( componentName, ComponentConfigurationDTO.ACTIVE );
-        log.log( LogService.LOG_INFO, "C checked active" );
+        findComponentConfigurationByName(componentName, ComponentConfigurationDTO.ACTIVE);
+        log.log(LogService.LOG_INFO, "C checked active");
 
     }
 }

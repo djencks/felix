@@ -42,10 +42,10 @@ public class Felix4350Test extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//                paxRunnerVmOption = DEBUG_VM_OPTION;
+        //                paxRunnerVmOption = DEBUG_VM_OPTION;
         descriptorFile = "/integration_test_FELIX_4350.xml";
         //comment to get debug logging if the test fails.
-//        DS_LOGLEVEL = "warn";
+        //        DS_LOGLEVEL = "warn";
     }
 
     @Test
@@ -82,7 +82,7 @@ public class Felix4350Test extends ComponentTestBase
     {
         ServiceRegistration dep1Reg = register(new SimpleComponent(), 0);
         ServiceRegistration dep2Reg = register(new SimpleComponent2(), 1000);
-        
+
         final ComponentDescriptionDTO main = findComponentDescriptorByName(componentName);
         TestCase.assertNotNull(main);
 
@@ -98,7 +98,7 @@ public class Felix4350Test extends ComponentTestBase
 
         Felix4350Component.check(1, 0, true);
 
-        disableAndCheck(main);  //does not need to be asyncv??
+        disableAndCheck(main); //does not need to be asyncv??
         dep1Reg.unregister();
         dep2Reg.unregister();
 
@@ -106,7 +106,7 @@ public class Felix4350Test extends ComponentTestBase
         dep1Reg = register(new SimpleComponent(), 0);
         dep2Reg = register(new SimpleComponent2(), 1000);
         Felix4350Component.check(1, 1, false);
-        
+
         asyncEnable(main); //needs to be async
         delay(300);
         dep1Reg.unregister();
@@ -116,15 +116,17 @@ public class Felix4350Test extends ComponentTestBase
 
         Felix4350Component.check(2, 1, true); //n.b. counts are cumulative
     }
-    
-    protected void asyncEnable( final ComponentDescriptionDTO cd ) throws Exception
-    {
-    	new Thread( new Runnable() {
 
-			public void run() {
-				try
+    protected void asyncEnable(final ComponentDescriptionDTO cd) throws Exception
+    {
+        new Thread(new Runnable()
+        {
+
+            public void run()
+            {
+                try
                 {
-                    enableAndCheck( cd );
+                    enableAndCheck(cd);
                 }
                 catch (InvocationTargetException e)
                 {
@@ -132,20 +134,26 @@ public class Felix4350Test extends ComponentTestBase
                 catch (InterruptedException e)
                 {
                 }
-			}}).start();
+            }
+        }).start();
     }
 
-    protected ServiceRegistration register(final Object service, final int delay) {
-        return bundleContext.registerService(service.getClass().getName(), new ServiceFactory() {
-            public Object getService(Bundle bundle, ServiceRegistration registration)
+    protected ServiceRegistration register(final Object service, final int delay)
+    {
+        return bundleContext.registerService(service.getClass().getName(),
+            new ServiceFactory()
             {
-                delay(delay);
-                return service;
-            }
-            public void ungetService(Bundle bundle, ServiceRegistration registration, Object service)
-            {
-            }
-        }, null);
+                public Object getService(Bundle bundle, ServiceRegistration registration)
+                {
+                    delay(delay);
+                    return service;
+                }
+
+                public void ungetService(Bundle bundle, ServiceRegistration registration,
+                    Object service)
+                {
+                }
+            }, null);
     }
 
 }

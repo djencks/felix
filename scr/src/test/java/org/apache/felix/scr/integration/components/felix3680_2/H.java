@@ -18,5 +18,6 @@
  */
 package org.apache.felix.scr.integration.components.felix3680_2;
 
-public class H {
+public class H
+{
 }

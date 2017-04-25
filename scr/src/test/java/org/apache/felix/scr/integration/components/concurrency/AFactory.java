@@ -13,48 +13,61 @@ package org.apache.felix.scr.integration.components.concurrency;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 
-public class AFactory implements Runnable {
+public class AFactory implements Runnable
+{
     private ComponentFactory _aFactory;
     private Thread[] _threads = new Thread[2];
-    
-    public void bindAFactory(ComponentFactory aFactory) {
-      _aFactory = aFactory;
+
+    public void bindAFactory(ComponentFactory aFactory)
+    {
+        _aFactory = aFactory;
     }
-    
-    void activate() {
-      System.out.println("AFactory started");
-      for (int i = 0; i < _threads.length; i++) {
-        _threads[i] = new Thread(this);
-        _threads[i].start();
-      }
-    }
-    
-    void deactivate() {
-      System.out.println("AFactory stopped");
-      for (int i = 0; i < _threads.length; i++) {
-        _threads[i].interrupt();
-//        try {
-//          _threads[i].join();
-//        } catch (InterruptedException e) {
-//        }
-      }
-    }
-    
-    public void run() {
-      while (true) {
-        try {
-          //System.out.println("Creating A");
-          ComponentInstance ci = _aFactory.newInstance(null);
-          ci.dispose();
-          if (Thread.currentThread().isInterrupted()) {
-            return;
-          }
-        } catch (Throwable t) {
-          if (!(t instanceof InterruptedException)) {
-            //System.out.println("AFactory thread exiting: got exception: " + t.toString());
-          }
-          return;
+
+    void activate()
+    {
+        System.out.println("AFactory started");
+        for (int i = 0; i < _threads.length; i++)
+        {
+            _threads[i] = new Thread(this);
+            _threads[i].start();
         }
-      }
     }
-  }
+
+    void deactivate()
+    {
+        System.out.println("AFactory stopped");
+        for (int i = 0; i < _threads.length; i++)
+        {
+            _threads[i].interrupt();
+            //        try {
+            //          _threads[i].join();
+            //        } catch (InterruptedException e) {
+            //        }
+        }
+    }
+
+    public void run()
+    {
+        while (true)
+        {
+            try
+            {
+                //System.out.println("Creating A");
+                ComponentInstance ci = _aFactory.newInstance(null);
+                ci.dispose();
+                if (Thread.currentThread().isInterrupted())
+                {
+                    return;
+                }
+            }
+            catch (Throwable t)
+            {
+                if (!(t instanceof InterruptedException))
+                {
+                    //System.out.println("AFactory thread exiting: got exception: " + t.toString());
+                }
+                return;
+            }
+        }
+    }
+}

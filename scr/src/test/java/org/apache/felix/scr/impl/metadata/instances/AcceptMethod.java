@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.metadata.instances;
 
-
 /**
  * The <code>AcceptMethod</code> class provides methods, which are used to
  * test the ReflectionHelper.acceptMethod() method.
@@ -30,39 +29,32 @@ public class AcceptMethod
     {
     }
 
-
     public String public_string()
     {
         return "";
     }
 
-
     protected void protected_void()
     {
     }
-
 
     protected String protected_string()
     {
         return "";
     }
 
-
     private void private_void()
     {
     }
-
 
     private String private_string()
     {
         return "";
     }
 
-
     void package_void()
     {
     }
-
 
     String package_string()
     {

@@ -25,18 +25,16 @@ public final class ActivatorParameter
     private final ComponentContext m_componentContext;
     private final int m_reason;
 
-    public ActivatorParameter( ComponentContext componentContext, int reason )
+    public ActivatorParameter(ComponentContext componentContext, int reason)
     {
         this.m_componentContext = componentContext;
         this.m_reason = reason;
     }
 
-
     public ComponentContext getComponentContext()
     {
         return m_componentContext;
     }
-
 
     public int getReason()
     {

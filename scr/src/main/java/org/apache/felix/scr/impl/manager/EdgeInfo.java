@@ -53,7 +53,7 @@ class EdgeInfo
     private final CountDownLatch openLatch = new CountDownLatch(1);
     private final CountDownLatch closeLatch = new CountDownLatch(1);
 
-    public void setClose( int close )
+    public void setClose(int close)
     {
         this.close = close;
     }
@@ -62,50 +62,56 @@ class EdgeInfo
     {
         return openLatch;
     }
-    
-    public void waitForOpen(AbstractComponentManager<?> m_componentManager, String componentName, String methodName)
+
+    public void waitForOpen(AbstractComponentManager<?> m_componentManager,
+        String componentName, String methodName)
     {
-        
+
         CountDownLatch latch = getOpenLatch();
         String latchName = "open";
-        waitForLatch( m_componentManager, latch, componentName, methodName, latchName );
+        waitForLatch(m_componentManager, latch, componentName, methodName, latchName);
     }
 
-    public void waitForClose(AbstractComponentManager<?> m_componentManager, String componentName, String methodName)
+    public void waitForClose(AbstractComponentManager<?> m_componentManager,
+        String componentName, String methodName)
     {
-        
+
         CountDownLatch latch = getCloseLatch();
         String latchName = "close";
-        waitForLatch( m_componentManager, latch, componentName, methodName, latchName );
+        waitForLatch(m_componentManager, latch, componentName, methodName, latchName);
     }
 
-    private void waitForLatch(AbstractComponentManager<?> m_componentManager, CountDownLatch latch, String componentName,
-            String methodName, String latchName)
+    private void waitForLatch(AbstractComponentManager<?> m_componentManager,
+        CountDownLatch latch, String componentName, String methodName, String latchName)
     {
         try
         {
-            if (!latch.await( m_componentManager.getLockTimeout(), TimeUnit.MILLISECONDS ))
+            if (!latch.await(m_componentManager.getLockTimeout(), TimeUnit.MILLISECONDS))
             {
-                m_componentManager.log( LogService.LOG_ERROR,
-                        "DependencyManager : {0} : timeout on {1} latch {2}",  new Object[] {methodName, latchName, componentName}, null );
+                m_componentManager.log(LogService.LOG_ERROR,
+                    "DependencyManager : {0} : timeout on {1} latch {2}",
+                    new Object[] { methodName, latchName, componentName }, null);
                 m_componentManager.dumpThreads();
             }
         }
-        catch ( InterruptedException e )
+        catch (InterruptedException e)
         {
             try
             {
-                if (!latch.await( m_componentManager.getLockTimeout(), TimeUnit.MILLISECONDS ))
+                if (!latch.await(m_componentManager.getLockTimeout(),
+                    TimeUnit.MILLISECONDS))
                 {
-                    m_componentManager.log( LogService.LOG_ERROR,
-                            "DependencyManager : {0} : timeout on {1} latch {2}",  new Object[] {methodName, latchName, componentName}, null );
+                    m_componentManager.log(LogService.LOG_ERROR,
+                        "DependencyManager : {0} : timeout on {1} latch {2}",
+                        new Object[] { methodName, latchName, componentName }, null);
                     m_componentManager.dumpThreads();
                 }
             }
-            catch ( InterruptedException e1 )
+            catch (InterruptedException e1)
             {
-                m_componentManager.log( LogService.LOG_ERROR,
-                        "DependencyManager : {0} : Interrupted twice on {1} latch {2}",  new Object[] {methodName, latchName, componentName}, null );
+                m_componentManager.log(LogService.LOG_ERROR,
+                    "DependencyManager : {0} : Interrupted twice on {1} latch {2}",
+                    new Object[] { methodName, latchName, componentName }, null);
                 Thread.currentThread().interrupt();
             }
             Thread.currentThread().interrupt();
@@ -117,11 +123,11 @@ class EdgeInfo
         return closeLatch;
     }
 
-    public void setOpen( int open )
+    public void setOpen(int open)
     {
         this.open = open;
     }
-    
+
     public void ignore()
     {
         open = Integer.MAX_VALUE;
@@ -139,19 +145,18 @@ class EdgeInfo
      * @param trackingCount tracking count from tracker to compare with range
      * @return true if open not set, tracking count before open, or close set and tracking count after close.
      */
-    public boolean outOfRange( int trackingCount )
+    public boolean outOfRange(int trackingCount)
     {
-        return open == -1 
-                || trackingCount < open
-                || (close != -1 && trackingCount > close);
+        return open == -1 || trackingCount < open
+            || (close != -1 && trackingCount > close);
     }
-    
-    public boolean beforeRange( int trackingCount )
+
+    public boolean beforeRange(int trackingCount)
     {
         return open == -1 || trackingCount < open;
     }
-    
-    public boolean afterRange( int trackingCount )
+
+    public boolean afterRange(int trackingCount)
     {
         return close != -1 && trackingCount > close;
     }

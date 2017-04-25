@@ -18,9 +18,7 @@
  */
 package org.apache.felix.scr.impl.helper;
 
-
 import org.apache.felix.scr.impl.metadata.ComponentMetadata;
-
 
 /**
  * The <code>Logger</code> interface defines a simple API to enable some logging
@@ -33,8 +31,7 @@ public interface Logger
     /**
      * Returns <code>true</code> if logging for the given level is enabled.
      */
-    boolean isLogEnabled( int level );
-
+    boolean isLogEnabled(int level);
 
     /**
      * Method to actually emit the log message. If the LogService is available,
@@ -45,13 +42,13 @@ public interface Logger
      * @param pattern The <code>java.text.MessageFormat</code> message format
      *      string for preparing the message
      * @param arguments The format arguments for the <code>pattern</code>
- *      string.
+    *      string.
      * @param metadata  component metadata if known
      * @param componentId  component ID if known
      * @param ex An optional <code>Throwable</code> whose stack trace is written,
      */
-    void log( int level, String pattern, Object[] arguments, ComponentMetadata metadata, Long componentId, Throwable ex );
-
+    void log(int level, String pattern, Object[] arguments, ComponentMetadata metadata,
+        Long componentId, Throwable ex);
 
     /**
      * Writes a messages for the given <code>ComponentMetadata</code>.
@@ -60,11 +57,12 @@ public interface Logger
      *          levels defined by the OSGi LogService.
      * @param message The message to print
      * @param metadata The {@link ComponentMetadata} whose processing caused
- *          the message. This may be <code>null</code> if the component
- *          metadata is not known or applicable.
+    *          the message. This may be <code>null</code> if the component
+    *          metadata is not known or applicable.
      * @param componentId
      * @param ex The <code>Throwable</code> causing the message to be logged.
      */
-    void log( int level, String message, ComponentMetadata metadata, Long componentId, Throwable ex );
+    void log(int level, String message, ComponentMetadata metadata, Long componentId,
+        Throwable ex);
 
 }

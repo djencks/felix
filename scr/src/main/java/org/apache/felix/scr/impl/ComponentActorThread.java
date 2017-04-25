@@ -18,12 +18,10 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import java.util.LinkedList;
 
 import org.apache.felix.scr.impl.helper.SimpleLogger;
 import org.osgi.service.log.LogService;
-
 
 /**
  * The <code>ComponentActorThread</code> is the thread used to act upon registered
@@ -39,7 +37,6 @@ class ComponentActorThread implements Runnable
         {
         }
 
-
         public String toString()
         {
             return "Component Actor Terminator";
@@ -51,13 +48,11 @@ class ComponentActorThread implements Runnable
 
     private SimpleLogger logger;
 
-
-    ComponentActorThread( SimpleLogger log )
+    ComponentActorThread(SimpleLogger log)
     {
         tasks = new LinkedList<Runnable>();
         logger = log;
     }
-
 
     // waits on Runnable instances coming into the queue. As instances come
     // in, this method calls the Runnable.run method, logs any exception
@@ -66,20 +61,20 @@ class ComponentActorThread implements Runnable
     // terminates.
     public void run()
     {
-        logger.log( LogService.LOG_DEBUG, "Starting ComponentActorThread", null );
+        logger.log(LogService.LOG_DEBUG, "Starting ComponentActorThread", null);
 
-        for ( ;; )
+        for (;;)
         {
             final Runnable task;
-            synchronized ( tasks )
+            synchronized (tasks)
             {
-                while ( tasks.isEmpty() )
+                while (tasks.isEmpty())
                 {
                     try
                     {
                         tasks.wait();
                     }
-                    catch ( InterruptedException ie )
+                    catch (InterruptedException ie)
                     {
                         Thread.currentThread().interrupt();
                         // don't care
@@ -92,23 +87,25 @@ class ComponentActorThread implements Runnable
             try
             {
                 // return if the task is this thread itself
-                if ( task == TERMINATION_TASK )
+                if (task == TERMINATION_TASK)
                 {
-                    logger.log( LogService.LOG_DEBUG, "Shutting down ComponentActorThread", null );
+                    logger.log(LogService.LOG_DEBUG, "Shutting down ComponentActorThread",
+                        null);
                     return;
                 }
 
                 // otherwise execute the task, log any issues
-                logger.log( LogService.LOG_DEBUG, "Running task: " + task, null );
+                logger.log(LogService.LOG_DEBUG, "Running task: " + task, null);
                 task.run();
             }
-            catch ( Throwable t )
+            catch (Throwable t)
             {
-                logger.log( LogService.LOG_ERROR, "Unexpected problem executing task " + task, t );
+                logger.log(LogService.LOG_ERROR,
+                    "Unexpected problem executing task " + task, t);
             }
             finally
             {
-                synchronized ( tasks )
+                synchronized (tasks)
                 {
                     tasks.notifyAll();
                 }
@@ -116,40 +113,39 @@ class ComponentActorThread implements Runnable
         }
     }
 
-
     // cause this thread to terminate by adding this thread to the end
     // of the queue
     void terminate()
     {
-        schedule( TERMINATION_TASK );
-        synchronized ( tasks )
+        schedule(TERMINATION_TASK);
+        synchronized (tasks)
         {
-            while ( !tasks.isEmpty() )
+            while (!tasks.isEmpty())
             {
                 try
                 {
                     tasks.wait();
                 }
-                catch ( InterruptedException e )
+                catch (InterruptedException e)
                 {
                     Thread.currentThread().interrupt();
-                    logger.log( LogService.LOG_ERROR, "Interrupted exception waiting for queue to empty", e );
+                    logger.log(LogService.LOG_ERROR,
+                        "Interrupted exception waiting for queue to empty", e);
                 }
             }
         }
     }
 
-
     // queue the given runnable to be run as soon as possible
-    void schedule( Runnable task )
+    void schedule(Runnable task)
     {
-        synchronized ( tasks )
+        synchronized (tasks)
         {
             // append to the task queue
-            tasks.add( task );
+            tasks.add(task);
 
-            logger.log( LogService.LOG_DEBUG, "Adding task [{0}] as #{1} in the queue"
-                    , new Object[] {task, tasks.size()}, null );
+            logger.log(LogService.LOG_DEBUG, "Adding task [{0}] as #{1} in the queue",
+                new Object[] { task, tasks.size() }, null);
 
             // notify the waiting thread
             tasks.notifyAll();

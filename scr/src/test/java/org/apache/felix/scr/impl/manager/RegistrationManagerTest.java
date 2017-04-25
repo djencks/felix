@@ -26,22 +26,21 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.felix.scr.impl.manager.RegistrationManager.RegState;
 import org.junit.Test;
 
-
 public class RegistrationManagerTest
 {
-    
+
     private volatile boolean fail;
-    
+
     private int n = 10;
     private ArrayList<Thread> threads = new ArrayList<Thread>();
-    
+
     private TRM trm = new TRM();
-    
+
     @Test
-    public void testRegistrationManager( ) throws Exception
+    public void testRegistrationManager() throws Exception
     {
-       
-        for (int setup = 0; setup < 1 << n; setup++ )
+
+        for (int setup = 0; setup < 1 << n; setup++)
         {
             runTest(setup);
             if (fail)
@@ -50,29 +49,29 @@ public class RegistrationManagerTest
             }
         }
     }
-    
+
     private void runTest(int setup) throws InterruptedException
-    {   
-        final CountDownLatch done = new CountDownLatch( n );
+    {
+        final CountDownLatch done = new CountDownLatch(n);
         for (int i = 0; i < n; i++)
         {
             boolean b = ((setup >>> i) & 1) == 0;
-            final RegState change = b? RegState.registered: RegState.unregistered;
-            new Thread(new Runnable() {
+            final RegState change = b ? RegState.registered : RegState.unregistered;
+            new Thread(new Runnable()
+            {
 
                 public void run()
                 {
-                    trm.changeRegistration( change, null );
+                    trm.changeRegistration(change, null);
                 }
-                
+
             }).start();
             done.countDown();
         }
         done.await();
     }
 
-    
-    private class TRM extends RegistrationManager<Object> 
+    private class TRM extends RegistrationManager<Object>
     {
 
         @Override
@@ -80,9 +79,9 @@ public class RegistrationManagerTest
         {
             try
             {
-                Thread.sleep( 1 );
+                Thread.sleep(1);
             }
-            catch ( InterruptedException e )
+            catch (InterruptedException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -101,9 +100,9 @@ public class RegistrationManagerTest
         {
             try
             {
-                Thread.sleep( 1 );
+                Thread.sleep(1);
             }
-            catch ( InterruptedException e )
+            catch (InterruptedException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -113,15 +112,16 @@ public class RegistrationManagerTest
         @Override
         void log(int level, String message, Object[] arguments, Throwable ex)
         {
-            if ( arguments != null && arguments.length == 1 && (arguments[0] instanceof ArrayList))
+            if (arguments != null && arguments.length == 1
+                && (arguments[0] instanceof ArrayList))
             {
-                ArrayList<RegState> opqueue = ( ArrayList<org.apache.felix.scr.impl.manager.RegistrationManager.RegState> ) arguments[0];
-//                System.out.println("opqueue: " + opqueue);
+                ArrayList<RegState> opqueue = (ArrayList<org.apache.felix.scr.impl.manager.RegistrationManager.RegState>) arguments[0];
+                //                System.out.println("opqueue: " + opqueue);
                 if (opqueue.size() > 1)
                 {
                     for (int i = 1; i < opqueue.size(); i++)
                     {
-                        if (opqueue.get( i -1  ) == opqueue.get(i))
+                        if (opqueue.get(i - 1) == opqueue.get(i))
                         {
                             fail = true;
                             System.out.println("opqueue: " + opqueue);
@@ -130,7 +130,7 @@ public class RegistrationManagerTest
                     }
                 }
             }
-            
+
         }
 
         @Override
@@ -144,7 +144,7 @@ public class RegistrationManagerTest
         void reportTimeout()
         {
             // TODO Auto-generated method stub
-            
+
         }
 
     }

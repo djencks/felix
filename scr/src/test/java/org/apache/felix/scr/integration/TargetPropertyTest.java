@@ -41,7 +41,7 @@ public class TargetPropertyTest extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//         paxRunnerVmOption = DEBUG_VM_OPTION;
+        //         paxRunnerVmOption = DEBUG_VM_OPTION;
 
         descriptorFile = "/integration_test_target_properties.xml";
     }
@@ -50,72 +50,71 @@ public class TargetPropertyTest extends ComponentTestBase
     public void test_1() throws Exception
     {
         String pid = "components.target.properties.1";
-        singleTest( pid, "foo" );
+        singleTest(pid, "foo");
     }
 
     @Test
     public void test_1_2() throws Exception
     {
         String pid = "components.target.properties.1.2";
-        singleTest( pid, "foo" );
+        singleTest(pid, "foo");
     }
 
     @Test
     public void test_1_3() throws Exception
     {
         String pid = "components.target.properties.1.3";
-        singleTest( pid, "foo" );
+        singleTest(pid, "foo");
     }
 
     @Test
     public void test_2() throws Exception
     {
         String pid = "components.target.properties.2";
-        singleTest( pid, "foo" );
+        singleTest(pid, "foo");
     }
 
     @Test
     public void test_3() throws Exception
     {
         String pid = "components.target.properties.3";
-        singleTest( pid, "bar" );
+        singleTest(pid, "bar");
     }
-
 
     private void singleTest(String pid, String expected) throws Exception
     {
-        final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, expected );
-        final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "baz" );
+        final SimpleServiceImpl srv1 = SimpleServiceImpl.create(bundleContext, expected);
+        final SimpleServiceImpl srv2 = SimpleServiceImpl.create(bundleContext, "baz");
 
-		getDisabledConfigurationAndEnable(pid, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable(pid, ComponentConfigurationDTO.ACTIVE);
         checkTarget(expected, srv1);
-        
+
         //configuration not setting target property does not change it
-        configure( pid );
+        configure(pid);
         delay();//all cm event to complete
         checkTarget(expected, srv1);
-        
+
         // update configuration to target srv2
         theConfig.put("one.target", "(value=baz)");
-        configure( pid );
+        configure(pid);
         delay();
         checkTarget("baz", srv2);
-        
+
         //update configuration removing target property
         theConfig.remove("one.target");
-        configure( pid );
+        configure(pid);
         delay();//all cm event to complete
         checkTarget(expected, srv1);
-        
+
     }
 
     void checkTarget(String expected, final SimpleServiceImpl srv1)
     {
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
-        TestCase.assertNotNull( comp10 );
-        TestCase.assertEquals("(value=" + expected + ")", comp10.getProperty("one.target"));
-        TestCase.assertEquals( srv1, comp10.m_singleRef );
+        TestCase.assertNotNull(comp10);
+        TestCase.assertEquals("(value=" + expected + ")",
+            comp10.getProperty("one.target"));
+        TestCase.assertEquals(srv1, comp10.m_singleRef);
     }
-
 
 }

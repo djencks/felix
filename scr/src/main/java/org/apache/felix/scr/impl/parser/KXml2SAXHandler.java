@@ -23,47 +23,40 @@ import org.apache.felix.scr.impl.parser.KXml2SAXParser.Attributes;
 /**
  * Interface for a SAX like handler with kXML
  */
-public interface KXml2SAXHandler {
+public interface KXml2SAXHandler
+{
 
-   /**
-	* Method called when parsing text
-	*
-	* @param   text
-	* @exception   ParseException
-	*/
-   void characters(String text) throws ParseException;
+    /**
+    * Method called when parsing text
+    *
+    * @param   text
+    * @exception   ParseException
+    */
+    void characters(String text) throws ParseException;
 
-   /**
-	* Method called when a tag opens
-	*
-	* @param   uri
-	* @param   localName
-	* @param   attributes
-	* @exception   ParseException
-	*/
-	void startElement(
-		String uri,
-		String localName,
-		Attributes attributes)
-		throws ParseException;
+    /**
+    * Method called when a tag opens
+    *
+    * @param   uri
+    * @param   localName
+    * @param   attributes
+    * @exception   ParseException
+    */
+    void startElement(String uri, String localName, Attributes attributes)
+        throws ParseException;
 
-   /**
-	* Method called when a tag closes
-	*
-	* @param   uri
-	* @param   localName
-	* @exception   ParseException
-	*/
-    void endElement(
-		String uri,
-		String localName)
-		throws ParseException;
+    /**
+    * Method called when a tag closes
+    *
+    * @param   uri
+    * @param   localName
+    * @exception   ParseException
+    */
+    void endElement(String uri, String localName) throws ParseException;
 
-    void processingInstruction(String target,
-									  String data)
-							   throws Exception;
+    void processingInstruction(String target, String data) throws Exception;
 
-	void setLineNumber(int lineNumber);
+    void setLineNumber(int lineNumber);
 
-	void setColumnNumber(int columnNumber);
+    void setColumnNumber(int columnNumber);
 }

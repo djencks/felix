@@ -27,14 +27,10 @@ import org.osgi.framework.BundleContext;
  */
 public interface ReferenceMethod
 {
-    MethodResult invoke( Object componentInstance,
-                         ComponentContextImpl<?> componentContext,
-                         RefPair<?, ?> refPair,
-                         MethodResult methodCallFailureResult,
-                         SimpleLogger logger );
+    MethodResult invoke(Object componentInstance,
+        ComponentContextImpl<?> componentContext, RefPair<?, ?> refPair,
+        MethodResult methodCallFailureResult, SimpleLogger logger);
 
-    <S, T> boolean getServiceObject( ComponentContextImpl<S> key,
-            RefPair<S, T> refPair,
-            BundleContext context,
-            SimpleLogger logger );
+    <S, T> boolean getServiceObject(ComponentContextImpl<S> key, RefPair<S, T> refPair,
+        BundleContext context, SimpleLogger logger);
 }

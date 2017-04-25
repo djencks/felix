@@ -18,55 +18,51 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import junit.framework.TestCase;
-
 
 public class ComponentRegistryKeyTest extends TestCase
 {
 
-    private final ComponentRegistryKey b1_a_0 = key( 1, "a" );
-    private final ComponentRegistryKey b2_a_0 = key( 2, "a" );
+    private final ComponentRegistryKey b1_a_0 = key(1, "a");
+    private final ComponentRegistryKey b2_a_0 = key(2, "a");
 
-    private final ComponentRegistryKey b1_a_1 = key( 1, "a" );
-    private final ComponentRegistryKey b2_a_1 = key( 2, "a" );
+    private final ComponentRegistryKey b1_a_1 = key(1, "a");
+    private final ComponentRegistryKey b2_a_1 = key(2, "a");
 
-    private final ComponentRegistryKey b1_b = key( 1, "b" );
-    private final ComponentRegistryKey b2_b = key( 2, "b" );
-
+    private final ComponentRegistryKey b1_b = key(1, "b");
+    private final ComponentRegistryKey b2_b = key(2, "b");
 
     public void test_globally_unique_key()
     {
         // same
-        TestCase.assertEquals( b1_a_0, b1_a_0 );
+        TestCase.assertEquals(b1_a_0, b1_a_0);
 
         // equals both ways
-        TestCase.assertEquals( b1_a_0, b1_a_1 );
-        TestCase.assertEquals( b1_a_1, b1_a_0 );
+        TestCase.assertEquals(b1_a_0, b1_a_1);
+        TestCase.assertEquals(b1_a_1, b1_a_0);
 
         // not equals both ways
-        TestCase.assertFalse( b1_a_0.equals( b2_a_0 ) );
-        TestCase.assertFalse( b2_a_0.equals( b1_a_0 ) );
+        TestCase.assertFalse(b1_a_0.equals(b2_a_0));
+        TestCase.assertFalse(b2_a_0.equals(b1_a_0));
 
         // not equals both ways
-        TestCase.assertFalse( b1_a_0.equals( b1_b ) );
-        TestCase.assertFalse( b1_b.equals( b1_a_0 ) );
+        TestCase.assertFalse(b1_a_0.equals(b1_b));
+        TestCase.assertFalse(b1_b.equals(b1_a_0));
 
         // not equals both ways
-        TestCase.assertFalse( b1_a_0.equals( b2_b ) );
-        TestCase.assertFalse( b2_b.equals( b1_a_0 ) );
+        TestCase.assertFalse(b1_a_0.equals(b2_b));
+        TestCase.assertFalse(b2_b.equals(b1_a_0));
     }
 
-
-    private static ComponentRegistryKey key( final long bundleId, final String name )
+    private static ComponentRegistryKey key(final long bundleId, final String name)
     {
-        return new ComponentRegistryKey( new MockBundle()
+        return new ComponentRegistryKey(new MockBundle()
         {
-//            @Override
+            //            @Override
             public long getBundleId()
             {
                 return bundleId;
             }
-        }, name );
+        }, name);
     }
 }

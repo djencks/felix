@@ -18,14 +18,12 @@
  */
 package org.apache.felix.scr.impl.manager.components2;
 
-
 import java.util.Map;
 
 import org.apache.felix.scr.impl.manager.components.FakeService;
 import org.apache.felix.scr.impl.manager.components.SuperFakeService;
 import org.apache.felix.scr.impl.manager.components.T1;
 import org.osgi.framework.ServiceReference;
-
 
 public class T2 extends T1
 {
@@ -34,10 +32,9 @@ public class T2 extends T1
         callPerformed = "privateT2";
     }
 
-
-    private void privateT2SR( ServiceReference sr )
+    private void privateT2SR(ServiceReference sr)
     {
-        if ( sr != null )
+        if (sr != null)
         {
             callPerformed = "privateT2SR";
         }
@@ -47,10 +44,9 @@ public class T2 extends T1
         }
     }
 
-
-    private void privateT2SI( FakeService si )
+    private void privateT2SI(FakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "privateT2SI";
         }
@@ -60,18 +56,17 @@ public class T2 extends T1
         }
     }
 
-
-    private void privateT2SIMap( FakeService si, Map props )
+    private void privateT2SIMap(FakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "privateT2SIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "privateT2SIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "privateT2SIMap with null props";
         }
@@ -81,10 +76,9 @@ public class T2 extends T1
         }
     }
 
-
-    private void privateT2SSI( SuperFakeService si )
+    private void privateT2SSI(SuperFakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "privateT2SSI";
         }
@@ -94,18 +88,17 @@ public class T2 extends T1
         }
     }
 
-
-    private void privateT2SSIMap( SuperFakeService si, Map props )
+    private void privateT2SSIMap(SuperFakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "privateT2SSIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "privateT2SSIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "privateT2SSIMap with null props";
         }
@@ -115,16 +108,14 @@ public class T2 extends T1
         }
     }
 
-
     void packageT2()
     {
         callPerformed = "packageT2";
     }
 
-
-    void packageT2SR( ServiceReference sr )
+    void packageT2SR(ServiceReference sr)
     {
-        if ( sr != null )
+        if (sr != null)
         {
             callPerformed = "packageT2SR";
         }
@@ -134,10 +125,9 @@ public class T2 extends T1
         }
     }
 
-
-    void packageT2SI( FakeService si )
+    void packageT2SI(FakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "packageT2SI";
         }
@@ -147,18 +137,17 @@ public class T2 extends T1
         }
     }
 
-
-    void packageT2SIMap( FakeService si, Map props )
+    void packageT2SIMap(FakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "packageT2SIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "packageT2SIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "packageT2SIMap with null props";
         }
@@ -168,10 +157,9 @@ public class T2 extends T1
         }
     }
 
-
-    void packageT2SSI( SuperFakeService si )
+    void packageT2SSI(SuperFakeService si)
     {
-        if ( si != null )
+        if (si != null)
         {
             callPerformed = "packageT2SSI";
         }
@@ -181,18 +169,17 @@ public class T2 extends T1
         }
     }
 
-
-    void packageT2SSIMap( SuperFakeService si, Map props )
+    void packageT2SSIMap(SuperFakeService si, Map props)
     {
-        if ( si != null && props != null && props.size() > 0 )
+        if (si != null && props != null && props.size() > 0)
         {
             callPerformed = "packageT2SSIMap";
         }
-        else if ( si == null )
+        else if (si == null)
         {
             callPerformed = "packageT2SSIMap with null service instance";
         }
-        else if ( props == null )
+        else if (props == null)
         {
             callPerformed = "packageT2SSIMap with null props";
         }
@@ -202,9 +189,8 @@ public class T2 extends T1
         }
     }
 
-
     // this method must hide the T1#suitable method !
-    private void suitable( FakeService si )
+    private void suitable(FakeService si)
     {
         callPerformed = "suitableT2";
     }

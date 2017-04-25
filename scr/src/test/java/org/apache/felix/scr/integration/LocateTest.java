@@ -32,38 +32,39 @@ import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 @RunWith(JUnit4TestRunner.class)
 public class LocateTest extends ComponentTestBase
 {
-    
+
     static
     {
         descriptorFile = "/integration_test_locate.xml";
         // uncomment to enable debugging of this test class
-//         paxRunnerVmOption = DEBUG_VM_OPTION;
+        //         paxRunnerVmOption = DEBUG_VM_OPTION;
         COMPONENT_PACKAGE = COMPONENT_PACKAGE + ".deadlock";
     }
-    
+
     @Test
     public void testAsyncLocate() throws Exception
     {
-        bundleContext.registerService( Object.class, new Object(), null );
-        
-        findComponentConfigurationByName( "Consumer", ComponentConfigurationDTO.ACTIVE );
-        
+        bundleContext.registerService(Object.class, new Object(), null);
+
+        findComponentConfigurationByName("Consumer", ComponentConfigurationDTO.ACTIVE);
+
         final String pid = "TestComponent";
-        Configuration config = getConfigurationAdmin().getConfiguration( pid, null );
+        Configuration config = getConfigurationAdmin().getConfiguration(pid, null);
         final Hashtable props = new Hashtable();
         //wrong target property, will not bind
-        props.put( "target", "bar" );
+        props.put("target", "bar");
         config.update(props);
         delay();
-        
+
         //when deadlock is present the state is actually unsatisfied.
-        ComponentConfigurationDTO cc = findComponentConfigurationByName( pid, ComponentConfigurationDTO.SATISFIED );
-//        delay();
+        ComponentConfigurationDTO cc = findComponentConfigurationByName(pid,
+            ComponentConfigurationDTO.SATISFIED);
+        //        delay();
         //correct target property: will bind as new properties are propagated.
-        props.put( "target", "foo" );
+        props.put("target", "foo");
         config.update(props);
         delay();
-       
+
         TestComponent tc = getServiceFromConfiguration(cc, TestComponent.class);
         assertTrue(tc.isSuccess1());
         assertTrue(tc.isSuccess2());

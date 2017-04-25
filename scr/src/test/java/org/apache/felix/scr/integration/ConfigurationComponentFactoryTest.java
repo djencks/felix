@@ -38,7 +38,8 @@ import junit.framework.TestCase;
 public class ConfigurationComponentFactoryTest extends ComponentTestBase
 {
 
-    private static final String PROP_NAME_FACTORY = ComponentTestBase.PROP_NAME + ".factory";
+    private static final String PROP_NAME_FACTORY = ComponentTestBase.PROP_NAME
+        + ".factory";
 
     static
     {
@@ -49,57 +50,61 @@ public class ConfigurationComponentFactoryTest extends ComponentTestBase
     }
 
     @Test
-    public void test_non_spec_component_factory_with_factory_configuration() throws Exception
+    public void test_non_spec_component_factory_with_factory_configuration()
+        throws Exception
     {
         // this test is about non-standard behaviour of ComponentFactory services
 
         final String componentname = "factory.component";
         final String componentfactory = "factory.component.factory";
 
-        getConfigurationsDisabledThenEnable( componentname, 0, -1 );
+        getConfigurationsDisabledThenEnable(componentname, 0, -1);
 
-        TestCase.assertNull( SimpleComponent.INSTANCE );
+        TestCase.assertNull(SimpleComponent.INSTANCE);
 
-        final ComponentFactory factory = getComponentFactory( componentfactory );
+        final ComponentFactory factory = getComponentFactory(componentfactory);
 
-        final String factoryConfigPid = createFactoryConfiguration( componentname, "?" );
+        final String factoryConfigPid = createFactoryConfiguration(componentname, "?");
         delay();
 
-        TestCase.assertNotNull( SimpleComponent.INSTANCE );
-        TestCase.assertEquals( PROP_NAME, SimpleComponent.INSTANCE.getProperty( PROP_NAME ) );
+        TestCase.assertNotNull(SimpleComponent.INSTANCE);
+        TestCase.assertEquals(PROP_NAME, SimpleComponent.INSTANCE.getProperty(PROP_NAME));
 
         // check registered components
-        checkConfigurationCount( componentname, 1, ComponentConfigurationDTO.ACTIVE );
+        checkConfigurationCount(componentname, 1, ComponentConfigurationDTO.ACTIVE);
 
         // modify the configuration
-        Configuration config = getConfigurationAdmin().getConfiguration( factoryConfigPid, "?" );
+        Configuration config = getConfigurationAdmin().getConfiguration(factoryConfigPid,
+            "?");
         Dictionary<String, Object> props = config.getProperties();
-        props.put( PROP_NAME, PROP_NAME_FACTORY );
-        config.update( props );
+        props.put(PROP_NAME, PROP_NAME_FACTORY);
+        config.update(props);
         delay();
 
         // ensure instance with new configuration
-        TestCase.assertNotNull( SimpleComponent.INSTANCE );
-        TestCase.assertEquals( PROP_NAME_FACTORY, SimpleComponent.INSTANCE.getProperty( PROP_NAME ) );
+        TestCase.assertNotNull(SimpleComponent.INSTANCE);
+        TestCase.assertEquals(PROP_NAME_FACTORY,
+            SimpleComponent.INSTANCE.getProperty(PROP_NAME));
 
         // check registered components
-        checkConfigurationCount( componentname, 1, ComponentConfigurationDTO.ACTIVE );
+        checkConfigurationCount(componentname, 1, ComponentConfigurationDTO.ACTIVE);
 
         // disable the factory
-        disableAndCheck( componentname );
+        disableAndCheck(componentname);
         delay();
 
         // enabled the factory, factory configuration results in component instance
-        getConfigurationsDisabledThenEnable( componentname, 1, ComponentConfigurationDTO.ACTIVE );
+        getConfigurationsDisabledThenEnable(componentname, 1,
+            ComponentConfigurationDTO.ACTIVE);
 
         // delete the configuration
-        getConfigurationAdmin().getConfiguration( factoryConfigPid ).delete();
+        getConfigurationAdmin().getConfiguration(factoryConfigPid).delete();
         delay();
 
         // factory is enabled but instance has been removed
 
         // check registered components
-        checkConfigurationCount( componentname, 0, ComponentConfigurationDTO.ACTIVE );
+        checkConfigurationCount(componentname, 0, ComponentConfigurationDTO.ACTIVE);
     }
 
 }

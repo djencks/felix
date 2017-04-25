@@ -27,59 +27,65 @@ import java.util.StringTokenizer;
  * defined in the descriptor
  *
  */
-public class PropertyMetadata {
+public class PropertyMetadata
+{
 
-	// Name of the property (required)
-	private String m_name;
+    // Name of the property (required)
+    private String m_name;
 
-	// Type of the property (optional)
-	private String m_type;
+    // Type of the property (optional)
+    private String m_type;
 
-	// Value of the type (optional)
-	// - before validate: raw value from XML (String or String[])
-	// - after validate: converted value provided to component
-	private Object m_value;
+    // Value of the type (optional)
+    // - before validate: raw value from XML (String or String[])
+    // - after validate: converted value provided to component
+    private Object m_value;
 
-	// Flag that indicates if this PropertyMetadata has been validated and thus has become immutable
-	private boolean m_validated = false;
+    // Flag that indicates if this PropertyMetadata has been validated and thus has become immutable
+    private boolean m_validated = false;
 
-	/**
-	 * Set the name
-	 *
-	 * @param name
-	 */
-	public void setName(String name) {
-		if (m_validated == true) {
-			return;
-		}
+    /**
+     * Set the name
+     *
+     * @param name
+     */
+    public void setName(String name)
+    {
+        if (m_validated == true)
+        {
+            return;
+        }
 
-		m_name = name;
-	}
+        m_name = name;
+    }
 
+    /**
+     * Set the type
+     *
+     * @param type
+     */
+    public void setType(String type)
+    {
+        if (m_validated == true)
+        {
+            return;
+        }
+        m_type = type;
+    }
 
-	/**
-	 * Set the type
-	 *
-	 * @param type
-	 */
-	public void setType(String type) {
-		if (m_validated == true) {
-			return;
-		}
-		m_type = type;
-	}
-
-	/**
-	 * Set the value
-	 *
-	 * @param value
-	 */
-	public void setValue(String value) {
-		if (m_validated == true) {
-			return;
-		}
+    /**
+     * Set the value
+     *
+     * @param value
+     */
+    public void setValue(String value)
+    {
+        if (m_validated == true)
+        {
+            return;
+        }
         m_value = value;
-	}
+    }
 
     /**
      * Set multiple values as an array, where the values are contained in
@@ -87,20 +93,24 @@ public class PropertyMetadata {
      *
      * @param values
      */
-    public void setValues(String values) {
-        if (m_validated == true) {
+    public void setValues(String values)
+    {
+        if (m_validated == true)
+        {
             return;
         }
         // splite th values
         List<String> valueList = new ArrayList<String>();
         StringTokenizer tokener = new StringTokenizer(values, "\r\n");
-        while (tokener.hasMoreTokens()) {
+        while (tokener.hasMoreTokens())
+        {
             String value = tokener.nextToken().trim();
-            if (value.length() > 0) {
-                valueList.add( value );
+            if (value.length() > 0)
+            {
+                valueList.add(value);
             }
         }
-        m_value = valueList.toArray( new String[valueList.size()] );
+        m_value = valueList.toArray(new String[valueList.size()]);
     }
 
     /**
@@ -108,7 +118,8 @@ public class PropertyMetadata {
      *
      * @return the name of the property
      */
-    public String getName() {
+    public String getName()
+    {
         return m_name;
     }
 
@@ -117,7 +128,8 @@ public class PropertyMetadata {
      *
      * @return the type of the property
      */
-    public String getType() {
+    public String getType()
+    {
         return m_type;
     }
 
@@ -126,121 +138,123 @@ public class PropertyMetadata {
      *
      * @return the value of the property as an Object
      */
-    public Object getValue() {
+    public Object getValue()
+    {
         return m_value;
     }
 
     /**
      * Method used to verify if the semantics of this metadata are correct
      */
-    public void validate( ComponentMetadata componentMetadata )
+    public void validate(ComponentMetadata componentMetadata)
     {
-        if ( m_name == null )
+        if (m_name == null)
         {
-            throw componentMetadata.validationFailure( "Property name attribute is mandatory" );
+            throw componentMetadata.validationFailure(
+                "Property name attribute is mandatory");
         }
 
         // check character type name
-        if ( m_type == null )
+        if (m_type == null)
         {
             m_type = "String";
         }
-        else if ( componentMetadata.getDSVersion().isDS11() && m_type.equals( "Char" ) )
+        else if (componentMetadata.getDSVersion().isDS11() && m_type.equals("Char"))
         {
-            throw componentMetadata
-                .validationFailure( "Illegal property type 'Char' used for DS 1.1 descriptor, use 'Character' instead" );
+            throw componentMetadata.validationFailure(
+                "Illegal property type 'Char' used for DS 1.1 descriptor, use 'Character' instead");
         }
-        else if ( !componentMetadata.getDSVersion().isDS11() && m_type.equals( "Character" ) )
+        else if (!componentMetadata.getDSVersion().isDS11() && m_type.equals("Character"))
         {
-            throw componentMetadata
-                .validationFailure( "Illegal property type 'Character' used for DS 1.0 descriptor, use 'Char' instead" );
+            throw componentMetadata.validationFailure(
+                "Illegal property type 'Character' used for DS 1.0 descriptor, use 'Char' instead");
         }
 
         // validate and covert value
-        if ( m_value != null )
+        if (m_value != null)
         {
             try
             {
-                if ( m_value instanceof String )
+                if (m_value instanceof String)
                 {
-                    m_value = toType( ( String ) m_value );
+                    m_value = toType((String) m_value);
                 }
                 else
                 {
-                    m_value = toTypeArray( ( String[] ) m_value );
+                    m_value = toTypeArray((String[]) m_value);
                 }
             }
-            catch ( NumberFormatException nfe )
+            catch (NumberFormatException nfe)
             {
-                throw componentMetadata.validationFailure( getName() + ": Cannot convert property value to "
-                    + getType() );
+                throw componentMetadata.validationFailure(
+                    getName() + ": Cannot convert property value to " + getType());
             }
-            catch ( IllegalArgumentException e )
+            catch (IllegalArgumentException e)
             {
-                throw componentMetadata.validationFailure( getName() + ": " + e.getMessage() );
+                throw componentMetadata.validationFailure(
+                    getName() + ": " + e.getMessage());
             }
         }
 
         m_validated = true;
     }
 
-
     /**
      * @throws IllegalArgumentException if the property type is not valid
      *          according to the spec
      * @throws NumberFormatException if the string value cannot be converted
      *          to the numeric type indicated by the property type
      */
-    private Object toType( String value )
+    private Object toType(String value)
     {
         // 112.4.5 Parsing of the value is done by the valueOf(String) method (P. 291)
         // Should the type accept lowercase too?
-        if ( m_type.equals( "String" ) )
+        if (m_type.equals("String"))
         {
             return value;
         }
-        else if ( m_type.equals( "Long" ) )
+        else if (m_type.equals("Long"))
         {
-            return Long.valueOf( value );
+            return Long.valueOf(value);
         }
-        else if ( m_type.equals( "Double" ) )
+        else if (m_type.equals("Double"))
         {
-            return Double.valueOf( value );
+            return Double.valueOf(value);
         }
-        else if ( m_type.equals( "Float" ) )
+        else if (m_type.equals("Float"))
         {
-            return Float.valueOf( value );
+            return Float.valueOf(value);
         }
-        else if ( m_type.equals( "Integer" ) )
+        else if (m_type.equals("Integer"))
         {
-            return Integer.valueOf( value );
+            return Integer.valueOf(value);
         }
-        else if ( m_type.equals( "Byte" ) )
+        else if (m_type.equals("Byte"))
         {
-            return Byte.valueOf( value );
+            return Byte.valueOf(value);
         }
-        else if ( m_type.equals( "Char" ) || m_type.equals( "Character" ) )
+        else if (m_type.equals("Char") || m_type.equals("Character"))
         {
             // DS 1.1 changes the "Char" type to "Character", here we support both
             // For Character types, the conversion is handled by Integer.valueOf method.
             // (since valueOf is defined in terms of parseInt we directly call
             // parseInt to prevent unneeded Object creation)
-            return Character.valueOf( ( char ) Integer.parseInt( value ) );
+            return Character.valueOf((char) Integer.parseInt(value));
         }
-        else if ( m_type.equals( "Boolean" ) )
+        else if (m_type.equals("Boolean"))
         {
-            return Boolean.valueOf( value );
+            return Boolean.valueOf(value);
         }
-        else if ( m_type.equals( "Short" ) )
+        else if (m_type.equals("Short"))
         {
-            return Short.valueOf( value );
+            return Short.valueOf(value);
         }
         else
         {
-            throw new IllegalArgumentException( "Undefined property type '" + m_type + "'" );
+            throw new IllegalArgumentException(
+                "Undefined property type '" + m_type + "'");
         }
     }
-
 
     /**
      * @throws IllegalArgumentException if the property type is not valid
@@ -248,89 +262,90 @@ public class PropertyMetadata {
      * @throws NumberFormatException if the string value cannot be converted
      *          to the numeric type indicated by the property type
      */
-    private Object toTypeArray( String[] valueList )
+    private Object toTypeArray(String[] valueList)
     {
         // 112.4.5 Except for String objects, the result will be translated to an array of primitive types.
-        if ( m_type.equals( "String" ) )
+        if (m_type.equals("String"))
         {
             return valueList;
         }
-        else if ( m_type.equals( "Double" ) )
+        else if (m_type.equals("Double"))
         {
             double[] array = new double[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Double.parseDouble( valueList[i] );
+                array[i] = Double.parseDouble(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Float" ) )
+        else if (m_type.equals("Float"))
         {
             float[] array = new float[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Float.parseFloat( valueList[i] );
+                array[i] = Float.parseFloat(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Long" ) )
+        else if (m_type.equals("Long"))
         {
             long[] array = new long[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Long.parseLong( valueList[i] );
+                array[i] = Long.parseLong(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Integer" ) )
+        else if (m_type.equals("Integer"))
         {
             int[] array = new int[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Integer.parseInt( valueList[i] );
+                array[i] = Integer.parseInt(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Short" ) )
+        else if (m_type.equals("Short"))
         {
             short[] array = new short[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Short.parseShort( valueList[i] );
+                array[i] = Short.parseShort(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Byte" ) )
+        else if (m_type.equals("Byte"))
         {
             byte[] array = new byte[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Byte.parseByte( valueList[i] );
+                array[i] = Byte.parseByte(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Char" ) || m_type.equals( "Character" ) )
+        else if (m_type.equals("Char") || m_type.equals("Character"))
         {
             // DS 1.1 changes the "Char" type to "Character", here we support both
             char[] array = new char[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = ( char ) Integer.parseInt( valueList[i] );
+                array[i] = (char) Integer.parseInt(valueList[i]);
             }
             return array;
         }
-        else if ( m_type.equals( "Boolean" ) )
+        else if (m_type.equals("Boolean"))
         {
             boolean[] array = new boolean[valueList.length];
-            for ( int i = 0; i < array.length; i++ )
+            for (int i = 0; i < array.length; i++)
             {
-                array[i] = Boolean.valueOf( valueList[i] );
+                array[i] = Boolean.valueOf(valueList[i]);
             }
             return array;
         }
         else
         {
-            throw new IllegalArgumentException( "Undefined property type '" + m_type + "'" );
+            throw new IllegalArgumentException(
+                "Undefined property type '" + m_type + "'");
         }
     }
 }

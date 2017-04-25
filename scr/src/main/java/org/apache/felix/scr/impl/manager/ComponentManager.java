@@ -23,22 +23,22 @@ import java.util.Map;
 
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 
+public interface ComponentManager<S>
+{
 
-public interface ComponentManager<S> {
-	
     int STATE_UNSATISFIED_CONFIGURATION = ComponentConfigurationDTO.UNSATISFIED_CONFIGURATION;
     int STATE_UNSATISFIED_REFERENCE = ComponentConfigurationDTO.UNSATISFIED_REFERENCE;
     int STATE_SATISFIED = ComponentConfigurationDTO.SATISFIED;
-	int STATE_ACTIVE = ComponentConfigurationDTO.ACTIVE;
-	int STATE_DISPOSED = 32;
-	int STATE_DISABLED = 64; //TODO????
+    int STATE_ACTIVE = ComponentConfigurationDTO.ACTIVE;
+    int STATE_DISPOSED = 32;
+    int STATE_DISABLED = 64; //TODO????
 
-	Map<String, Object> getProperties();
+    Map<String, Object> getProperties();
 
-	long getId();
+    long getId();
 
-	int getSpecState();
-	
-	List<? extends ReferenceManager<S, ?>> getReferenceManagers();
-	
+    int getSpecState();
+
+    List<? extends ReferenceManager<S, ?>> getReferenceManagers();
+
 }

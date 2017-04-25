@@ -18,10 +18,8 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class SimpleComponent2
 {
@@ -30,12 +28,10 @@ public class SimpleComponent2
 
     private List<String> bindings = new ArrayList<String>();
 
-
     public List<String> getBindings()
     {
         return bindings;
     }
-
 
     @SuppressWarnings("unused")
     private void activate()
@@ -43,34 +39,32 @@ public class SimpleComponent2
         INSTANCE = this;
     }
 
-
     @SuppressWarnings("unused")
     private void deactivate()
     {
         INSTANCE = null;
     }
 
-
-    public void bindSimpleService( @SuppressWarnings("unused") SimpleService simpleService )
+    public void bindSimpleService(@SuppressWarnings("unused") SimpleService simpleService)
     {
-        bindings.add( "bindSimpleService" );
+        bindings.add("bindSimpleService");
     }
 
-
-    public void unbindSimpleService( @SuppressWarnings("unused") SimpleService simpleService )
+    public void unbindSimpleService(
+        @SuppressWarnings("unused") SimpleService simpleService)
     {
-        bindings.add( "unbindSimpleService" );
+        bindings.add("unbindSimpleService");
     }
 
-
-    public void bindSimpleService2( @SuppressWarnings("unused") SimpleService2 simpleService2 )
+    public void bindSimpleService2(
+        @SuppressWarnings("unused") SimpleService2 simpleService2)
     {
-        bindings.add( "bindSimpleService2" );
+        bindings.add("bindSimpleService2");
     }
 
-
-    public void unbindSimpleService2( @SuppressWarnings("unused") SimpleService2 simpleService2 )
+    public void unbindSimpleService2(
+        @SuppressWarnings("unused") SimpleService2 simpleService2)
     {
-        bindings.add( "unbindSimpleService2" );
+        bindings.add("unbindSimpleService2");
     }
 }

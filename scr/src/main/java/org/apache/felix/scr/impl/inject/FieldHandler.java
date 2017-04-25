@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.inject;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -48,13 +47,9 @@ import org.osgi.service.log.LogService;
  */
 public class FieldHandler
 {
-    private enum ParamType {
-        serviceReference,
-        serviceObjects,
-        serviceType,
-        map,
-        tuple,
-        ignore
+    private enum ParamType
+    {
+        serviceReference, serviceObjects, serviceType, map, tuple, ignore
     }
 
     /** The reference metadata. */
@@ -78,8 +73,7 @@ public class FieldHandler
      * @param componentClass component class
      * @param referenceClassName service class name
      */
-    public FieldHandler( final ReferenceMetadata metadata,
-            final Class<?> componentClass)
+    public FieldHandler(final ReferenceMetadata metadata, final Class<?> componentClass)
     {
         this.metadata = metadata;
         this.componentClass = componentClass;
@@ -93,15 +87,15 @@ public class FieldHandler
      * @param f The field or {@code null}.
      * @param logger The logger
      */
-    private void setField( final Field f, final SimpleLogger logger )
+    private void setField(final Field f, final SimpleLogger logger)
     {
         this.field = f;
 
-        if ( f != null )
+        if (f != null)
         {
             state = Resolved.INSTANCE;
-            logger.log( LogService.LOG_DEBUG, "Found field: {0}",
-                    new Object[] { field }, null );
+            logger.log(LogService.LOG_DEBUG, "Found field: {0}", new Object[] { field },
+                null);
         }
         else
         {
@@ -123,44 +117,46 @@ public class FieldHandler
      *      trying to find the requested field.
      * @param logger
      */
-    private Field findField( final SimpleLogger logger )
-    throws InvocationTargetException
+    private Field findField(final SimpleLogger logger) throws InvocationTargetException
     {
         final Class<?> targetClass = this.componentClass;
         final ClassLoader targetClasslLoader = targetClass.getClassLoader();
-        final String targetPackage = getPackageName( targetClass );
+        final String targetPackage = getPackageName(targetClass);
         Class<?> theClass = targetClass;
         boolean acceptPrivate = true;
         boolean acceptPackage = true;
         while (true)
         {
 
-            if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+            if (logger.isLogEnabled(LogService.LOG_DEBUG))
             {
-                logger.log( LogService.LOG_DEBUG,
-                    "Locating field " + this.metadata.getField() + " in class " + theClass.getName(), null );
+                logger.log(LogService.LOG_DEBUG, "Locating field "
+                    + this.metadata.getField() + " in class " + theClass.getName(), null);
             }
 
             try
             {
-                final Field field = getField( theClass, acceptPrivate, acceptPackage, logger );
-                if ( field != null )
+                final Field field = getField(theClass, acceptPrivate, acceptPackage,
+                    logger);
+                if (field != null)
                 {
                     return field;
                 }
             }
-            catch ( SuitableMethodNotAccessibleException ex )
+            catch (SuitableMethodNotAccessibleException ex)
             {
                 // log and return null
-                logger.log( LogService.LOG_ERROR,
-                    "findField: Suitable but non-accessible field {0} found in class {1}, subclass of {2}", new Object[]
-                        { this.metadata.getField(), theClass.getName(), targetClass.getName() }, null );
+                logger.log(LogService.LOG_ERROR,
+                    "findField: Suitable but non-accessible field {0} found in class {1}, subclass of {2}",
+                    new Object[] { this.metadata.getField(), theClass.getName(),
+                            targetClass.getName() },
+                    null);
                 break;
             }
 
             // if we get here, we have no field, so check the super class
             theClass = theClass.getSuperclass();
-            if ( theClass == null )
+            if (theClass == null)
             {
                 break;
             }
@@ -169,7 +165,7 @@ public class FieldHandler
             // package fields only if in the same package and package
             // fields are (still) allowed
             acceptPackage &= targetClasslLoader == theClass.getClassLoader()
-                && targetPackage.equals( getPackageName( theClass ) );
+                && targetPackage.equals(getPackageName(theClass));
 
             // private fields will not be accepted any more in super classes
             acceptPrivate = false;
@@ -197,19 +193,17 @@ public class FieldHandler
      * @throws InvocationTargetException If an unexpected Throwable is caught
      *      trying to find the requested field.
      */
-    private Field getField( final Class<?> clazz,
-            final boolean acceptPrivate,
-            final boolean acceptPackage,
-            final SimpleLogger logger )
-    throws SuitableMethodNotAccessibleException, InvocationTargetException
+    private Field getField(final Class<?> clazz, final boolean acceptPrivate,
+        final boolean acceptPackage, final SimpleLogger logger)
+        throws SuitableMethodNotAccessibleException, InvocationTargetException
     {
         try
         {
             // find the declared field in this class
-            final Field field = clazz.getDeclaredField( this.metadata.getField() );
+            final Field field = clazz.getDeclaredField(this.metadata.getField());
 
             // accept public and protected fields only and ensure accessibility
-            if ( accept( field, acceptPrivate, acceptPackage ) )
+            if (accept(field, acceptPrivate, acceptPackage))
             {
                 return field;
             }
@@ -217,38 +211,40 @@ public class FieldHandler
             // the method would fit the requirements but is not acceptable
             throw new SuitableMethodNotAccessibleException();
         }
-        catch ( NoSuchFieldException nsfe )
+        catch (NoSuchFieldException nsfe)
         {
             // thrown if no field is declared with the given name and
             // parameters
-            if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+            if (logger.isLogEnabled(LogService.LOG_DEBUG))
             {
-                logger.log( LogService.LOG_DEBUG, "Declared Field {0}.{1} not found", new Object[]
-                    { clazz.getName(), this.metadata.getField() }, null );
+                logger.log(LogService.LOG_DEBUG, "Declared Field {0}.{1} not found",
+                    new Object[] { clazz.getName(), this.metadata.getField() }, null);
             }
         }
-        catch ( NoClassDefFoundError cdfe )
+        catch (NoClassDefFoundError cdfe)
         {
             // may be thrown if a method would be found but the signature
             // contains throws declaration for an exception which cannot
             // be loaded
-            if ( logger.isLogEnabled( LogService.LOG_WARNING ) )
+            if (logger.isLogEnabled(LogService.LOG_WARNING))
             {
                 StringBuffer buf = new StringBuffer();
-                buf.append( "Failure loooking up field " ).append( this.metadata.getField() );
-                buf.append( " in class class " ).append( clazz.getName() ).append( ". Assuming no such field." );
-                logger.log( LogService.LOG_WARNING, buf.toString(), cdfe );
+                buf.append("Failure loooking up field ").append(this.metadata.getField());
+                buf.append(" in class class ").append(clazz.getName()).append(
+                    ". Assuming no such field.");
+                logger.log(LogService.LOG_WARNING, buf.toString(), cdfe);
             }
         }
-        catch ( SuitableMethodNotAccessibleException e)
+        catch (SuitableMethodNotAccessibleException e)
         {
             throw e;
         }
-        catch ( Throwable throwable )
+        catch (Throwable throwable)
         {
             // unexpected problem accessing the field, don't let everything
             // blow up in this situation, just throw a declared exception
-            throw new InvocationTargetException( throwable, "Unexpected problem trying to get field " + this.metadata.getField() );
+            throw new InvocationTargetException(throwable,
+                "Unexpected problem trying to get field " + this.metadata.getField());
         }
 
         // caught and ignored exception, assume no field and continue search
@@ -261,131 +257,153 @@ public class FieldHandler
      * @param logger The logger
      * @return The field if it's valid, {@code null} otherwise.
      */
-    private Field validateField( final Field f, final SimpleLogger logger )
+    private Field validateField(final Field f, final SimpleLogger logger)
     {
         final Class<?> fieldType = f.getType();
         final Class<?> referenceType = ClassUtils.getClassFromComponentClassLoader(
-                this.componentClass, metadata.getInterface(), logger);
+            this.componentClass, metadata.getInterface(), logger);
 
         // ignore static fields
-        if ( Modifier.isStatic(f.getModifiers()))
+        if (Modifier.isStatic(f.getModifiers()))
         {
-            logger.log( LogService.LOG_ERROR, "Field {0} in component {1} must not be static", new Object[]
-                    {metadata.getField(), this.componentClass}, null );
-        	valueType = ParamType.ignore;
-        	return f;
+            logger.log(LogService.LOG_ERROR,
+                "Field {0} in component {1} must not be static",
+                new Object[] { metadata.getField(), this.componentClass }, null);
+            valueType = ParamType.ignore;
+            return f;
         }
 
         // unary reference
-        if ( !metadata.isMultiple() )
+        if (!metadata.isMultiple())
         {
-            if ( fieldType.isAssignableFrom(referenceType) )
+            if (fieldType.isAssignableFrom(referenceType))
             {
                 valueType = ParamType.serviceType;
             }
-            else if ( fieldType == ClassUtils.SERVICE_REFERENCE_CLASS )
+            else if (fieldType == ClassUtils.SERVICE_REFERENCE_CLASS)
             {
                 valueType = ParamType.serviceReference;
             }
-            else if ( fieldType == ClassUtils.COMPONENTS_SERVICE_OBJECTS_CLASS )
+            else if (fieldType == ClassUtils.COMPONENTS_SERVICE_OBJECTS_CLASS)
             {
                 valueType = ParamType.serviceObjects;
             }
-            else if ( fieldType == ClassUtils.MAP_CLASS )
+            else if (fieldType == ClassUtils.MAP_CLASS)
             {
                 valueType = ParamType.map;
             }
-            else if ( fieldType == ClassUtils.MAP_ENTRY_CLASS )
+            else if (fieldType == ClassUtils.MAP_ENTRY_CLASS)
             {
                 valueType = ParamType.tuple;
             }
             else
             {
-                logger.log( LogService.LOG_ERROR, "Field {0} in component {1} has unsupported type {2}", new Object[]
-                        {metadata.getField(), this.componentClass, fieldType.getName()}, null );
+                logger.log(LogService.LOG_ERROR,
+                    "Field {0} in component {1} has unsupported type {2}",
+                    new Object[] { metadata.getField(), this.componentClass,
+                            fieldType.getName() },
+                    null);
                 valueType = ParamType.ignore;
             }
 
             // if the field is dynamic, it has to be volatile (field is ignored, case logged) (112.3.8.1)
-            if ( !metadata.isStatic() && !Modifier.isVolatile(f.getModifiers()) ) {
-                logger.log( LogService.LOG_ERROR, "Field {0} in component {1} must be declared volatile to handle a dynamic reference", new Object[]
-                        {metadata.getField(), this.componentClass}, null );
+            if (!metadata.isStatic() && !Modifier.isVolatile(f.getModifiers()))
+            {
+                logger.log(LogService.LOG_ERROR,
+                    "Field {0} in component {1} must be declared volatile to handle a dynamic reference",
+                    new Object[] { metadata.getField(), this.componentClass }, null);
                 valueType = ParamType.ignore;
             }
 
             // the field must not be final (field is ignored, case logged) (112.3.8.1)
-            if ( Modifier.isFinal(f.getModifiers()) )
+            if (Modifier.isFinal(f.getModifiers()))
             {
-                logger.log( LogService.LOG_ERROR, "Field {0} in component {1} must not be declared as final", new Object[]
-                        {metadata.getField(), this.componentClass}, null );
+                logger.log(LogService.LOG_ERROR,
+                    "Field {0} in component {1} must not be declared as final",
+                    new Object[] { metadata.getField(), this.componentClass }, null);
                 valueType = ParamType.ignore;
             }
         }
         else
         {
-            if ( ReferenceMetadata.FIELD_VALUE_TYPE_SERVICE.equals(metadata.getFieldCollectionType()) )
+            if (ReferenceMetadata.FIELD_VALUE_TYPE_SERVICE.equals(
+                metadata.getFieldCollectionType()))
             {
                 valueType = ParamType.serviceType;
             }
-            else if ( ReferenceMetadata.FIELD_VALUE_TYPE_REFERENCE.equals(metadata.getFieldCollectionType()) )
+            else if (ReferenceMetadata.FIELD_VALUE_TYPE_REFERENCE.equals(
+                metadata.getFieldCollectionType()))
             {
                 valueType = ParamType.serviceReference;
             }
-            else if ( ReferenceMetadata.FIELD_VALUE_TYPE_SERVICEOBJECTS.equals(metadata.getFieldCollectionType()) )
+            else if (ReferenceMetadata.FIELD_VALUE_TYPE_SERVICEOBJECTS.equals(
+                metadata.getFieldCollectionType()))
             {
                 valueType = ParamType.serviceObjects;
             }
-            else if ( ReferenceMetadata.FIELD_VALUE_TYPE_PROPERTIES.equals(metadata.getFieldCollectionType()) )
+            else if (ReferenceMetadata.FIELD_VALUE_TYPE_PROPERTIES.equals(
+                metadata.getFieldCollectionType()))
             {
                 valueType = ParamType.map;
             }
-            else if ( ReferenceMetadata.FIELD_VALUE_TYPE_TUPLE.equals(metadata.getFieldCollectionType()) )
+            else if (ReferenceMetadata.FIELD_VALUE_TYPE_TUPLE.equals(
+                metadata.getFieldCollectionType()))
             {
                 valueType = ParamType.tuple;
             }
 
             // multiple cardinality, field type must be collection or subtype
-            if ( !ClassUtils.COLLECTION_CLASS.isAssignableFrom(fieldType) )
+            if (!ClassUtils.COLLECTION_CLASS.isAssignableFrom(fieldType))
             {
-                logger.log( LogService.LOG_ERROR, "Field {0} in component {1} has unsupported type {2}", new Object[]
-                        {metadata.getField(), this.componentClass, fieldType.getName()}, null );
+                logger.log(LogService.LOG_ERROR,
+                    "Field {0} in component {1} has unsupported type {2}",
+                    new Object[] { metadata.getField(), this.componentClass,
+                            fieldType.getName() },
+                    null);
                 valueType = ParamType.ignore;
             }
 
             // additional checks for replace strategy:
-            if ( metadata.isReplace()  )
+            if (metadata.isReplace())
             {
                 // if the field is dynamic wit has to be volatile (field is ignored, case logged) (112.3.8.1)
-                if ( !metadata.isStatic() && !Modifier.isVolatile(f.getModifiers()) )
+                if (!metadata.isStatic() && !Modifier.isVolatile(f.getModifiers()))
                 {
-                    logger.log( LogService.LOG_ERROR, "Field {0} in component {1} must be declared volatile to handle a dynamic reference", new Object[]
-                            {metadata.getField(), this.componentClass}, null );
+                    logger.log(LogService.LOG_ERROR,
+                        "Field {0} in component {1} must be declared volatile to handle a dynamic reference",
+                        new Object[] { metadata.getField(), this.componentClass }, null);
                     valueType = ParamType.ignore;
                 }
 
                 // replace strategy: field must not be final (field is ignored, case logged) (112.3.8.1)
                 //                   only collection and list allowed
-                if ( fieldType != ClassUtils.LIST_CLASS && fieldType != ClassUtils.COLLECTION_CLASS )
+                if (fieldType != ClassUtils.LIST_CLASS
+                    && fieldType != ClassUtils.COLLECTION_CLASS)
                 {
-                    logger.log( LogService.LOG_ERROR, "Field {0} in component {1} has unsupported type {2}."+
-                        " It must be one of java.util.Collection or java.util.List.",
-                        new Object[] {metadata.getField(), this.componentClass, fieldType.getName()}, null );
+                    logger.log(LogService.LOG_ERROR,
+                        "Field {0} in component {1} has unsupported type {2}."
+                            + " It must be one of java.util.Collection or java.util.List.",
+                        new Object[] { metadata.getField(), this.componentClass,
+                                fieldType.getName() },
+                        null);
                     valueType = ParamType.ignore;
 
                 }
-                if ( Modifier.isFinal(f.getModifiers()) )
+                if (Modifier.isFinal(f.getModifiers()))
                 {
-                    logger.log( LogService.LOG_ERROR, "Field {0} in component {1} must not be declared as final", new Object[]
-                            {metadata.getField(), this.componentClass}, null );
+                    logger.log(LogService.LOG_ERROR,
+                        "Field {0} in component {1} must not be declared as final",
+                        new Object[] { metadata.getField(), this.componentClass }, null);
                     valueType = ParamType.ignore;
                 }
             }
         }
         // static references only allowed for replace strategy
-        if ( metadata.isStatic() && !metadata.isReplace() )
+        if (metadata.isStatic() && !metadata.isReplace())
         {
-            logger.log( LogService.LOG_ERROR, "Update strategy for field {0} in component {1} only allowed for non static field references.", new Object[]
-                    {metadata.getField(), this.componentClass}, null );
+            logger.log(LogService.LOG_ERROR,
+                "Update strategy for field {0} in component {1} only allowed for non static field references.",
+                new Object[] { metadata.getField(), this.componentClass }, null);
             valueType = ParamType.ignore;
         }
         return f;
@@ -393,9 +411,7 @@ public class FieldHandler
 
     private enum METHOD_TYPE
     {
-        BIND,
-        UNBIND,
-        UPDATED
+        BIND, UNBIND, UPDATED
     };
 
     @SuppressWarnings("rawtypes")
@@ -406,9 +422,7 @@ public class FieldHandler
         private final Object value;
         private final ServiceReference<?> ref;
 
-        public MapEntryImpl(final Object key,
-                final Object value,
-                final ServiceReference<?> ref)
+        public MapEntryImpl(final Object key, final Object value, final ServiceReference<?> ref)
         {
             this.key = key;
             this.value = value;
@@ -436,13 +450,13 @@ public class FieldHandler
         @Override
         public int compareTo(final Map.Entry<?, ?> o)
         {
-            if ( o == null )
+            if (o == null)
             {
                 return 1;
             }
-            if ( o instanceof MapEntryImpl )
+            if (o instanceof MapEntryImpl)
             {
-                final MapEntryImpl other = (MapEntryImpl)o;
+                final MapEntryImpl other = (MapEntryImpl) o;
                 return ref.compareTo(other.ref);
 
             }
@@ -451,39 +465,49 @@ public class FieldHandler
 
     }
 
-    private Object getValue(final ComponentContextImpl key,
-            final RefPair<?, ?> refPair)
+    private Object getValue(final ComponentContextImpl key, final RefPair<?, ?> refPair)
     {
         final Object obj;
-        switch ( this.valueType )
+        switch (this.valueType)
         {
-            case serviceType : obj = refPair.getServiceObject(key); break;
-            case serviceReference : obj = refPair.getRef(); break;
-            case serviceObjects : obj = key.getComponentServiceObjectsHelper().getServiceObjects(refPair.getRef()); break;
-            case map : obj = new ReadOnlyDictionary( refPair.getRef() ); break;
-            case tuple : final Object tupleKey = new ReadOnlyDictionary( refPair.getRef() );
-                         final Object tupleValue = refPair.getServiceObject(key);
-                         obj = new MapEntryImpl(tupleKey, tupleValue, refPair.getRef());
-                         break;
-            default: obj = null;
+            case serviceType:
+                obj = refPair.getServiceObject(key);
+                break;
+            case serviceReference:
+                obj = refPair.getRef();
+                break;
+            case serviceObjects:
+                obj = key.getComponentServiceObjectsHelper().getServiceObjects(
+                    refPair.getRef());
+                break;
+            case map:
+                obj = new ReadOnlyDictionary(refPair.getRef());
+                break;
+            case tuple:
+                final Object tupleKey = new ReadOnlyDictionary(refPair.getRef());
+                final Object tupleValue = refPair.getServiceObject(key);
+                obj = new MapEntryImpl(tupleKey, tupleValue, refPair.getRef());
+                break;
+            default:
+                obj = null;
         }
         return obj;
     }
 
-    private boolean initField(final Object componentInstance,
-            final SimpleLogger logger )
+    private boolean initField(final Object componentInstance, final SimpleLogger logger)
     {
-    	if ( valueType == ParamType.ignore )
-    	{
-    		return true;
-    	}
+        if (valueType == ParamType.ignore)
+        {
+            return true;
+        }
         try
         {
-            if ( metadata.isMultiple() )
+            if (metadata.isMultiple())
             {
-                if ( metadata.isReplace()  )
+                if (metadata.isReplace())
                 {
-                    this.setFieldValue(componentInstance, new CopyOnWriteArrayList<Object>());
+                    this.setFieldValue(componentInstance,
+                        new CopyOnWriteArrayList<Object>());
                 }
                 else
                 {
@@ -492,50 +516,59 @@ public class FieldHandler
                     // update strategy: if DS implementation provides collection implementation
                     //                  only list and collection are allowed, field must not be final
                     final Object providedImpl = this.getFieldValue(componentInstance);
-                    if ( providedImpl == null)
+                    if (providedImpl == null)
                     {
-                        if ( Modifier.isFinal(this.field.getModifiers()) )
+                        if (Modifier.isFinal(this.field.getModifiers()))
                         {
-                            logger.log( LogService.LOG_ERROR, "Field {0} in component {1} must not be declared as final", new Object[]
-                                    {metadata.getField(), this.componentClass}, null );
+                            logger.log(LogService.LOG_ERROR,
+                                "Field {0} in component {1} must not be declared as final",
+                                new Object[] { metadata.getField(), this.componentClass },
+                                null);
                             valueType = ParamType.ignore;
                             return true;
                         }
-                        if ( fieldType != ClassUtils.LIST_CLASS && fieldType != ClassUtils.COLLECTION_CLASS )
+                        if (fieldType != ClassUtils.LIST_CLASS
+                            && fieldType != ClassUtils.COLLECTION_CLASS)
                         {
-                            logger.log( LogService.LOG_ERROR, "Field {0} in component {1} has unsupported type {2}."+
-                                " It must be one of java.util.Collection or java.util.List.",
-                                new Object[] {metadata.getField(), this.componentClass, fieldType.getName()}, null );
+                            logger.log(LogService.LOG_ERROR,
+                                "Field {0} in component {1} has unsupported type {2}."
+                                    + " It must be one of java.util.Collection or java.util.List.",
+                                new Object[] { metadata.getField(), this.componentClass,
+                                        fieldType.getName() },
+                                null);
                             valueType = ParamType.ignore;
                             return true;
                         }
-                        if ( fieldType == ClassUtils.LIST_CLASS )
+                        if (fieldType == ClassUtils.LIST_CLASS)
                         {
-                        	this.setFieldValue(componentInstance, new CopyOnWriteArrayList<Object>());
+                            this.setFieldValue(componentInstance,
+                                new CopyOnWriteArrayList<Object>());
                         }
                         else
                         {
-                        	this.setFieldValue(componentInstance, new CopyOnWriteArraySet<Object>());
+                            this.setFieldValue(componentInstance,
+                                new CopyOnWriteArraySet<Object>());
                         }
                     }
                 }
             }
             else
             {
-            	// only optional field need initialization
-            	if ( metadata.isOptional() )
-            	{
-	            	// null the field if optional and unary
-	            	this.setFieldValue(componentInstance, null);
-	            }
+                // only optional field need initialization
+                if (metadata.isOptional())
+                {
+                    // null the field if optional and unary
+                    this.setFieldValue(componentInstance, null);
+                }
             }
         }
-        catch ( final InvocationTargetException ite)
+        catch (final InvocationTargetException ite)
         {
             valueType = ParamType.ignore;
 
-            logger.log( LogService.LOG_ERROR, "Field {0} in component {1} can't be initialized.",
-                    new Object[] {metadata.getField(), this.componentClass}, ite );
+            logger.log(LogService.LOG_ERROR,
+                "Field {0} in component {1} can't be initialized.",
+                new Object[] { metadata.getField(), this.componentClass }, ite);
             return false;
 
         }
@@ -545,7 +578,8 @@ public class FieldHandler
     private Collection<Object> getReplaceCollection(final BindParameters bp)
     {
         final List<Object> objects = new ArrayList<Object>();
-        for(final Object val : bp.getComponentContext().getBoundValues(metadata.getName()).values())
+        for (final Object val : bp.getComponentContext().getBoundValues(
+            metadata.getName()).values())
         {
             objects.add(val);
         }
@@ -553,53 +587,55 @@ public class FieldHandler
     }
 
     private MethodResult updateField(final METHOD_TYPE mType,
-                                     final Object componentInstance,
-                                     final BindParameters bp,
-                                     final SimpleLogger logger )
-        throws InvocationTargetException
+        final Object componentInstance, final BindParameters bp,
+        final SimpleLogger logger) throws InvocationTargetException
     {
         final ComponentContextImpl key = bp.getComponentContext();
         final RefPair<?, ?> refPair = bp.getRefPair();
 
-        if ( !this.metadata.isMultiple() )
+        if (!this.metadata.isMultiple())
         {
             // unary references
 
-        	// unbind needs only be done, if reference is dynamic and optional
-            if ( mType == METHOD_TYPE.UNBIND )
+            // unbind needs only be done, if reference is dynamic and optional
+            if (mType == METHOD_TYPE.UNBIND)
             {
-                if ( this.metadata.isOptional() && !this.metadata.isStatic() )
+                if (this.metadata.isOptional() && !this.metadata.isStatic())
                 {
                     // we only reset if it was previously set with this value
-                    if ( bp.getComponentContext().getBoundValues(metadata.getName()).size() == 1 )
+                    if (bp.getComponentContext().getBoundValues(
+                        metadata.getName()).size() == 1)
                     {
                         this.setFieldValue(componentInstance, null);
                     }
                 }
-                bp.getComponentContext().getBoundValues(metadata.getName()).remove(refPair);
+                bp.getComponentContext().getBoundValues(metadata.getName()).remove(
+                    refPair);
             }
             // updated needs only be done, if the value type is map or tuple
             // If it's a dynamic reference, the value can be updated
             // for a static reference we need a reactivation
-            else if ( mType == METHOD_TYPE.UPDATED )
+            else if (mType == METHOD_TYPE.UPDATED)
             {
-            	if ( this.valueType == ParamType.map || this.valueType == ParamType.tuple )
-            	{
-            		if ( this.metadata.isStatic() )
-            		{
-            			return MethodResult.REACTIVATE;
-            		}
+                if (this.valueType == ParamType.map || this.valueType == ParamType.tuple)
+                {
+                    if (this.metadata.isStatic())
+                    {
+                        return MethodResult.REACTIVATE;
+                    }
                     final Object obj = getValue(key, refPair);
                     this.setFieldValue(componentInstance, obj);
-                    bp.getComponentContext().getBoundValues(metadata.getName()).put(refPair, obj);
-            	}
+                    bp.getComponentContext().getBoundValues(metadata.getName()).put(
+                        refPair, obj);
+                }
             }
             // bind needs always be done
             else
             {
                 final Object obj = getValue(key, refPair);
                 this.setFieldValue(componentInstance, obj);
-                bp.getComponentContext().getBoundValues(metadata.getName()).put(refPair, obj);
+                bp.getComponentContext().getBoundValues(metadata.getName()).put(refPair,
+                    obj);
             }
         }
         else
@@ -607,65 +643,72 @@ public class FieldHandler
             // multiple references
 
             // bind: replace or update the field
-            if ( mType == METHOD_TYPE.BIND )
+            if (mType == METHOD_TYPE.BIND)
             {
                 final Object obj = getValue(key, refPair);
-                bp.getComponentContext().getBoundValues(metadata.getName()).put(refPair, obj);
-                if ( metadata.isReplace() )
+                bp.getComponentContext().getBoundValues(metadata.getName()).put(refPair,
+                    obj);
+                if (metadata.isReplace())
                 {
                     this.setFieldValue(componentInstance, getReplaceCollection(bp));
                 }
                 else
                 {
                     @SuppressWarnings("unchecked")
-                    final Collection<Object> col = (Collection<Object>)this.getFieldValue(componentInstance);
+                    final Collection<Object> col = (Collection<Object>) this.getFieldValue(
+                        componentInstance);
                     col.add(obj);
                 }
             }
             // unbind needs only be done, if reference is dynamic
-            else if ( mType == METHOD_TYPE.UNBIND)
+            else if (mType == METHOD_TYPE.UNBIND)
             {
-                if ( !metadata.isStatic() )
+                if (!metadata.isStatic())
                 {
-                    final Object obj = bp.getComponentContext().getBoundValues(metadata.getName()).remove(refPair);
-                    if ( metadata.isReplace() )
+                    final Object obj = bp.getComponentContext().getBoundValues(
+                        metadata.getName()).remove(refPair);
+                    if (metadata.isReplace())
                     {
                         this.setFieldValue(componentInstance, getReplaceCollection(bp));
                     }
                     else
                     {
                         @SuppressWarnings("unchecked")
-                        final Collection<Object> col = (Collection<Object>)this.getFieldValue(componentInstance);
+                        final Collection<Object> col = (Collection<Object>) this.getFieldValue(
+                            componentInstance);
                         col.remove(obj);
                     }
                 }
             }
             // updated needs only be done, if the value type is map or tuple
-            else if ( mType == METHOD_TYPE.UPDATED)
+            else if (mType == METHOD_TYPE.UPDATED)
             {
-            	if ( this.valueType == ParamType.map || this.valueType == ParamType.tuple )
-            	{
-                    if ( !this.metadata.isStatic() )
+                if (this.valueType == ParamType.map || this.valueType == ParamType.tuple)
+                {
+                    if (!this.metadata.isStatic())
                     {
-	                    final Object obj = getValue(key, refPair);
-	                    final Object oldObj = bp.getComponentContext().getBoundValues(metadata.getName()).put(refPair, obj);
+                        final Object obj = getValue(key, refPair);
+                        final Object oldObj = bp.getComponentContext().getBoundValues(
+                            metadata.getName()).put(refPair, obj);
 
-	                    if ( metadata.isReplace() )
-	                    {
-	                        this.setFieldValue(componentInstance, getReplaceCollection(bp));
-	                    }
-	                    else
-	                    {
-	                        @SuppressWarnings("unchecked")
-	                        final Collection<Object> col = (Collection<Object>)this.getFieldValue(componentInstance);
-	                        col.add(obj);
-	                        col.remove(oldObj);
-	                    }
+                        if (metadata.isReplace())
+                        {
+                            this.setFieldValue(componentInstance,
+                                getReplaceCollection(bp));
+                        }
+                        else
+                        {
+                            @SuppressWarnings("unchecked")
+                            final Collection<Object> col = (Collection<Object>) this.getFieldValue(
+                                componentInstance);
+                            col.add(obj);
+                            col.remove(oldObj);
+                        }
                     }
                     else
                     {
-                    	// if it's static we need to reactivate
-                    	return MethodResult.REACTIVATE;
+                        // if it's static we need to reactivate
+                        return MethodResult.REACTIVATE;
                     }
                 }
             }
@@ -675,34 +718,34 @@ public class FieldHandler
     }
 
     private void setFieldValue(final Object componentInstance, final Object value)
-    throws InvocationTargetException
+        throws InvocationTargetException
     {
         try
         {
             field.set(componentInstance, value);
         }
-        catch ( final IllegalArgumentException iae )
+        catch (final IllegalArgumentException iae)
         {
             throw new InvocationTargetException(iae);
         }
-        catch ( final IllegalAccessException iae )
+        catch (final IllegalAccessException iae)
         {
             throw new InvocationTargetException(iae);
         }
     }
 
     private Object getFieldValue(final Object componentInstance)
-    throws InvocationTargetException
+        throws InvocationTargetException
     {
         try
         {
             return field.get(componentInstance);
         }
-        catch ( final IllegalArgumentException iae )
+        catch (final IllegalArgumentException iae)
         {
             throw new InvocationTargetException(iae);
         }
-        catch ( final IllegalAccessException iae )
+        catch (final IllegalAccessException iae)
         {
             throw new InvocationTargetException(iae);
         }
@@ -727,32 +770,31 @@ public class FieldHandler
      * @param acceptPackage Whether a package private field is acceptable
      * @return whether the field is acceptable
      */
-    private static boolean accept( final Field field,
-            final boolean acceptPrivate,
-            final boolean acceptPackage )
+    private static boolean accept(final Field field, final boolean acceptPrivate,
+        final boolean acceptPackage)
     {
         // check modifiers now
         final int mod = field.getModifiers();
 
         // no static fields
-        if ( Modifier.isStatic( mod ) )
+        if (Modifier.isStatic(mod))
         {
             return true;
         }
 
         // accept public and protected fields
-        if ( Modifier.isPublic( mod ) || Modifier.isProtected( mod ) )
+        if (Modifier.isPublic(mod) || Modifier.isProtected(mod))
         {
-            setAccessible( field );
+            setAccessible(field);
             return true;
         }
 
         // accept private if accepted
-        if ( Modifier.isPrivate( mod ) )
+        if (Modifier.isPrivate(mod))
         {
-            if ( acceptPrivate )
+            if (acceptPrivate)
             {
-                setAccessible( field );
+                setAccessible(field);
                 return true;
             }
 
@@ -760,9 +802,9 @@ public class FieldHandler
         }
 
         // accept default (package)
-        if ( acceptPackage )
+        if (acceptPackage)
         {
-            setAccessible( field );
+            setAccessible(field);
             return true;
         }
 
@@ -772,27 +814,26 @@ public class FieldHandler
 
     private static void setAccessible(final Field field)
     {
-        AccessController.doPrivileged( new PrivilegedAction<Object>()
+        AccessController.doPrivileged(new PrivilegedAction<Object>()
         {
             @Override
             public Object run()
             {
-                field.setAccessible( true );
+                field.setAccessible(true);
                 return null;
             }
-        } );
+        });
     }
-
 
     /**
      * Returns the name of the package to which the class belongs or an
      * empty string if the class is in the default package.
      */
-    public static String getPackageName( Class<?> clazz )
+    public static String getPackageName(Class<?> clazz)
     {
         String name = clazz.getName();
-        int dot = name.lastIndexOf( '.' );
-        return ( dot > 0 ) ? name.substring( 0, dot ) : "";
+        int dot = name.lastIndexOf('.');
+        return (dot > 0) ? name.substring(0, dot) : "";
     }
 
     /**
@@ -801,14 +842,11 @@ public class FieldHandler
     private static interface State
     {
 
-        MethodResult invoke( final FieldHandler handler,
-                final METHOD_TYPE mType,
-                final Object componentInstance,
-                final BindParameters rawParameter,
-                final SimpleLogger logger )
-        throws InvocationTargetException;
+        MethodResult invoke(final FieldHandler handler, final METHOD_TYPE mType,
+            final Object componentInstance, final BindParameters rawParameter,
+            final SimpleLogger logger) throws InvocationTargetException;
 
-        boolean fieldExists( final FieldHandler handler, final SimpleLogger logger);
+        boolean fieldExists(final FieldHandler handler, final SimpleLogger logger);
     }
 
     /**
@@ -818,45 +856,45 @@ public class FieldHandler
     {
         private static final State INSTANCE = new NotResolved();
 
-        private synchronized void resolve( final FieldHandler handler, final SimpleLogger logger )
+        private synchronized void resolve(final FieldHandler handler,
+            final SimpleLogger logger)
         {
-            logger.log( LogService.LOG_DEBUG, "getting field: {0}", new Object[]
-                    {handler.metadata.getField()}, null );
+            logger.log(LogService.LOG_DEBUG, "getting field: {0}",
+                new Object[] { handler.metadata.getField() }, null);
 
             // resolve the field
             Field field = null;
             try
             {
-                field = handler.findField( logger );
-                field = handler.validateField( field, logger );
+                field = handler.findField(logger);
+                field = handler.validateField(field, logger);
             }
-            catch ( final InvocationTargetException ex )
+            catch (final InvocationTargetException ex)
             {
-                logger.log( LogService.LOG_WARNING, "{0} cannot be found", new Object[]
-                        {handler.metadata.getField()}, ex.getTargetException() );
+                logger.log(LogService.LOG_WARNING, "{0} cannot be found",
+                    new Object[] { handler.metadata.getField() },
+                    ex.getTargetException());
                 field = null;
             }
 
-            handler.setField( field, logger );
+            handler.setField(field, logger);
         }
 
         @Override
-        public MethodResult invoke( final FieldHandler handler,
-                final METHOD_TYPE mType,
-                final Object componentInstance,
-                final BindParameters rawParameter,
-                SimpleLogger logger )
-        throws InvocationTargetException
+        public MethodResult invoke(final FieldHandler handler, final METHOD_TYPE mType,
+            final Object componentInstance, final BindParameters rawParameter,
+            SimpleLogger logger) throws InvocationTargetException
         {
-            resolve( handler, logger );
-            return handler.state.invoke( handler, mType, componentInstance, rawParameter, logger );
+            resolve(handler, logger);
+            return handler.state.invoke(handler, mType, componentInstance, rawParameter,
+                logger);
         }
 
         @Override
-        public boolean fieldExists( final FieldHandler handler, final SimpleLogger logger)
+        public boolean fieldExists(final FieldHandler handler, final SimpleLogger logger)
         {
-            resolve( handler, logger );
-            return handler.state.fieldExists( handler, logger );
+            resolve(handler, logger);
+            return handler.state.fieldExists(handler, logger);
         }
     }
 
@@ -868,19 +906,17 @@ public class FieldHandler
         private static final State INSTANCE = new NotFound();
 
         @Override
-        public MethodResult invoke( final FieldHandler handler,
-                final METHOD_TYPE mType,
-                final Object componentInstance,
-                final BindParameters rawParameter,
-                final SimpleLogger logger )
+        public MethodResult invoke(final FieldHandler handler, final METHOD_TYPE mType,
+            final Object componentInstance, final BindParameters rawParameter,
+            final SimpleLogger logger)
         {
-            logger.log( LogService.LOG_ERROR, "Field [{0}] not found", new Object[]
-                { handler.metadata.getField() }, null );
+            logger.log(LogService.LOG_ERROR, "Field [{0}] not found",
+                new Object[] { handler.metadata.getField() }, null);
             return null;
         }
 
         @Override
-        public boolean fieldExists( final FieldHandler handler, final SimpleLogger logger)
+        public boolean fieldExists(final FieldHandler handler, final SimpleLogger logger)
         {
             return false;
         }
@@ -894,30 +930,26 @@ public class FieldHandler
         private static final State INSTANCE = new Resolved();
 
         @Override
-        public MethodResult invoke( final FieldHandler handler,
-                final METHOD_TYPE mType,
-                final Object componentInstance,
-                final BindParameters rawParameter,
-                final SimpleLogger logger )
-            throws InvocationTargetException
+        public MethodResult invoke(final FieldHandler handler, final METHOD_TYPE mType,
+            final Object componentInstance, final BindParameters rawParameter,
+            final SimpleLogger logger) throws InvocationTargetException
         {
-            return handler.updateField( mType, componentInstance, rawParameter, logger );
+            return handler.updateField(mType, componentInstance, rawParameter, logger);
         }
 
         @Override
-        public boolean fieldExists( final FieldHandler handler, final SimpleLogger logger)
+        public boolean fieldExists(final FieldHandler handler, final SimpleLogger logger)
         {
             return true;
         }
     }
 
-    public boolean fieldExists( SimpleLogger logger )
+    public boolean fieldExists(SimpleLogger logger)
     {
-        return this.state.fieldExists( this, logger );
+        return this.state.fieldExists(this, logger);
     }
 
-    public static final class ReferenceMethodImpl
-        implements ReferenceMethod
+    public static final class ReferenceMethodImpl implements ReferenceMethod
     {
 
         private final METHOD_TYPE methodType;
@@ -932,38 +964,32 @@ public class FieldHandler
 
         @Override
         public MethodResult invoke(Object componentInstance,
-                                   ComponentContextImpl<?> componentContext,
-                                   RefPair<?, ?> refPair,
-                                   MethodResult methodCallFailureResult,
-                                   SimpleLogger logger) {
+            ComponentContextImpl<?> componentContext, RefPair<?, ?> refPair,
+            MethodResult methodCallFailureResult, SimpleLogger logger)
+        {
             return invoke(componentInstance,
-                    new BindParameters(componentContext, refPair),
-                    methodCallFailureResult,
-                    logger);
+                new BindParameters(componentContext, refPair), methodCallFailureResult,
+                logger);
         }
 
         public MethodResult invoke(final Object componentInstance,
-                final BindParameters rawParameter,
-                final MethodResult methodCallFailureResult,
-                final SimpleLogger logger)
+            final BindParameters rawParameter, final MethodResult methodCallFailureResult,
+            final SimpleLogger logger)
         {
-            if ( handler.valueType == ParamType.ignore )
+            if (handler.valueType == ParamType.ignore)
             {
                 return MethodResult.VOID;
             }
 
             try
             {
-                return handler.state.invoke( handler,
-                        methodType,
-                        componentInstance,
-                        rawParameter,
-                        logger );
+                return handler.state.invoke(handler, methodType, componentInstance,
+                    rawParameter, logger);
             }
-            catch ( final InvocationTargetException ite )
+            catch (final InvocationTargetException ite)
             {
-                logger.log( LogService.LOG_ERROR, "The {0} field has thrown an exception", new Object[]
-                    { handler.metadata.getField() }, ite.getCause() );
+                logger.log(LogService.LOG_ERROR, "The {0} field has thrown an exception",
+                    new Object[] { handler.metadata.getField() }, ite.getCause());
             }
 
             return methodCallFailureResult;
@@ -971,16 +997,15 @@ public class FieldHandler
 
         @Override
         public <S, T> boolean getServiceObject(final ComponentContextImpl<S> key,
-                final RefPair<S, T> refPair,
-                final BundleContext context,
-                final SimpleLogger logger)
+            final RefPair<S, T> refPair, final BundleContext context,
+            final SimpleLogger logger)
         {
-            if ( methodType != METHOD_TYPE.UNBIND )
+            if (methodType != METHOD_TYPE.UNBIND)
             {
                 //??? this resolves which we need.... better way?
-                if ( refPair.getServiceObject(key) == null
-                  && handler.fieldExists( logger )
-                  && (handler.valueType == ParamType.serviceType || handler.valueType == ParamType.tuple ) )
+                if (refPair.getServiceObject(key) == null && handler.fieldExists(logger)
+                    && (handler.valueType == ParamType.serviceType
+                        || handler.valueType == ParamType.tuple))
                 {
                     return refPair.getServiceObject(key, context, logger);
                 }
@@ -1006,7 +1031,7 @@ public class FieldHandler
 
     public InitReferenceMethod getInit()
     {
-        if ( valueType == ParamType.ignore )
+        if (valueType == ParamType.ignore)
         {
             return null;
         }
@@ -1016,7 +1041,7 @@ public class FieldHandler
             @Override
             public boolean init(final Object componentInstance, final SimpleLogger logger)
             {
-                if ( fieldExists( logger ) )
+                if (fieldExists(logger))
                 {
                     return initField(componentInstance, logger);
                 }

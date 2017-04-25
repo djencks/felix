@@ -27,35 +27,34 @@ public class MutatingServiceConsumer
     private Boolean updatedInUpdated;
     private Boolean updatedInUnset;
 
-    void setMutatingService(MutatingService ms, Map<String, Object> props) 
+    void setMutatingService(MutatingService ms, Map<String, Object> props)
     {
         updatedInSet = props.containsKey("theValue");
     }
-    
+
     void updatedMutatingService(MutatingService ms, Map<String, Object> props)
     {
-        updatedInUpdated = props.containsKey("theValue");        
+        updatedInUpdated = props.containsKey("theValue");
     }
-    
+
     void unsetMutatingService(MutatingService ms, Map<String, Object> props)
     {
         updatedInUnset = props.containsKey("theValue");
     }
-    
+
     public Boolean isUpdatedInSet()
     {
         return updatedInSet;
     }
-    
+
     public Boolean isUpdatedInUpdated()
     {
         return updatedInUpdated;
     }
-    
+
     public Boolean isUpdatedInUnset()
     {
         return updatedInUnset;
     }
-    
-    
+
 }

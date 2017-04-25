@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.config;
 
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -30,7 +29,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.log.LogService;
-
 
 /**
  * The <code>ScrConfiguration</code> class conveys configuration for the
@@ -93,7 +91,7 @@ public class ScrConfigurationImpl implements ScrConfiguration
 
     private ScrCommand scrCommand;
 
-    public ScrConfigurationImpl(Activator activator )
+    public ScrConfigurationImpl(Activator activator)
     {
         this.activator = activator;
     }
@@ -109,26 +107,28 @@ public class ScrConfigurationImpl implements ScrConfiguration
         props.put(Constants.SERVICE_DESCRIPTION, "SCR Configurator");
         props.put(Constants.SERVICE_VENDOR, "The Apache Software Foundation");
 
-
         // Process configure from bundle context properties so they can be predictably
         // overriden by configuration admin later.
         // Note that if the managed service is registered first then it is random which will win since
         // configuration may be delivered asynchronously
-        configure( null, false );
+        configure(null, false);
 
-        managedService = ( ServiceRegistration<ManagedService> ) bundleContext.registerService("org.osgi.service.cm.ManagedService", new ScrManagedServiceServiceFactory(this, activator),
-            props);
+        managedService = (ServiceRegistration<ManagedService>) bundleContext.registerService(
+            "org.osgi.service.cm.ManagedService",
+            new ScrManagedServiceServiceFactory(this, activator), props);
     }
 
-    public void stop() {
-        if (this.managedService != null) {
+    public void stop()
+    {
+        if (this.managedService != null)
+        {
             this.managedService.unregister();
             this.managedService = null;
         }
 
         this.bundleContext = null;
     }
-    
+
     public void setScrCommand(ScrCommand scrCommand)
     {
         this.scrCommand = scrCommand;
@@ -136,13 +136,13 @@ public class ScrConfigurationImpl implements ScrConfiguration
     }
 
     // Called from the ScrManagedService.updated method to reconfigure
-    void configure( Dictionary<String, ?> config, boolean fromConfig )
+    void configure(Dictionary<String, ?> config, boolean fromConfig)
     {
         Boolean newGlobalExtender;
         Boolean oldGlobalExtender;
         synchronized (this)
         {
-            if ( config == null )
+            if (config == null)
             {
                 if (!fromConfig)
                 {
@@ -174,26 +174,32 @@ public class ScrConfigurationImpl implements ScrConfiguration
             }
             else
             {
-                logLevel = getLogLevel( config.get( PROP_LOGLEVEL ) );
-                factoryEnabled = VALUE_TRUE.equalsIgnoreCase( String.valueOf( config.get( PROP_FACTORY_ENABLED ) ) );
-                keepInstances = VALUE_TRUE.equalsIgnoreCase( String.valueOf( config.get( PROP_DELAYED_KEEP_INSTANCES ) ) );
-                infoAsService = VALUE_TRUE.equalsIgnoreCase( String.valueOf( config.get( PROP_INFO_SERVICE) ) );
-                Long timeout = ( Long ) config.get( PROP_LOCK_TIMEOUT );
-                lockTimeout = timeout == null? DEFAULT_LOCK_TIMEOUT_MILLISECONDS: timeout;
-                timeout = ( Long ) config.get( PROP_STOP_TIMEOUT );
-                stopTimeout = timeout == null? DEFAULT_STOP_TIMEOUT_MILLISECONDS: timeout;
-                newGlobalExtender = VALUE_TRUE.equalsIgnoreCase( String.valueOf( config.get( PROP_GLOBAL_EXTENDER) ) );
+                logLevel = getLogLevel(config.get(PROP_LOGLEVEL));
+                factoryEnabled = VALUE_TRUE.equalsIgnoreCase(
+                    String.valueOf(config.get(PROP_FACTORY_ENABLED)));
+                keepInstances = VALUE_TRUE.equalsIgnoreCase(
+                    String.valueOf(config.get(PROP_DELAYED_KEEP_INSTANCES)));
+                infoAsService = VALUE_TRUE.equalsIgnoreCase(
+                    String.valueOf(config.get(PROP_INFO_SERVICE)));
+                Long timeout = (Long) config.get(PROP_LOCK_TIMEOUT);
+                lockTimeout = timeout == null ? DEFAULT_LOCK_TIMEOUT_MILLISECONDS
+                    : timeout;
+                timeout = (Long) config.get(PROP_STOP_TIMEOUT);
+                stopTimeout = timeout == null ? DEFAULT_STOP_TIMEOUT_MILLISECONDS
+                    : timeout;
+                newGlobalExtender = VALUE_TRUE.equalsIgnoreCase(
+                    String.valueOf(config.get(PROP_GLOBAL_EXTENDER)));
             }
-            if ( scrCommand != null )
+            if (scrCommand != null)
             {
-                scrCommand.update( infoAsService() );
+                scrCommand.update(infoAsService());
             }
             oldGlobalExtender = this.globalExtender;
             this.globalExtender = newGlobalExtender;
         }
-        if ( newGlobalExtender != oldGlobalExtender )
+        if (newGlobalExtender != oldGlobalExtender)
         {
-            activator.restart( newGlobalExtender );
+            activator.restart(newGlobalExtender);
         }
     }
 
@@ -206,18 +212,16 @@ public class ScrConfigurationImpl implements ScrConfiguration
         return logLevel;
     }
 
-
     public boolean isFactoryEnabled()
     {
         return factoryEnabled;
     }
 
-
     public boolean keepInstances()
     {
         return keepInstances;
     }
-    
+
     public boolean infoAsService()
     {
         return infoAsService;
@@ -240,97 +244,95 @@ public class ScrConfigurationImpl implements ScrConfiguration
 
     private boolean getDefaultFactoryEnabled()
     {
-        return VALUE_TRUE.equals( bundleContext.getProperty( PROP_FACTORY_ENABLED ) );
+        return VALUE_TRUE.equals(bundleContext.getProperty(PROP_FACTORY_ENABLED));
     }
-
 
     private boolean getDefaultKeepInstances()
     {
-        return VALUE_TRUE.equals( bundleContext.getProperty( PROP_DELAYED_KEEP_INSTANCES ) );
+        return VALUE_TRUE.equals(bundleContext.getProperty(PROP_DELAYED_KEEP_INSTANCES));
     }
-
 
     private int getDefaultLogLevel()
     {
-        return getLogLevel( bundleContext.getProperty( PROP_LOGLEVEL ) );
+        return getLogLevel(bundleContext.getProperty(PROP_LOGLEVEL));
     }
-    
+
     private boolean getDefaultInfoAsService()
     {
-        return VALUE_TRUE.equalsIgnoreCase( bundleContext.getProperty( PROP_INFO_SERVICE) );
+        return VALUE_TRUE.equalsIgnoreCase(bundleContext.getProperty(PROP_INFO_SERVICE));
     }
 
     private long getDefaultLockTimeout()
     {
-        String val = bundleContext.getProperty( PROP_LOCK_TIMEOUT);
-        if ( val == null)
+        String val = bundleContext.getProperty(PROP_LOCK_TIMEOUT);
+        if (val == null)
         {
             return DEFAULT_LOCK_TIMEOUT_MILLISECONDS;
         }
-        return Long.parseLong( val );
+        return Long.parseLong(val);
     }
 
     private long getDefaultStopTimeout()
     {
-        String val = bundleContext.getProperty( PROP_STOP_TIMEOUT);
-        if ( val == null)
+        String val = bundleContext.getProperty(PROP_STOP_TIMEOUT);
+        if (val == null)
         {
             return DEFAULT_STOP_TIMEOUT_MILLISECONDS;
         }
-        return Long.parseLong( val );
+        return Long.parseLong(val);
     }
-
 
     private boolean getDefaultGlobalExtender()
     {
-        return VALUE_TRUE.equalsIgnoreCase( bundleContext.getProperty( PROP_GLOBAL_EXTENDER) );
+        return VALUE_TRUE.equalsIgnoreCase(
+            bundleContext.getProperty(PROP_GLOBAL_EXTENDER));
     }
 
-    private int getLogLevel( final Object levelObject )
+    private int getLogLevel(final Object levelObject)
     {
-        if ( levelObject != null )
+        if (levelObject != null)
         {
-            if ( levelObject instanceof Number )
+            if (levelObject instanceof Number)
             {
-                return ( ( Number ) levelObject ).intValue();
+                return ((Number) levelObject).intValue();
             }
 
             String levelString = levelObject.toString();
             try
             {
-                return Integer.parseInt( levelString );
+                return Integer.parseInt(levelString);
             }
-            catch ( NumberFormatException nfe )
+            catch (NumberFormatException nfe)
             {
                 // might be a descriptive name
             }
 
-            if ( LOG_LEVEL_DEBUG.equalsIgnoreCase( levelString ) )
+            if (LOG_LEVEL_DEBUG.equalsIgnoreCase(levelString))
             {
                 return LogService.LOG_DEBUG;
             }
-            else if ( LOG_LEVEL_INFO.equalsIgnoreCase( levelString ) )
+            else if (LOG_LEVEL_INFO.equalsIgnoreCase(levelString))
             {
                 return LogService.LOG_INFO;
             }
-            else if ( LOG_LEVEL_WARN.equalsIgnoreCase( levelString ) )
+            else if (LOG_LEVEL_WARN.equalsIgnoreCase(levelString))
             {
                 return LogService.LOG_WARNING;
             }
-            else if ( LOG_LEVEL_ERROR.equalsIgnoreCase( levelString ) )
+            else if (LOG_LEVEL_ERROR.equalsIgnoreCase(levelString))
             {
                 return LogService.LOG_ERROR;
             }
         }
 
         // check ds.showtrace property
-        if ( VALUE_TRUE.equalsIgnoreCase( bundleContext.getProperty( PROP_SHOWTRACE ) ) )
+        if (VALUE_TRUE.equalsIgnoreCase(bundleContext.getProperty(PROP_SHOWTRACE)))
         {
             return LogService.LOG_DEBUG;
         }
 
         // next check ds.showerrors property
-        if ( "false".equalsIgnoreCase( bundleContext.getProperty( PROP_SHOWERRORS ) ) )
+        if ("false".equalsIgnoreCase(bundleContext.getProperty(PROP_SHOWERRORS)))
         {
             return -1; // no logging at all !!
         }

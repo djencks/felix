@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.manager;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,7 +33,7 @@ public class SingleRefPair<S, T> extends RefPair<S, T>
 {
     private AtomicReference<T> serviceObjectRef = new AtomicReference<T>();
 
-    public SingleRefPair( ServiceReference<T> ref )
+    public SingleRefPair(ServiceReference<T> ref)
     {
         super(ref);
     }
@@ -44,44 +43,44 @@ public class SingleRefPair<S, T> extends RefPair<S, T>
         return serviceObjectRef.get();
     }
 
-    public boolean setServiceObject( ComponentContextImpl<S> key, T serviceObject )
+    public boolean setServiceObject(ComponentContextImpl<S> key, T serviceObject)
     {
-        boolean set = serviceObjectRef.compareAndSet( null, serviceObject );
-        if ( serviceObject != null)
+        boolean set = serviceObjectRef.compareAndSet(null, serviceObject);
+        if (serviceObject != null)
         {
             failed = false;
         }
         return set;
     }
-    
+
     public T unsetServiceObject(ComponentContextImpl<S> key)
     {
-        return serviceObjectRef.getAndSet( null );
+        return serviceObjectRef.getAndSet(null);
     }
 
     @Override
     public String toString()
     {
-        return "[RefPair: ref: [" + getRef() + "] service: [" + serviceObjectRef.get() + "]]";
+        return "[RefPair: ref: [" + getRef() + "] service: [" + serviceObjectRef.get()
+            + "]]";
     }
 
     @Override
     public boolean getServiceObject(ComponentContextImpl<S> key, BundleContext context,
         SimpleLogger logger)
     {
-        T service = context.getService( getRef() );
-        if ( service == null )
+        T service = context.getService(getRef());
+        if (service == null)
         {
             setFailed();
-            logger.log(
-                 LogService.LOG_WARNING,
-                 "Could not get service from ref {0}", new Object[] {getRef()}, null );
+            logger.log(LogService.LOG_WARNING, "Could not get service from ref {0}",
+                new Object[] { getRef() }, null);
             return false;
         }
         if (!setServiceObject(key, service))
         {
             // Another thread got the service before, so unget our
-            context.ungetService( getRef() );
+            context.ungetService(getRef());
         }
         return true;
     }

@@ -17,9 +17,7 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.inject;
-
 
 import org.apache.felix.scr.impl.helper.InitReferenceMethod;
 import org.apache.felix.scr.impl.helper.ReferenceMethod;
@@ -39,27 +37,17 @@ public class BindMethods implements ReferenceMethods
     private final ReferenceMethod m_updated;
     private final ReferenceMethod m_unbind;
 
-    public BindMethods( ReferenceMetadata m_dependencyMetadata, Class<?> instanceClass,
-            final DSVersion dsVersion, final boolean configurableServiceProperties )
+    public BindMethods(ReferenceMetadata m_dependencyMetadata, Class<?> instanceClass, final DSVersion dsVersion, final boolean configurableServiceProperties)
     {
-        m_bind = new BindMethod(
-                m_dependencyMetadata.getBind(),
-                instanceClass,
-                m_dependencyMetadata.getInterface(),
-                dsVersion, configurableServiceProperties
-        );
-        m_updated = new UpdatedMethod(
-                m_dependencyMetadata.getUpdated(),
-                instanceClass,
-                m_dependencyMetadata.getInterface(),
-                dsVersion, configurableServiceProperties
-        );
-        m_unbind = new UnbindMethod(
-                m_dependencyMetadata.getUnbind(),
-                instanceClass,
-                m_dependencyMetadata.getInterface(),
-                dsVersion, configurableServiceProperties
-        );
+        m_bind = new BindMethod(m_dependencyMetadata.getBind(), instanceClass,
+            m_dependencyMetadata.getInterface(), dsVersion,
+            configurableServiceProperties);
+        m_updated = new UpdatedMethod(m_dependencyMetadata.getUpdated(), instanceClass,
+            m_dependencyMetadata.getInterface(), dsVersion,
+            configurableServiceProperties);
+        m_unbind = new UnbindMethod(m_dependencyMetadata.getUnbind(), instanceClass,
+            m_dependencyMetadata.getInterface(), dsVersion,
+            configurableServiceProperties);
     }
 
     public ReferenceMethod getBind()

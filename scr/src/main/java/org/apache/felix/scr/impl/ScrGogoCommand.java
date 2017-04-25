@@ -63,59 +63,63 @@ class ScrGogoCommand
         {
             scrCommand.list(null, new PrintWriter(System.out));
         }
-        catch ( IllegalArgumentException e )
+        catch (IllegalArgumentException e)
         {
             System.err.println(e.getMessage());
         }
     }
 
     @Descriptor("List component configurations of a specific bundle")
-    public void list(@Descriptor("Symbolic name or ID of the bundle") final String bundleIdentifier)
+    public void list(
+        @Descriptor("Symbolic name or ID of the bundle") final String bundleIdentifier)
     {
         try
         {
             scrCommand.list(bundleIdentifier, new PrintWriter(System.out));
         }
-        catch ( IllegalArgumentException e )
+        catch (IllegalArgumentException e)
         {
             System.err.println(e.getMessage());
         }
     }
 
     @Descriptor("Dump information of a component or component configuration")
-    public void info(@Descriptor("Name of the component or ID of the component configuration") final String componentIdentifier)
+    public void info(
+        @Descriptor("Name of the component or ID of the component configuration") final String componentIdentifier)
     {
         try
         {
             scrCommand.info(componentIdentifier, new PrintWriter(System.out));
         }
-        catch ( IllegalArgumentException e )
+        catch (IllegalArgumentException e)
         {
             System.err.println(e.getMessage());
         }
     }
 
     @Descriptor("Enable a disabled component")
-    public void enable(@Descriptor("Name of the component") final String componentIdentifier)
+    public void enable(
+        @Descriptor("Name of the component") final String componentIdentifier)
     {
         try
         {
             scrCommand.change(componentIdentifier, new PrintWriter(System.out), true);
         }
-        catch ( IllegalArgumentException e )
+        catch (IllegalArgumentException e)
         {
             System.err.println(e.getMessage());
         }
     }
 
     @Descriptor("Disable an enabled component")
-    public void disable(@Descriptor("Name of the component") final String componentIdentifier)
+    public void disable(
+        @Descriptor("Name of the component") final String componentIdentifier)
     {
         try
         {
             scrCommand.change(componentIdentifier, new PrintWriter(System.out), false);
         }
-        catch ( IllegalArgumentException e )
+        catch (IllegalArgumentException e)
         {
             System.err.println(e.getMessage());
         }

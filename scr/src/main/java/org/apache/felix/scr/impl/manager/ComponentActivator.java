@@ -23,7 +23,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-public interface ComponentActivator extends Logger, ExtendedServiceListenerContext<ExtendedServiceEvent> {
+public interface ComponentActivator extends Logger, ExtendedServiceListenerContext<ExtendedServiceEvent>
+{
 
     BundleContext getBundleContext();
 
@@ -42,7 +43,7 @@ public interface ComponentActivator extends Logger, ExtendedServiceListenerConte
     <T> void leaveCreate(ServiceReference<T> reference);
 
     <S, T> void registerMissingDependency(DependencyManager<S, T> dependencyManager,
-                                              ServiceReference<T> serviceReference, int trackingCount);
+        ServiceReference<T> serviceReference, int trackingCount);
 
     <T> void missingServicePresent(ServiceReference<T> serviceReference);
 
@@ -50,7 +51,8 @@ public interface ComponentActivator extends Logger, ExtendedServiceListenerConte
 
     void disableComponent(String name);
 
-    RegionConfigurationSupport setRegionConfigurationSupport(ServiceReference<ConfigurationAdmin> reference);
+    RegionConfigurationSupport setRegionConfigurationSupport(
+        ServiceReference<ConfigurationAdmin> reference);
 
     void unsetRegionConfigurationSupport(RegionConfigurationSupport rcs);
 

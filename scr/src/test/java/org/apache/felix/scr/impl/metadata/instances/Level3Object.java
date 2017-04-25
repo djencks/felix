@@ -18,21 +18,18 @@
  */
 package org.apache.felix.scr.impl.metadata.instances;
 
-
 import java.util.Map;
 
 import org.apache.felix.scr.impl.metadata.instances2.Level2Object;
 import org.osgi.service.component.ComponentContext;
 
-
 public class Level3Object extends Level2Object
 {
 
-    private void activate_comp_map( ComponentContext ctx, Map map )
+    private void activate_comp_map(ComponentContext ctx, Map map)
     {
         setCalledMethod("activate_comp_map");
     }
-
 
     // this method should not be found, since the method taking a
     // Map has higher precedence
@@ -41,8 +38,7 @@ public class Level3Object extends Level2Object
         setCalledMethod("not_expected_to_be_found");
     }
 
-
-    public void activate_collision( Map map )
+    public void activate_collision(Map map)
     {
         setCalledMethod("activate_collision");
     }

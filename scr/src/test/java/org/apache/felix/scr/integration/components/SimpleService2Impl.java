@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -26,7 +25,6 @@ import java.util.Properties;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
-
 
 public class SimpleService2Impl implements SimpleService2
 {
@@ -39,95 +37,87 @@ public class SimpleService2Impl implements SimpleService2
 
     private ServiceRegistration m_registration;
 
-
-    public static SimpleService2Impl create( BundleContext bundleContext, String value )
+    public static SimpleService2Impl create(BundleContext bundleContext, String value)
     {
-        return create( bundleContext, value, 0 );
+        return create(bundleContext, value, 0);
     }
 
-
-    public static SimpleService2Impl create( BundleContext bundleContext, String value, int ranking )
+    public static SimpleService2Impl create(BundleContext bundleContext, String value,
+        int ranking)
     {
-        SimpleService2Impl instance = new SimpleService2Impl( value, ranking );
-        Dictionary<String,?> props = instance.getProperties();
-        instance.setRegistration( bundleContext.registerService( SimpleService2.class.getName(), instance, props ) );
+        SimpleService2Impl instance = new SimpleService2Impl(value, ranking);
+        Dictionary<String, ?> props = instance.getProperties();
+        instance.setRegistration(bundleContext.registerService(
+            SimpleService2.class.getName(), instance, props));
         return instance;
     }
 
-
-    SimpleService2Impl( final String value, final int ranking )
+    SimpleService2Impl(final String value, final int ranking)
     {
         this.m_value = value;
         this.m_ranking = ranking;
         this.m_filterProp = "match";
     }
 
-
-    private Dictionary<String,?> getProperties()
+    private Dictionary<String, ?> getProperties()
     {
         final Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put( "value", m_value );
-        props.put( "filterprop", m_filterProp );
-        if ( m_ranking != 0 )
+        props.put("value", m_value);
+        props.put("filterprop", m_filterProp);
+        if (m_ranking != 0)
         {
-            props.put( Constants.SERVICE_RANKING, Integer.valueOf( m_ranking ) );
+            props.put(Constants.SERVICE_RANKING, Integer.valueOf(m_ranking));
         }
         return props;
     }
 
-
-    public void update( String value )
+    public void update(String value)
     {
-        if ( this.m_registration != null )
+        if (this.m_registration != null)
         {
             this.m_value = value;
-            this.m_registration.setProperties( getProperties() );
+            this.m_registration.setProperties(getProperties());
         }
     }
 
-
-    public void setFilterProperty( String filterProp )
+    public void setFilterProperty(String filterProp)
     {
-        if ( this.m_registration != null )
+        if (this.m_registration != null)
         {
             this.m_filterProp = filterProp;
-            this.m_registration.setProperties( getProperties() );
+            this.m_registration.setProperties(getProperties());
         }
     }
-
 
     public void drop()
     {
         ServiceRegistration sr = getRegistration();
-        if ( sr != null )
+        if (sr != null)
         {
-            setRegistration( null );
+            setRegistration(null);
             sr.unregister();
         }
     }
-
 
     public String getValue2()
     {
         return m_value;
     }
 
-
-    public void setRegistration( ServiceRegistration registration )
+    public void setRegistration(ServiceRegistration registration)
     {
         m_registration = registration;
     }
-
 
     public ServiceRegistration getRegistration()
     {
         return m_registration;
     }
 
-
     @Override
     public String toString()
     {
-        return getClass().getSimpleName() + ": value=" + getValue2() + ", filterprop=" + m_filterProp;
+        return getClass().getSimpleName() + ": value=" + getValue2() + ", filterprop="
+            + m_filterProp;
     }
 }

@@ -53,7 +53,6 @@ public class TargetedPID
      */
     private final short bindingLevel;
 
-
     /**
      * Returns the bundle's version as required for targeted PIDs: If the
      * bundle has a version the string representation of the version
@@ -63,18 +62,17 @@ public class TargetedPID
      *
      * @param bundle The bundle whose version is to be returned.
      */
-    public static String getBundleVersion( final Bundle bundle )
+    public static String getBundleVersion(final Bundle bundle)
     {
         Version version = bundle.getVersion();
         return version.toString();
     }
 
-
-    public TargetedPID( final String rawPid )
+    public TargetedPID(final String rawPid)
     {
         this.rawPid = rawPid;
 
-        if ( rawPid.indexOf( '|' ) < 0 )
+        if (rawPid.indexOf('|') < 0)
         {
             this.servicePid = rawPid;
             this.symbolicName = null;
@@ -85,39 +83,38 @@ public class TargetedPID
         else
         {
             int start = 0;
-            int end = rawPid.indexOf( '|' );
-            this.servicePid = rawPid.substring( start, end );
+            int end = rawPid.indexOf('|');
+            this.servicePid = rawPid.substring(start, end);
 
             start = end + 1;
-            end = rawPid.indexOf( '|', start );
-            if ( end >= 0 )
+            end = rawPid.indexOf('|', start);
+            if (end >= 0)
             {
-                this.symbolicName = rawPid.substring( start, end );
+                this.symbolicName = rawPid.substring(start, end);
                 start = end + 1;
-                end = rawPid.indexOf( '|', start );
-                if ( end >= 0 )
+                end = rawPid.indexOf('|', start);
+                if (end >= 0)
                 {
-                    this.version = rawPid.substring( start, end );
-                    this.location = rawPid.substring( end + 1 );
+                    this.version = rawPid.substring(start, end);
+                    this.location = rawPid.substring(end + 1);
                     this.bindingLevel = 3;
                 }
                 else
                 {
-                    this.version = rawPid.substring( start );
+                    this.version = rawPid.substring(start);
                     this.location = null;
                     this.bindingLevel = 2;
                 }
             }
             else
             {
-                this.symbolicName = rawPid.substring( start );
+                this.symbolicName = rawPid.substring(start);
                 this.version = null;
                 this.location = null;
                 this.bindingLevel = 1;
             }
         }
     }
-
 
     /**
      * Returns true if the target of this PID (bundle symbolic name,
@@ -138,43 +135,42 @@ public class TargetedPID
      * @return <code>true</code> if the referenced service matches the
      *      target of this PID.
      */
-    public boolean matchesTarget( Bundle serviceBundle )
+    public boolean matchesTarget(Bundle serviceBundle)
     {
         // already unregistered
-        if ( serviceBundle == null )
+        if (serviceBundle == null)
         {
             return false;
         }
 
         // This is not really targeted
-        if ( this.symbolicName == null )
+        if (this.symbolicName == null)
         {
             return true;
         }
 
         // bundle symbolic names don't match
-        if ( !this.symbolicName.equals( serviceBundle.getSymbolicName() ) )
+        if (!this.symbolicName.equals(serviceBundle.getSymbolicName()))
         {
             return false;
         }
 
         // no more specific target
-        if ( this.version == null )
+        if (this.version == null)
         {
             return true;
         }
 
         // bundle version does not match
 
-        if ( !this.version.equals( getBundleVersion( serviceBundle ) ) )
+        if (!this.version.equals(getBundleVersion(serviceBundle)))
         {
             return false;
         }
 
         // assert bundle location match
-        return this.location == null || this.location.equals( serviceBundle.getLocation() );
+        return this.location == null || this.location.equals(serviceBundle.getLocation());
     }
-
 
     /**
      * Gets the raw PID with which this instance has been created.
@@ -189,7 +185,6 @@ public class TargetedPID
         return rawPid;
     }
 
-
     /**
      * Returns the service PID of this targeted PID which basically is
      * the targeted PID without the targeting information.
@@ -198,7 +193,6 @@ public class TargetedPID
     {
         return servicePid;
     }
-
 
     /**
      * Returns <code>true</code> if this targeted PID binds stronger than
@@ -212,11 +206,10 @@ public class TargetedPID
      * @return <code>true</code> if the <code>other</code> targeted PID
      *      is binding strong.
      */
-    public boolean bindsStronger( final TargetedPID other )
+    public boolean bindsStronger(final TargetedPID other)
     {
         return other == null || this.bindingLevel > other.bindingLevel;
     }
-
 
     @Override
     public int hashCode()
@@ -224,29 +217,27 @@ public class TargetedPID
         return this.rawPid.hashCode();
     }
 
-
     @Override
-    public boolean equals( Object obj )
+    public boolean equals(Object obj)
     {
-        if ( obj == null )
+        if (obj == null)
         {
             return false;
         }
-        else if ( obj == this )
+        else if (obj == this)
         {
             return true;
         }
 
         // assume equality if same class and raw PID equals
-        if ( this.getClass() == obj.getClass() )
+        if (this.getClass() == obj.getClass())
         {
-            return this.rawPid.equals( ( ( TargetedPID ) obj ).rawPid );
+            return this.rawPid.equals(((TargetedPID) obj).rawPid);
         }
 
         // not the same class or different raw PID
         return false;
     }
-
 
     @Override
     public String toString()

@@ -48,15 +48,17 @@ public class Felix5276Test extends ComponentTestBase
         delay();
 
         String componentNameA = "A";
-        ComponentConfigurationDTO componentA = findComponentConfigurationByName(componentNameA,
-            ComponentConfigurationDTO.ACTIVE);
+        ComponentConfigurationDTO componentA = findComponentConfigurationByName(
+            componentNameA, ComponentConfigurationDTO.ACTIVE);
         log.log(LogService.LOG_INFO, "A checked active");
 
         String componentNameB = "B";
-        findComponentConfigurationByName(componentNameB, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName(componentNameB,
+            ComponentConfigurationDTO.ACTIVE);
         log.log(LogService.LOG_INFO, "B checked active");
         String componentNameC = "C";
-        findComponentConfigurationByName(componentNameC, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName(componentNameC,
+            ComponentConfigurationDTO.ACTIVE);
         log.log(LogService.LOG_INFO, "C checked active");
 
         props.put("b.target", "(foo=bar)");
@@ -64,17 +66,21 @@ public class Felix5276Test extends ComponentTestBase
         log.log(LogService.LOG_INFO, "configC updated with target filter");
         delay();
 
-        findComponentConfigurationByName(componentNameC, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName(componentNameC,
+            ComponentConfigurationDTO.ACTIVE);
         log.log(LogService.LOG_INFO, "C checked active");
 
         disableAndCheck(componentA);
 
         log.log(LogService.LOG_INFO, "A disabled");
-        findComponentConfigurationByName(componentNameC, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName(componentNameC,
+            ComponentConfigurationDTO.ACTIVE);
         log.log(LogService.LOG_INFO, "C checked active");
-        findComponentConfigurationByName(componentNameB, ComponentConfigurationDTO.SATISFIED);
+        findComponentConfigurationByName(componentNameB,
+            ComponentConfigurationDTO.SATISFIED);
         log.log(LogService.LOG_INFO, "B checked satisfied");
 
-        assertTrue("Expected no errors or warnings: " + log.foundWarnings(), log.foundWarnings().isEmpty());
+        assertTrue("Expected no errors or warnings: " + log.foundWarnings(),
+            log.foundWarnings().isEmpty());
     }
 }

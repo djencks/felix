@@ -28,16 +28,15 @@ public class ComponentConcurrencyTest extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//        paxRunnerVmOption = DEBUG_VM_OPTION;
+        //        paxRunnerVmOption = DEBUG_VM_OPTION;
         descriptorFile = "/integration_test_component_concurrency.xml";
         COMPONENT_PACKAGE = COMPONENT_PACKAGE + ".concurrency";
         restrictedLogging = true;
-        ignoredWarnings = new String[] {"FrameworkEvent: ERROR",
-        		"FrameworkEvent ERROR",
-        		"Could not get service from ref",
-        		"Failed creating the component instance; see log for reason",
-        		"Cannot create component instance due to failure to bind reference",
-        		"DependencyManager : invokeBindMethod : Service not available from service registry for ServiceReference"};
+        ignoredWarnings = new String[] { "FrameworkEvent: ERROR", "FrameworkEvent ERROR",
+                "Could not get service from ref",
+                "Failed creating the component instance; see log for reason",
+                "Cannot create component instance due to failure to bind reference",
+                "DependencyManager : invokeBindMethod : Service not available from service registry for ServiceReference" };
         DS_LOGLEVEL = "warn";
     }
 
@@ -53,21 +52,25 @@ public class ComponentConcurrencyTest extends ComponentTestBase
     }
 
     @Test
-    public void test_concurrent_component_activation_using_componentFactories() throws Exception
+    public void test_concurrent_component_activation_using_componentFactories()
+        throws Exception
     {
 
+        ComponentConfigurationDTO ccA = getDisabledConfigurationAndEnable(
+            "org.apache.felix.scr.integration.components.concurrency.AFactory",
+            ComponentConfigurationDTO.ACTIVE);
+        ComponentConfigurationDTO ccC = getDisabledConfigurationAndEnable(
+            "org.apache.felix.scr.integration.components.concurrency.CFactory",
+            ComponentConfigurationDTO.ACTIVE);
 
-    	ComponentConfigurationDTO ccA = getDisabledConfigurationAndEnable( "org.apache.felix.scr.integration.components.concurrency.AFactory", ComponentConfigurationDTO.ACTIVE );
-    	ComponentConfigurationDTO ccC = getDisabledConfigurationAndEnable( "org.apache.felix.scr.integration.components.concurrency.CFactory", ComponentConfigurationDTO.ACTIVE );
-
-        delay( 30 );
-        if ( ! log.foundWarnings().isEmpty() )
+        delay(30);
+        if (!log.foundWarnings().isEmpty())
         {
-            TestCase.fail( "unexpected warning or error logged: " + log.foundWarnings() );
+            TestCase.fail("unexpected warning or error logged: " + log.foundWarnings());
         }
-        for ( String message: log.foundWarnings() )
+        for (String message : log.foundWarnings())
         {
-            TestCase.fail( "unexpected warning or error logged: " + message );
+            TestCase.fail("unexpected warning or error logged: " + message);
         }
     }
 }

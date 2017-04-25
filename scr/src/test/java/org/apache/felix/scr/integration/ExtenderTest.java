@@ -36,22 +36,26 @@ public class ExtenderTest extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//          paxRunnerVmOption = DEBUG_VM_OPTION;
+        //          paxRunnerVmOption = DEBUG_VM_OPTION;
     }
-    
+
     @Test
-    public void testWired() throws BundleException 
+    public void testWired() throws BundleException
     {
         if (isAtLeastR5())
         {
             BundleWiring scrWiring = bundle.adapt(BundleWiring.class);
-            List<BundleWire> extenderWires = scrWiring.getRequiredWires(ExtenderNamespace.EXTENDER_NAMESPACE);
+            List<BundleWire> extenderWires = scrWiring.getRequiredWires(
+                ExtenderNamespace.EXTENDER_NAMESPACE);
             boolean wired = false;
-            for (BundleWire wire: extenderWires) 
+            for (BundleWire wire : extenderWires)
             {
-                if (ComponentConstants.COMPONENT_CAPABILITY_NAME.equals(wire.getCapability().getAttributes().get(ExtenderNamespace.EXTENDER_NAMESPACE)))
+                if (ComponentConstants.COMPONENT_CAPABILITY_NAME.equals(
+                    wire.getCapability().getAttributes().get(
+                        ExtenderNamespace.EXTENDER_NAMESPACE)))
                 {
-                    Assert.assertEquals("Not wired to us", "org.apache.felix.scr", wire.getProviderWiring().getBundle().getSymbolicName());
+                    Assert.assertEquals("Not wired to us", "org.apache.felix.scr",
+                        wire.getProviderWiring().getBundle().getSymbolicName());
                     wired = true;
                     break;
                 }

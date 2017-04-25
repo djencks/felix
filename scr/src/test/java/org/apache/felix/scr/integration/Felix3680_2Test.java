@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration;
 
-
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -31,7 +30,6 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
 
-
 @RunWith(JUnit4TestRunner.class)
 public class Felix3680_2Test extends ComponentTestBase
 {
@@ -41,46 +39,45 @@ public class Felix3680_2Test extends ComponentTestBase
         //        paxRunnerVmOption = DEBUG_VM_OPTION;
         descriptorFile = "/integration_test_FELIX_3880_2.xml";
         COMPONENT_PACKAGE = COMPONENT_PACKAGE + ".felix3680_2";
-        
+
         restrictedLogging = true;
         // Comment this for displaying debug messages
-//        DS_LOGLEVEL = "warn";
+        //        DS_LOGLEVEL = "warn";
     }
 
     @Inject
     protected BundleContext bundleContext;
 
-
-    protected static void delay( int secs )
+    protected static void delay(int secs)
     {
         try
         {
-            Thread.sleep( secs * 1000 );
+            Thread.sleep(secs * 1000);
         }
-        catch ( InterruptedException ie )
+        catch (InterruptedException ie)
         {
         }
     }
 
-
     @Test
     public void test_concurrent_injection_with_bundleContext() throws Throwable
     {
-        for ( int i = 0; i < 6; i++ )
+        for (int i = 0; i < 6; i++)
         {
-            final ComponentDescriptionDTO main = findComponentDescriptorByName( "org.apache.felix.scr.integration.components.felix3680_2.Main" );
+            final ComponentDescriptionDTO main = findComponentDescriptorByName(
+                "org.apache.felix.scr.integration.components.felix3680_2.Main");
             enableAndCheck(main);
-            delay( 5 ); //run test for 30 seconds
+            delay(5); //run test for 30 seconds
             disableAndCheck(main);
             delay(); //async deactivate
-            if ( log.getFirstFrameworkThrowable() != null )
+            if (log.getFirstFrameworkThrowable() != null)
             {
                 throw log.getFirstFrameworkThrowable();
             }
-            for ( Iterator it = log.foundWarnings().iterator(); it.hasNext(); )
+            for (Iterator it = log.foundWarnings().iterator(); it.hasNext();)
             {
-                String message = ( String ) it.next();
-                TestCase.fail( "unexpected warning or error logged: " + message );
+                String message = (String) it.next();
+                TestCase.fail("unexpected warning or error logged: " + message);
             }
         }
     }

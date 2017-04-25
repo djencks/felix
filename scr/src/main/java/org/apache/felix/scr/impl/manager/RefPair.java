@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.manager;
 
 import org.apache.felix.scr.impl.helper.SimpleLogger;
@@ -35,7 +34,7 @@ public abstract class RefPair<S, T>
     boolean failed;
     volatile boolean deleted;
 
-    public RefPair( ServiceReference<T> ref )
+    public RefPair(ServiceReference<T> ref)
     {
         this.ref = ref;
     }
@@ -50,15 +49,17 @@ public abstract class RefPair<S, T>
         return null;
     }
 
-    public abstract boolean getServiceObject( ComponentContextImpl<S> key, BundleContext context, SimpleLogger logger );
+    public abstract boolean getServiceObject(ComponentContextImpl<S> key,
+        BundleContext context, SimpleLogger logger);
 
     public abstract T getServiceObject(ComponentContextImpl<S> key);
 
-    public abstract boolean setServiceObject( ComponentContextImpl<S> key, T serviceObject );
+    public abstract boolean setServiceObject(ComponentContextImpl<S> key,
+        T serviceObject);
 
     public abstract T unsetServiceObject(ComponentContextImpl<S> key);
 
-    public void setFailed( )
+    public void setFailed()
     {
         this.failed = true;
     }

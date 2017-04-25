@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.integration.components.circular;
 
 import java.util.ArrayList;
@@ -42,12 +41,12 @@ public class A
 
     private void setB(B b)
     {
-        bs.add( b );
+        bs.add(b);
     }
 
     private void unsetB(B b)
     {
-        bs.remove( b );
+        bs.remove(b);
     }
 
     public List<B> getBs()

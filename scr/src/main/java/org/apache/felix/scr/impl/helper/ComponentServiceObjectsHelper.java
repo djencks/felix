@@ -50,20 +50,20 @@ public class ComponentServiceObjectsHelper
 
     public void cleanup()
     {
-    	Collection<ComponentServiceObjectsImpl> csos = services.values();
+        Collection<ComponentServiceObjectsImpl> csos = services.values();
         services.clear();
-        for(final ComponentServiceObjectsImpl cso : csos)
+        for (final ComponentServiceObjectsImpl cso : csos)
         {
-        	cso.deactivate();
+            cso.deactivate();
         }
-        synchronized ( this.closedServices )
+        synchronized (this.closedServices)
         {
-        	csos = new ArrayList<ComponentServiceObjectsImpl>(this.closedServices);
-        	this.closedServices.clear();
+            csos = new ArrayList<ComponentServiceObjectsImpl>(this.closedServices);
+            this.closedServices.clear();
         }
-        for(final ComponentServiceObjectsImpl cso : csos)
+        for (final ComponentServiceObjectsImpl cso : csos)
         {
-        	cso.deactivate();
+            cso.deactivate();
         }
         prototypeInstances.clear();
     }
@@ -71,50 +71,54 @@ public class ComponentServiceObjectsHelper
     public ComponentServiceObjects getServiceObjects(final ServiceReference<?> ref)
     {
         ComponentServiceObjectsImpl cso = this.services.get(ref);
-        if ( cso == null )
+        if (cso == null)
         {
-            final ServiceObjects serviceObjects = this.bundleContext.getServiceObjects(ref);
-            if ( serviceObjects != null )
+            final ServiceObjects serviceObjects = this.bundleContext.getServiceObjects(
+                ref);
+            if (serviceObjects != null)
             {
                 cso = new ComponentServiceObjectsImpl(serviceObjects);
-                final ComponentServiceObjectsImpl oldCSO = this.services.putIfAbsent(ref, cso);
-                if ( oldCSO != null )
+                final ComponentServiceObjectsImpl oldCSO = this.services.putIfAbsent(ref,
+                    cso);
+                if (oldCSO != null)
                 {
-                	cso = oldCSO;
+                    cso = oldCSO;
                 }
             }
         }
         return cso;
     }
 
-    public void closeServiceObjects(final ServiceReference<?> ref) {
+    public void closeServiceObjects(final ServiceReference<?> ref)
+    {
         ComponentServiceObjectsImpl cso = this.services.remove(ref);
-        if ( cso != null )
+        if (cso != null)
         {
-        	synchronized ( closedServices )
-        	{
-        		closedServices.add(cso);
-        	}
+            synchronized (closedServices)
+            {
+                closedServices.add(cso);
+            }
             cso.close();
         }
         prototypeInstances.remove(ref);
     }
 
-    public <T> T getPrototypeRefInstance(final ServiceReference<T> ref, ServiceObjects<T> serviceObjects)
+    public <T> T getPrototypeRefInstance(final ServiceReference<T> ref,
+        ServiceObjects<T> serviceObjects)
     {
-    	T service = (T) prototypeInstances.get(ref);
-    	if ( service == null )
-    	{
-    		service = serviceObjects.getService();
-    		T oldService = (T)prototypeInstances.putIfAbsent(ref, service);
-    		if ( oldService != null )
-    		{
-    			// another thread created the instance already
-    			serviceObjects.ungetService(service);
-    			service = oldService;
-    		}
-    	}
-    	return service;
+        T service = (T) prototypeInstances.get(ref);
+        if (service == null)
+        {
+            service = serviceObjects.getService();
+            T oldService = (T) prototypeInstances.putIfAbsent(ref, service);
+            if (oldService != null)
+            {
+                // another thread created the instance already
+                serviceObjects.ungetService(service);
+                service = oldService;
+            }
+        }
+        return service;
     }
 
     private static final class ComponentServiceObjectsImpl implements ComponentServiceObjects
@@ -132,8 +136,8 @@ public class ComponentServiceObjectsHelper
 
         public void deactivate()
         {
-        	this.deactivated = true;
-        	close();
+            this.deactivated = true;
+            close();
         }
 
         /**
@@ -143,25 +147,25 @@ public class ComponentServiceObjectsHelper
         {
             final ServiceObjects so = this.serviceObjects;
             this.serviceObjects = null;
-            if ( so != null )
+            if (so != null)
             {
-            	final List<Object> localInstances = new ArrayList<Object>();
-                synchronized ( this.instances )
+                final List<Object> localInstances = new ArrayList<Object>();
+                synchronized (this.instances)
                 {
-                	localInstances.addAll(this.instances);
-                	this.instances.clear();
+                    localInstances.addAll(this.instances);
+                    this.instances.clear();
                 }
-                for(final Object obj : localInstances)
+                for (final Object obj : localInstances)
                 {
                     try
                     {
                         so.ungetService(obj);
                     }
-                    catch ( final IllegalStateException ise )
+                    catch (final IllegalStateException ise)
                     {
                         // ignore (this happens if the bundle is not valid anymore)
                     }
-                    catch ( final IllegalArgumentException iae )
+                    catch (final IllegalArgumentException iae)
                     {
                         // ignore (this happens if the service has not been returned by the service objects)
                     }
@@ -171,18 +175,18 @@ public class ComponentServiceObjectsHelper
 
         public Object getService()
         {
-        	if ( this.deactivated )
-        	{
-        		throw new IllegalStateException();
-        	}
+            if (this.deactivated)
+            {
+                throw new IllegalStateException();
+            }
             final ServiceObjects so = this.serviceObjects;
             Object service = null;
-            if ( so != null )
+            if (so != null)
             {
                 service = so.getService();
-                if ( service != null )
+                if (service != null)
                 {
-                    synchronized ( this.instances )
+                    synchronized (this.instances)
                     {
                         this.instances.add(service);
                     }
@@ -193,19 +197,20 @@ public class ComponentServiceObjectsHelper
 
         public void ungetService(final Object service)
         {
-        	if ( this.deactivated )
-        	{
-        		throw new IllegalStateException();
-        	}
+            if (this.deactivated)
+            {
+                throw new IllegalStateException();
+            }
             final ServiceObjects so = this.serviceObjects;
-            if ( so != null )
+            if (so != null)
             {
                 boolean remove;
-                synchronized ( instances )
+                synchronized (instances)
                 {
                     remove = instances.remove(service);
                 }
-                if ( remove ) {
+                if (remove)
+                {
                     so.ungetService(service);
                 }
             }
@@ -214,18 +219,20 @@ public class ComponentServiceObjectsHelper
         public ServiceReference<?> getServiceReference()
         {
             final ServiceObjects so = this.serviceObjects;
-            if ( so != null )
+            if (so != null)
             {
                 return so.getServiceReference();
             }
             return null;
         }
 
-		@Override
-		public String toString() {
-			return "ComponentServiceObjectsImpl [instances=" + instances + ", serviceObjects=" + serviceObjects
-					+ ", deactivated=" + deactivated + ", hashCode=" + this.hashCode() + "]";
-		}
+        @Override
+        public String toString()
+        {
+            return "ComponentServiceObjectsImpl [instances=" + instances
+                + ", serviceObjects=" + serviceObjects + ", deactivated=" + deactivated
+                + ", hashCode=" + this.hashCode() + "]";
+        }
 
     }
- }
+}

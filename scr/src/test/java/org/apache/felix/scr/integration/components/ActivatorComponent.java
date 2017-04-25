@@ -18,12 +18,10 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
 
 public class ActivatorComponent
 {
@@ -33,69 +31,66 @@ public class ActivatorComponent
     public static final String FLAG_FAIL_DEACTIVATE = "failDeactivate";
 
     public static final String FLAG_REGISTER_SERVICE = "registerService";
-    
+
     private static ActivatorComponent activatorComponent;
 
     private ServiceRegistration registration;
 
     private SimpleService simpleService;
-    
+
     public static ActivatorComponent getInstance()
     {
-    	return activatorComponent;
+        return activatorComponent;
     }
 
     @SuppressWarnings("unused")
-    private void myActivate( BundleContext context, Map<?, ?> configuration )
+    private void myActivate(BundleContext context, Map<?, ?> configuration)
     {
-        if ( configuration.containsKey( FLAG_FAIL_ACTIVATE ) )
+        if (configuration.containsKey(FLAG_FAIL_ACTIVATE))
         {
-            throw new IllegalStateException( "myActivate fails" );
+            throw new IllegalStateException("myActivate fails");
         }
-        if ( configuration.containsKey( FLAG_REGISTER_SERVICE ) )
+        if (configuration.containsKey(FLAG_REGISTER_SERVICE))
         {
-            registration = context.registerService( SimpleService.class.getName(), new SimpleServiceImpl(), null );
+            registration = context.registerService(SimpleService.class.getName(),
+                new SimpleServiceImpl(), null);
         }
-        if ( activatorComponent != null )
+        if (activatorComponent != null)
         {
-        	throw new IllegalStateException( "not the only activator component");
+            throw new IllegalStateException("not the only activator component");
         }
         this.activatorComponent = this;
     }
 
-
     @SuppressWarnings("unused")
-    private void myDeactivate( Map<?, ?> configuration )
+    private void myDeactivate(Map<?, ?> configuration)
     {
-        if ( configuration.containsKey( FLAG_FAIL_DEACTIVATE ) )
+        if (configuration.containsKey(FLAG_FAIL_DEACTIVATE))
         {
-            throw new IllegalStateException( "myDeactivate fails" );
+            throw new IllegalStateException("myDeactivate fails");
         }
-        if ( registration != null )
+        if (registration != null)
         {
             registration.unregister();
             registration = null;
         }
     }
 
-
     public SimpleService getSimpleService()
     {
         return simpleService;
     }
 
-
     @SuppressWarnings("unused")
-    private void bindSimpleService( SimpleService simpleService )
+    private void bindSimpleService(SimpleService simpleService)
     {
         this.simpleService = simpleService;
     }
 
-
     @SuppressWarnings("unused")
-    private void unbindSimpleService( SimpleService simpleService )
+    private void unbindSimpleService(SimpleService simpleService)
     {
-        if ( this.simpleService == simpleService )
+        if (this.simpleService == simpleService)
         {
             this.simpleService = null;
         }

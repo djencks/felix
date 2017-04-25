@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 public interface SimpleService2
 {
 

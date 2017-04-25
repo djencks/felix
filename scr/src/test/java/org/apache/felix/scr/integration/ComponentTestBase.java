@@ -132,20 +132,21 @@ public abstract class ComponentTestBase
     //set to true to only get last 1000 lines of log.
     protected static boolean restrictedLogging;
 
-    protected static String felixCaVersion = System.getProperty( "felix.ca.version" );
+    protected static String felixCaVersion = System.getProperty("felix.ca.version");
 
-    protected static final String PROP_NAME_FACTORY = ComponentTestBase.PROP_NAME + ".factory";
+    protected static final String PROP_NAME_FACTORY = ComponentTestBase.PROP_NAME
+        + ".factory";
 
     static
     {
         theConfig = new Hashtable<String, Object>();
-        theConfig.put( PROP_NAME, PROP_NAME );
+        theConfig.put(PROP_NAME, PROP_NAME);
     }
 
     @ProbeBuilder
     public TestProbeBuilder extendProbe(TestProbeBuilder builder)
     {
-        builder.setHeader( "Export-Package",
+        builder.setHeader("Export-Package",
             "org.apache.felix.scr.integration.components,"
                 + "org.apache.felix.scr.integration.components.activatesignature,"
                 + "org.apache.felix.scr.integration.components.annoconfig,"
@@ -157,53 +158,60 @@ public abstract class ComponentTestBase
                 + "org.apache.felix.scr.integration.components.felix3680_2,"
                 + "org.apache.felix.scr.integration.components.felix4984,"
                 + "org.apache.felix.scr.integration.components.felix5248,"
-                + "org.apache.felix.scr.integration.components.felix5276" );
-        builder.setHeader( "Import-Package", "org.apache.felix.scr.component" );
-        builder.setHeader( "Bundle-ManifestVersion", "2" );
+                + "org.apache.felix.scr.integration.components.felix5276");
+        builder.setHeader("Import-Package", "org.apache.felix.scr.component");
+        builder.setHeader("Bundle-ManifestVersion", "2");
         return builder;
     }
 
     @Configuration
     public static Option[] configuration()
     {
-        final String bundleFileName = System.getProperty( BUNDLE_JAR_SYS_PROP, BUNDLE_JAR_DEFAULT );
-        final File bundleFile = new File( bundleFileName );
-        if ( !bundleFile.canRead() )
+        final String bundleFileName = System.getProperty(BUNDLE_JAR_SYS_PROP,
+            BUNDLE_JAR_DEFAULT);
+        final File bundleFile = new File(bundleFileName);
+        if (!bundleFile.canRead())
         {
-            throw new IllegalArgumentException( "Cannot read from bundle file " + bundleFileName + " specified in the "
-                + BUNDLE_JAR_SYS_PROP + " system property" );
+            throw new IllegalArgumentException(
+                "Cannot read from bundle file " + bundleFileName + " specified in the "
+                    + BUNDLE_JAR_SYS_PROP + " system property");
         }
 
         final Option[] base = options(
-            provision( CoreOptions.bundle( bundleFile.toURI().toString() ),
-                mavenBundle( "org.ops4j.pax.tinybundles", "tinybundles", "1.0.0" ),
-                mavenBundle( "org.apache.felix", "org.apache.felix.configadmin", felixCaVersion ) ),
-            junitBundles(), frameworkProperty( "org.osgi.framework.bsnversion" ).value( bsnVersionUniqueness ),
-            systemProperty( "ds.factory.enabled" ).value( Boolean.toString( NONSTANDARD_COMPONENT_FACTORY_BEHAVIOR ) ),
-            systemProperty( "ds.loglevel" ).value( DS_LOGLEVEL )
+            provision(CoreOptions.bundle(bundleFile.toURI().toString()),
+                mavenBundle("org.ops4j.pax.tinybundles", "tinybundles", "1.0.0"),
+                mavenBundle("org.apache.felix", "org.apache.felix.configadmin",
+                    felixCaVersion)),
+            junitBundles(),
+            frameworkProperty("org.osgi.framework.bsnversion").value(
+                bsnVersionUniqueness),
+            systemProperty("ds.factory.enabled").value(
+                Boolean.toString(NONSTANDARD_COMPONENT_FACTORY_BEHAVIOR)),
+            systemProperty("ds.loglevel").value(DS_LOGLEVEL)
 
         );
-        final Option vmOption = ( paxRunnerVmOption != null )? CoreOptions.vmOption( paxRunnerVmOption ): null;
+        final Option vmOption = (paxRunnerVmOption != null)
+            ? CoreOptions.vmOption(paxRunnerVmOption) : null;
         NONSTANDARD_COMPONENT_FACTORY_BEHAVIOR = false;
-        return OptionUtils.combine( base, vmOption );
+        return OptionUtils.combine(base, vmOption);
     }
 
     @Before
     public void setUp() throws BundleException
     {
-        log = new Log( restrictedLogging, ignoredWarnings );
+        log = new Log(restrictedLogging, ignoredWarnings);
         log.start();
-        bundleContext.addFrameworkListener( log );
-        bundleContext.registerService( LogService.class.getName(), log, null );
+        bundleContext.addFrameworkListener(log);
+        bundleContext.registerService(LogService.class.getName(), log, null);
 
-        scrTracker = new ServiceTracker<ServiceComponentRuntime, ServiceComponentRuntime>( bundleContext,
-            ServiceComponentRuntime.class, null );
+        scrTracker = new ServiceTracker<ServiceComponentRuntime, ServiceComponentRuntime>(
+            bundleContext, ServiceComponentRuntime.class, null);
         scrTracker.open();
-        configAdminTracker = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>( bundleContext,
-            ConfigurationAdmin.class, null );
+        configAdminTracker = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>(
+            bundleContext, ConfigurationAdmin.class, null);
         configAdminTracker.open();
 
-        bundle = installBundle( descriptorFile, COMPONENT_PACKAGE );
+        bundle = installBundle(descriptorFile, COMPONENT_PACKAGE);
         bundle.start();
     }
 
@@ -212,7 +220,7 @@ public abstract class ComponentTestBase
     {
         try
         {
-            if ( bundle != null && bundle.getState() != Bundle.UNINSTALLED )
+            if (bundle != null && bundle.getState() != Bundle.UNINSTALLED)
             {
                 bundle.uninstall();
                 bundle = null;
@@ -232,9 +240,9 @@ public abstract class ComponentTestBase
     protected Collection<ComponentDescriptionDTO> getComponentDescriptions()
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr == null )
+        if (scr == null)
         {
-            TestCase.fail( "no ServiceComponentRuntime" );
+            TestCase.fail("no ServiceComponentRuntime");
         }
         return scr.getComponentDescriptionDTOs();
     }
@@ -242,240 +250,258 @@ public abstract class ComponentTestBase
     protected ComponentDescriptionDTO findComponentDescriptorByName(String name)
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr == null )
+        if (scr == null)
         {
-            TestCase.fail( "no ServiceComponentRuntime" );
+            TestCase.fail("no ServiceComponentRuntime");
         }
-        return scr.getComponentDescriptionDTO( bundle, name );
+        return scr.getComponentDescriptionDTO(bundle, name);
     }
 
-    protected Collection<ComponentConfigurationDTO> findComponentConfigurationsByName(Bundle b, String name,
-        int expected)
+    protected Collection<ComponentConfigurationDTO> findComponentConfigurationsByName(
+        Bundle b, String name, int expected)
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr == null )
+        if (scr == null)
         {
-            TestCase.fail( "no ServiceComponentRuntime" );
+            TestCase.fail("no ServiceComponentRuntime");
         }
-        ComponentDescriptionDTO cd = scr.getComponentDescriptionDTO( b, name );
-        Collection<ComponentConfigurationDTO> ccs = scr.getComponentConfigurationDTOs( cd );
+        ComponentDescriptionDTO cd = scr.getComponentDescriptionDTO(b, name);
+        Collection<ComponentConfigurationDTO> ccs = scr.getComponentConfigurationDTOs(cd);
 
-        if ( expected != 0 )
+        if (expected != 0)
         {
             String sep = "[";
             StringBuffer sb = new StringBuffer();
-            for ( Map.Entry<Integer, String> entry : STATES.entrySet() )
+            for (Map.Entry<Integer, String> entry : STATES.entrySet())
             {
-                if ( ( expected & entry.getKey() ) != 0 )
+                if ((expected & entry.getKey()) != 0)
                 {
-                    sb.append( sep ).append( entry.getValue() );
+                    sb.append(sep).append(entry.getValue());
                     sep = ", ";
                 }
             }
-            sb.append( "]" );
-            for ( ComponentConfigurationDTO cc : ccs )
+            sb.append("]");
+            for (ComponentConfigurationDTO cc : ccs)
             {
                 Assert.assertTrue(
-                    "for ComponentConfiguration name: " + cc.description.name + " properties" + cc.properties
-                        + "Expected one of state " + sb.toString() + " but was " + STATES.get( cc.state ),
-                    ( expected & cc.state ) == cc.state );
+                    "for ComponentConfiguration name: " + cc.description.name
+                        + " properties" + cc.properties + "Expected one of state "
+                        + sb.toString() + " but was " + STATES.get(cc.state),
+                    (expected & cc.state) == cc.state);
             }
         }
         return ccs;
     }
 
-    protected Collection<ComponentConfigurationDTO> findComponentConfigurationsByName(String name, int expected)
+    protected Collection<ComponentConfigurationDTO> findComponentConfigurationsByName(
+        String name, int expected)
     {
-        return findComponentConfigurationsByName( bundle, name, expected );
+        return findComponentConfigurationsByName(bundle, name, expected);
     }
 
-    protected ComponentConfigurationDTO findComponentConfigurationByName(Bundle b, String name, int expected)
+    protected ComponentConfigurationDTO findComponentConfigurationByName(Bundle b,
+        String name, int expected)
     {
-        Collection<ComponentConfigurationDTO> ccs = findComponentConfigurationsByName( b, name, expected );
-        Assert.assertEquals( 1, ccs.size() );
+        Collection<ComponentConfigurationDTO> ccs = findComponentConfigurationsByName(b,
+            name, expected);
+        Assert.assertEquals(1, ccs.size());
         return ccs.iterator().next();
     }
 
-    protected ComponentConfigurationDTO findComponentConfigurationByName(String name, int expected)
+    protected ComponentConfigurationDTO findComponentConfigurationByName(String name,
+        int expected)
     {
-        return findComponentConfigurationByName( bundle, name, expected );
+        return findComponentConfigurationByName(bundle, name, expected);
     }
 
     static final Map<Integer, String> STATES = new HashMap<Integer, String>();
 
     static
     {
-        STATES.put( ComponentConfigurationDTO.UNSATISFIED_REFERENCE,
-            "Unsatisfied (" + ComponentConfigurationDTO.UNSATISFIED_REFERENCE + ")" );
-        STATES.put( ComponentConfigurationDTO.SATISFIED, "Satisified (" + ComponentConfigurationDTO.SATISFIED + ")" );
-        STATES.put( ComponentConfigurationDTO.ACTIVE, "Active (" + ComponentConfigurationDTO.ACTIVE + ")" );
+        STATES.put(ComponentConfigurationDTO.UNSATISFIED_REFERENCE,
+            "Unsatisfied (" + ComponentConfigurationDTO.UNSATISFIED_REFERENCE + ")");
+        STATES.put(ComponentConfigurationDTO.SATISFIED,
+            "Satisified (" + ComponentConfigurationDTO.SATISFIED + ")");
+        STATES.put(ComponentConfigurationDTO.ACTIVE,
+            "Active (" + ComponentConfigurationDTO.ACTIVE + ")");
     }
 
-    protected ComponentConfigurationDTO getDisabledConfigurationAndEnable(Bundle b, String name, int initialState)
+    protected ComponentConfigurationDTO getDisabledConfigurationAndEnable(Bundle b,
+        String name, int initialState)
         throws InvocationTargetException, InterruptedException
     {
         int count = 1;
-        Collection<ComponentConfigurationDTO> ccs = getConfigurationsDisabledThenEnable( b, name, count, initialState );
+        Collection<ComponentConfigurationDTO> ccs = getConfigurationsDisabledThenEnable(b,
+            name, count, initialState);
         ComponentConfigurationDTO cc = ccs.iterator().next();
         return cc;
     }
 
-    protected ComponentConfigurationDTO getDisabledConfigurationAndEnable(String name, int initialState)
-        throws InvocationTargetException, InterruptedException
+    protected ComponentConfigurationDTO getDisabledConfigurationAndEnable(String name,
+        int initialState) throws InvocationTargetException, InterruptedException
     {
-        return getDisabledConfigurationAndEnable( bundle, name, initialState );
+        return getDisabledConfigurationAndEnable(bundle, name, initialState);
     }
 
-    protected Collection<ComponentConfigurationDTO> getConfigurationsDisabledThenEnable(Bundle b, String name,
-        int count, int initialState) throws InvocationTargetException, InterruptedException
+    protected Collection<ComponentConfigurationDTO> getConfigurationsDisabledThenEnable(
+        Bundle b, String name, int count, int initialState)
+        throws InvocationTargetException, InterruptedException
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr == null )
+        if (scr == null)
         {
-            TestCase.fail( "no ServiceComponentRuntime" );
+            TestCase.fail("no ServiceComponentRuntime");
         }
-        ComponentDescriptionDTO cd = scr.getComponentDescriptionDTO( b, name );
-        Assert.assertFalse( "Expected component disabled", scr.isComponentEnabled( cd ) );
-        scr.enableComponent( cd ).getValue();
-        Assert.assertTrue( "Expected component enabled", scr.isComponentEnabled( cd ) );
+        ComponentDescriptionDTO cd = scr.getComponentDescriptionDTO(b, name);
+        Assert.assertFalse("Expected component disabled", scr.isComponentEnabled(cd));
+        scr.enableComponent(cd).getValue();
+        Assert.assertTrue("Expected component enabled", scr.isComponentEnabled(cd));
 
-        Collection<ComponentConfigurationDTO> ccs = scr.getComponentConfigurationDTOs( cd );
-        Assert.assertEquals( count, ccs.size() );
-        for ( ComponentConfigurationDTO cc : ccs )
+        Collection<ComponentConfigurationDTO> ccs = scr.getComponentConfigurationDTOs(cd);
+        Assert.assertEquals(count, ccs.size());
+        for (ComponentConfigurationDTO cc : ccs)
         {
-            Assert.assertEquals( "Expected state " + STATES.get( initialState ) + " but was " + STATES.get( cc.state ),
-                initialState, cc.state );
+            Assert.assertEquals("Expected state " + STATES.get(initialState) + " but was "
+                + STATES.get(cc.state), initialState, cc.state);
         }
         return ccs;
     }
 
-    protected Collection<ComponentConfigurationDTO> getConfigurationsDisabledThenEnable(String name, int count,
-        int initialState) throws InvocationTargetException, InterruptedException
+    protected Collection<ComponentConfigurationDTO> getConfigurationsDisabledThenEnable(
+        String name, int count, int initialState)
+        throws InvocationTargetException, InterruptedException
     {
-        return getConfigurationsDisabledThenEnable( bundle, name, count, initialState );
+        return getConfigurationsDisabledThenEnable(bundle, name, count, initialState);
     }
 
-    protected ComponentDescriptionDTO checkConfigurationCount(Bundle b, String name, int count, int expectedState)
+    protected ComponentDescriptionDTO checkConfigurationCount(Bundle b, String name,
+        int count, int expectedState)
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr == null )
+        if (scr == null)
         {
-            TestCase.fail( "no ServiceComponentRuntime" );
+            TestCase.fail("no ServiceComponentRuntime");
         }
-        ComponentDescriptionDTO cd = scr.getComponentDescriptionDTO( b, name );
-        Assert.assertTrue( "Expected component enabled", scr.isComponentEnabled( cd ) );
+        ComponentDescriptionDTO cd = scr.getComponentDescriptionDTO(b, name);
+        Assert.assertTrue("Expected component enabled", scr.isComponentEnabled(cd));
 
-        Collection<ComponentConfigurationDTO> ccs = scr.getComponentConfigurationDTOs( cd );
-        Assert.assertEquals( count, ccs.size() );
-        if ( expectedState != -1 )
+        Collection<ComponentConfigurationDTO> ccs = scr.getComponentConfigurationDTOs(cd);
+        Assert.assertEquals(count, ccs.size());
+        if (expectedState != -1)
         {
-            for ( ComponentConfigurationDTO cc : ccs )
+            for (ComponentConfigurationDTO cc : ccs)
             {
-                Assert.assertEquals(
-                    "Expected state " + STATES.get( expectedState ) + " but was " + STATES.get( cc.state ),
-                    expectedState, cc.state );
+                Assert.assertEquals("Expected state " + STATES.get(expectedState)
+                    + " but was " + STATES.get(cc.state), expectedState, cc.state);
             }
         }
         return cd;
     }
 
-    protected ComponentDescriptionDTO checkConfigurationCount(String name, int count, int expectedState)
+    protected ComponentDescriptionDTO checkConfigurationCount(String name, int count,
+        int expectedState)
     {
-        return checkConfigurationCount( bundle, name, count, expectedState );
+        return checkConfigurationCount(bundle, name, count, expectedState);
     }
 
-    protected <S> S getServiceFromConfiguration(ComponentConfigurationDTO dto, Class<S> clazz)
+    protected <S> S getServiceFromConfiguration(ComponentConfigurationDTO dto,
+        Class<S> clazz)
     {
         long id = dto.id;
         String filter = "(component.id=" + id + ")";
         Collection<ServiceReference<S>> srs;
         try
         {
-            srs = bundleContext.getServiceReferences( clazz, filter );
-            Assert.assertEquals( "Nothing for filter: " + filter, 1, srs.size() );
+            srs = bundleContext.getServiceReferences(clazz, filter);
+            Assert.assertEquals("Nothing for filter: " + filter, 1, srs.size());
             ServiceReference<S> sr = srs.iterator().next();
-            S s = bundleContext.getService( sr );
-            Assert.assertNotNull( s );
+            S s = bundleContext.getService(sr);
+            Assert.assertNotNull(s);
             return s;
         }
-        catch ( InvalidSyntaxException e )
+        catch (InvalidSyntaxException e)
         {
-            TestCase.fail( e.getMessage() );
+            TestCase.fail(e.getMessage());
             return null;//unreachable in fact
         }
     }
 
-    protected <S> void ungetServiceFromConfiguration(ComponentConfigurationDTO dto, Class<S> clazz)
+    protected <S> void ungetServiceFromConfiguration(ComponentConfigurationDTO dto,
+        Class<S> clazz)
     {
         long id = dto.id;
         String filter = "(component.id=" + id + ")";
         Collection<ServiceReference<S>> srs;
         try
         {
-            srs = bundleContext.getServiceReferences( clazz, filter );
-            Assert.assertEquals( 1, srs.size() );
+            srs = bundleContext.getServiceReferences(clazz, filter);
+            Assert.assertEquals(1, srs.size());
             ServiceReference<S> sr = srs.iterator().next();
-            bundleContext.ungetService( sr );
+            bundleContext.ungetService(sr);
         }
-        catch ( InvalidSyntaxException e )
+        catch (InvalidSyntaxException e)
         {
-            TestCase.fail( e.getMessage() );
+            TestCase.fail(e.getMessage());
         }
     }
 
-    protected void enableAndCheck(ComponentDescriptionDTO cd) throws InvocationTargetException, InterruptedException
+    protected void enableAndCheck(ComponentDescriptionDTO cd)
+        throws InvocationTargetException, InterruptedException
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr != null )
+        if (scr != null)
         {
-            scr.enableComponent( cd ).getValue();
-            Assert.assertTrue( "Expected component enabled", scr.isComponentEnabled( cd ) );
+            scr.enableComponent(cd).getValue();
+            Assert.assertTrue("Expected component enabled", scr.isComponentEnabled(cd));
         }
         else
         {
-            throw new NullPointerException( "no ServiceComponentRuntime" );
+            throw new NullPointerException("no ServiceComponentRuntime");
         }
 
     }
 
-    protected void disableAndCheck(ComponentConfigurationDTO cc) throws InvocationTargetException, InterruptedException
+    protected void disableAndCheck(ComponentConfigurationDTO cc)
+        throws InvocationTargetException, InterruptedException
     {
         ComponentDescriptionDTO cd = cc.description;
-        disableAndCheck( cd );
+        disableAndCheck(cd);
     }
 
-    protected void disableAndCheck(ComponentDescriptionDTO cd) throws InvocationTargetException, InterruptedException
+    protected void disableAndCheck(ComponentDescriptionDTO cd)
+        throws InvocationTargetException, InterruptedException
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr != null )
+        if (scr != null)
         {
-            scr.disableComponent( cd ).getValue();
-            Assert.assertFalse( "Expected component disabled", scr.isComponentEnabled( cd ) );
+            scr.disableComponent(cd).getValue();
+            Assert.assertFalse("Expected component disabled", scr.isComponentEnabled(cd));
         }
         else
         {
-            throw new NullPointerException( "no ServiceComponentRuntime" );
+            throw new NullPointerException("no ServiceComponentRuntime");
         }
     }
 
-    protected void disableAndCheck(String name) throws InvocationTargetException, InterruptedException
+    protected void disableAndCheck(String name)
+        throws InvocationTargetException, InterruptedException
     {
-        ComponentDescriptionDTO cd = findComponentDescriptorByName( name );
-        disableAndCheck( cd );
+        ComponentDescriptionDTO cd = findComponentDescriptorByName(name);
+        disableAndCheck(cd);
     }
 
     protected static void delay()
     {
-        delay( 300 );
+        delay(300);
     }
 
     protected static void delay(int millis)
     {
         try
         {
-            Thread.sleep( millis );
+            Thread.sleep(millis);
         }
-        catch ( InterruptedException ie )
+        catch (InterruptedException ie)
         {
         }
     }
@@ -483,41 +509,42 @@ public abstract class ComponentTestBase
     protected ConfigurationAdmin getConfigurationAdmin()
     {
         ConfigurationAdmin ca = configAdminTracker.getService();
-        if ( ca == null )
+        if (ca == null)
         {
-            TestCase.fail( "Missing ConfigurationAdmin service" );
+            TestCase.fail("Missing ConfigurationAdmin service");
         }
         return ca;
     }
 
     protected org.osgi.service.cm.Configuration configure(String pid)
     {
-        return configure( pid, null );
+        return configure(pid, null);
 
     }
 
-    protected org.osgi.service.cm.Configuration configure(String pid, String bundleLocation)
+    protected org.osgi.service.cm.Configuration configure(String pid,
+        String bundleLocation)
     {
-        return configure( pid, bundleLocation, theConfig );
+        return configure(pid, bundleLocation, theConfig);
     }
 
-    protected org.osgi.service.cm.Configuration configure(String pid, String bundleLocation,
-        Dictionary<String, Object> props)
+    protected org.osgi.service.cm.Configuration configure(String pid,
+        String bundleLocation, Dictionary<String, Object> props)
     {
         ConfigurationAdmin ca = getConfigurationAdmin();
         try
         {
-            org.osgi.service.cm.Configuration config = ca.getConfiguration( pid, null );
-            if ( bundleLocation != null )
+            org.osgi.service.cm.Configuration config = ca.getConfiguration(pid, null);
+            if (bundleLocation != null)
             {
-                config.setBundleLocation( bundleLocation );
+                config.setBundleLocation(bundleLocation);
             }
-            config.update( props );
+            config.update(props);
             return config;
         }
-        catch ( IOException ioe )
+        catch (IOException ioe)
         {
-            TestCase.fail( "Failed updating configuration " + pid + ": " + ioe.toString() );
+            TestCase.fail("Failed updating configuration " + pid + ": " + ioe.toString());
         }
         return null;
     }
@@ -527,12 +554,12 @@ public abstract class ComponentTestBase
         ConfigurationAdmin ca = getConfigurationAdmin();
         try
         {
-            org.osgi.service.cm.Configuration config = ca.getConfiguration( pid );
+            org.osgi.service.cm.Configuration config = ca.getConfiguration(pid);
             config.delete();
         }
-        catch ( IOException ioe )
+        catch (IOException ioe)
         {
-            TestCase.fail( "Failed deleting configuration " + pid + ": " + ioe.toString() );
+            TestCase.fail("Failed deleting configuration " + pid + ": " + ioe.toString());
         }
     }
 
@@ -541,13 +568,15 @@ public abstract class ComponentTestBase
         ConfigurationAdmin ca = getConfigurationAdmin();
         try
         {
-            org.osgi.service.cm.Configuration config = ca.createFactoryConfiguration( factoryPid, null );
-            config.update( theConfig );
+            org.osgi.service.cm.Configuration config = ca.createFactoryConfiguration(
+                factoryPid, null);
+            config.update(theConfig);
             return config.getPid();
         }
-        catch ( IOException ioe )
+        catch (IOException ioe)
         {
-            TestCase.fail( "Failed updating factory configuration " + factoryPid + ": " + ioe.toString() );
+            TestCase.fail("Failed updating factory configuration " + factoryPid + ": "
+                + ioe.toString());
             return null;
         }
     }
@@ -558,87 +587,94 @@ public abstract class ComponentTestBase
         try
         {
             final String filter = "(service.factoryPid=" + factoryPid + ")";
-            org.osgi.service.cm.Configuration[] configs = ca.listConfigurations( filter );
-            if ( configs != null )
+            org.osgi.service.cm.Configuration[] configs = ca.listConfigurations(filter);
+            if (configs != null)
             {
-                for ( org.osgi.service.cm.Configuration configuration : configs )
+                for (org.osgi.service.cm.Configuration configuration : configs)
                 {
                     configuration.delete();
                 }
             }
         }
-        catch ( InvalidSyntaxException ise )
+        catch (InvalidSyntaxException ise)
         {
             // unexpected
         }
-        catch ( IOException ioe )
+        catch (IOException ioe)
         {
-            TestCase.fail( "Failed deleting configurations " + factoryPid + ": " + ioe.toString() );
+            TestCase.fail(
+                "Failed deleting configurations " + factoryPid + ": " + ioe.toString());
         }
     }
 
     //component factory test helper methods
-    protected ComponentFactory getComponentFactory(final String componentfactory) throws InvalidSyntaxException
+    protected ComponentFactory getComponentFactory(final String componentfactory)
+        throws InvalidSyntaxException
     {
-        final ServiceReference[] refs = bundleContext.getServiceReferences( ComponentFactory.class.getName(),
-            "(" + ComponentConstants.COMPONENT_FACTORY + "=" + componentfactory + ")" );
-        TestCase.assertNotNull( refs );
-        TestCase.assertEquals( 1, refs.length );
-        final ComponentFactory factory = (ComponentFactory) bundleContext.getService( refs[0] );
-        TestCase.assertNotNull( factory );
+        final ServiceReference[] refs = bundleContext.getServiceReferences(
+            ComponentFactory.class.getName(),
+            "(" + ComponentConstants.COMPONENT_FACTORY + "=" + componentfactory + ")");
+        TestCase.assertNotNull(refs);
+        TestCase.assertEquals(1, refs.length);
+        final ComponentFactory factory = (ComponentFactory) bundleContext.getService(
+            refs[0]);
+        TestCase.assertNotNull(factory);
         return factory;
     }
 
-    protected void checkFactory(final String componentfactory, boolean expectFactoryPresent)
-        throws InvalidSyntaxException
+    protected void checkFactory(final String componentfactory,
+        boolean expectFactoryPresent) throws InvalidSyntaxException
     {
-        ServiceReference[] refs = bundleContext.getServiceReferences( ComponentFactory.class.getName(),
-            "(" + ComponentConstants.COMPONENT_FACTORY + "=" + componentfactory + ")" );
-        if ( expectFactoryPresent )
+        ServiceReference[] refs = bundleContext.getServiceReferences(
+            ComponentFactory.class.getName(),
+            "(" + ComponentConstants.COMPONENT_FACTORY + "=" + componentfactory + ")");
+        if (expectFactoryPresent)
         {
-            TestCase.assertNotNull( refs );
-            TestCase.assertEquals( 1, refs.length );
+            TestCase.assertNotNull(refs);
+            TestCase.assertEquals(1, refs.length);
 
         }
         else
         {
-            TestCase.assertNull( refs );
+            TestCase.assertNull(refs);
         }
     }
 
-    protected ComponentInstance createFactoryComponentInstance(final String componentfactory)
-        throws InvalidSyntaxException
+    protected ComponentInstance createFactoryComponentInstance(
+        final String componentfactory) throws InvalidSyntaxException
     {
         Hashtable<String, String> props = new Hashtable<String, String>();
-        props.put( PROP_NAME_FACTORY, PROP_NAME_FACTORY );
+        props.put(PROP_NAME_FACTORY, PROP_NAME_FACTORY);
 
-        return createFactoryComponentInstance( componentfactory, props );
+        return createFactoryComponentInstance(componentfactory, props);
     }
 
-    protected ComponentInstance createFactoryComponentInstance(final String componentfactory,
-        Hashtable<String, String> props) throws InvalidSyntaxException
+    protected ComponentInstance createFactoryComponentInstance(
+        final String componentfactory, Hashtable<String, String> props)
+        throws InvalidSyntaxException
     {
-        final ComponentFactory factory = getComponentFactory( componentfactory );
+        final ComponentFactory factory = getComponentFactory(componentfactory);
 
-        final ComponentInstance instance = factory.newInstance( props );
-        TestCase.assertNotNull( instance );
+        final ComponentInstance instance = factory.newInstance(props);
+        TestCase.assertNotNull(instance);
 
-        TestCase.assertNotNull( instance.getInstance() );
-        TestCase.assertEquals( SimpleComponent.INSTANCE, instance.getInstance() );
-        TestCase.assertEquals( PROP_NAME_FACTORY, SimpleComponent.INSTANCE.getProperty( PROP_NAME_FACTORY ) );
+        TestCase.assertNotNull(instance.getInstance());
+        TestCase.assertEquals(SimpleComponent.INSTANCE, instance.getInstance());
+        TestCase.assertEquals(PROP_NAME_FACTORY,
+            SimpleComponent.INSTANCE.getProperty(PROP_NAME_FACTORY));
         return instance;
     }
 
     protected static Class<?> getType(Object object, String desiredName)
     {
         Class<?> ccImpl = object.getClass();
-        while ( ccImpl != null && !desiredName.equals( ccImpl.getSimpleName() ) )
+        while (ccImpl != null && !desiredName.equals(ccImpl.getSimpleName()))
         {
             ccImpl = ccImpl.getSuperclass();
         }
-        if ( ccImpl == null )
+        if (ccImpl == null)
         {
-            TestCase.fail( "ComponentContext " + object + " is not a " + desiredName );
+            TestCase.fail("ComponentContext " + object + " is not a " + desiredName);
         }
 
         return ccImpl;
@@ -648,67 +684,72 @@ public abstract class ComponentTestBase
     {
         try
         {
-            final Field m_componentsField = getField( object.getClass(), fieldName );
-            return m_componentsField.get( object );
+            final Field m_componentsField = getField(object.getClass(), fieldName);
+            return m_componentsField.get(object);
         }
-        catch ( Throwable t )
+        catch (Throwable t)
         {
-            TestCase.fail( "Cannot get " + fieldName + " from " + object + ": " + t );
+            TestCase.fail("Cannot get " + fieldName + " from " + object + ": " + t);
             return null; // keep the compiler happy
         }
     }
 
     protected Object getComponentManagerFromComponentInstance(Object instance)
     {
-        Object cc = getFieldValue( instance, "m_componentContext" );
-        return getFieldValue( cc, "m_componentManager" );
+        Object cc = getFieldValue(instance, "m_componentContext");
+        return getFieldValue(cc, "m_componentManager");
     }
 
-    protected static Field getField(Class<?> type, String fieldName) throws NoSuchFieldException
+    protected static Field getField(Class<?> type, String fieldName)
+        throws NoSuchFieldException
     {
         Class<?> clazz = type;
-        while ( clazz != null )
+        while (clazz != null)
         {
             Field[] fields = clazz.getDeclaredFields();
-            for ( int i = 0; i < fields.length; i++ )
+            for (int i = 0; i < fields.length; i++)
             {
                 Field field = fields[i];
-                if ( field.getName().equals( fieldName ) )
+                if (field.getName().equals(fieldName))
                 {
-                    field.setAccessible( true );
+                    field.setAccessible(true);
                     return field;
                 }
             }
             clazz = clazz.getSuperclass();
         }
-        throw new NoSuchFieldException( fieldName );
+        throw new NoSuchFieldException(fieldName);
     }
 
-    protected Bundle installBundle(final String descriptorFile, String componentPackage) throws BundleException
+    protected Bundle installBundle(final String descriptorFile, String componentPackage)
+        throws BundleException
     {
-        return installBundle( descriptorFile, componentPackage, "simplecomponent", "0.0.11", null );
+        return installBundle(descriptorFile, componentPackage, "simplecomponent",
+            "0.0.11", null);
     }
 
-    protected Bundle installBundle(final String descriptorFile, String componentPackage, String symbolicName,
-        String version, String location) throws BundleException
+    protected Bundle installBundle(final String descriptorFile, String componentPackage,
+        String symbolicName, String version, String location) throws BundleException
     {
-        final InputStream bundleStream = bundle().add( "OSGI-INF/components.xml",
-            getClass().getResource( descriptorFile ) )
+        final InputStream bundleStream = bundle().add("OSGI-INF/components.xml",
+            getClass().getResource(descriptorFile))
 
-            .set( Constants.BUNDLE_SYMBOLICNAME, symbolicName ).set( Constants.BUNDLE_VERSION, version ).set(
-                Constants.IMPORT_PACKAGE, componentPackage ).set( "Service-Component", "OSGI-INF/components.xml" ).set(
-                    Constants.REQUIRE_CAPABILITY,
-                    ExtenderNamespace.EXTENDER_NAMESPACE
-                        + ";filter:=\"(&(osgi.extender=osgi.component)(version>=1.3)(!(version>=2.0)))\"" ).build(
-                            withBnd() );
+            .set(Constants.BUNDLE_SYMBOLICNAME, symbolicName).set(
+                Constants.BUNDLE_VERSION, version).set(Constants.IMPORT_PACKAGE,
+                    componentPackage).set("Service-Component",
+                        "OSGI-INF/components.xml").set(
+                            Constants.REQUIRE_CAPABILITY,
+                            ExtenderNamespace.EXTENDER_NAMESPACE
+                                + ";filter:=\"(&(osgi.extender=osgi.component)(version>=1.3)(!(version>=2.0)))\"").build(
+                                    withBnd());
 
         try
         {
-            if ( location == null )
+            if (location == null)
             {
                 location = "test:SimpleComponent/" + System.currentTimeMillis();
             }
-            return bundleContext.installBundle( location, bundleStream );
+            return bundleContext.installBundle(location, bundleStream);
         }
         finally
         {
@@ -716,7 +757,7 @@ public abstract class ComponentTestBase
             {
                 bundleStream.close();
             }
-            catch ( IOException ioe )
+            catch (IOException ioe)
             {
             }
         }
@@ -727,7 +768,7 @@ public abstract class ComponentTestBase
     public void testDescription()
     {
         PrintStream out = System.out;
-        info( new PrintWriter( out ) );
+        info(new PrintWriter(out));
     }
 
     private static class InfoWriter extends ScrCommand
@@ -735,7 +776,7 @@ public abstract class ComponentTestBase
 
         protected InfoWriter(ServiceComponentRuntime scrService)
         {
-            super( null, scrService, null );
+            super(null, scrService, null);
         }
 
     }
@@ -743,25 +784,26 @@ public abstract class ComponentTestBase
     void info(PrintWriter out)
     {
         ServiceComponentRuntime scr = scrTracker.getService();
-        if ( scr == null )
+        if (scr == null)
         {
-            TestCase.fail( "no ServiceComponentRuntime" );
+            TestCase.fail("no ServiceComponentRuntime");
         }
-        new InfoWriter( scr ).list( null, out );
+        new InfoWriter(scr).list(null, out);
     }
 
     protected boolean isAtLeastR5()
     {
         try
         {
-            Method m = org.osgi.service.cm.Configuration.class.getDeclaredMethod( "getChangeCount" );
+            Method m = org.osgi.service.cm.Configuration.class.getDeclaredMethod(
+                "getChangeCount");
             return true;
         }
-        catch ( SecurityException e )
+        catch (SecurityException e)
         {
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
-        catch ( NoSuchMethodException e )
+        catch (NoSuchMethodException e)
         {
             return false;
         }
@@ -774,13 +816,13 @@ public abstract class ComponentTestBase
     {
         NullStdout()
         {
-            super( new OutputStream()
+            super(new OutputStream()
             {
                 @Override
                 public void write(int b) throws IOException
                 {
                 }
-            } );
+            });
         }
     }
 
@@ -836,10 +878,11 @@ public abstract class ComponentTestBase
     public static class Log implements LogService, FrameworkListener, Runnable
     {
         private static final int RESTRICTED_LOG_SIZE = 1000;
-        private final SimpleDateFormat m_sdf = new SimpleDateFormat( "HH:mm:ss,S" );
+        private final SimpleDateFormat m_sdf = new SimpleDateFormat("HH:mm:ss,S");
         private final static PrintStream m_out = new PrintStream(
-            new BufferedOutputStream( new FileOutputStream( FileDescriptor.err ), 128 ) );
-        private final List<String> m_warnings = Collections.synchronizedList( new ArrayList<String>() );
+            new BufferedOutputStream(new FileOutputStream(FileDescriptor.err), 128));
+        private final List<String> m_warnings = Collections.synchronizedList(
+            new ArrayList<String>());
         private LinkedBlockingQueue<LogEntry> m_logQueue = new LinkedBlockingQueue<LogEntry>();
         private volatile Thread m_logThread;
         private volatile PrintStream m_realOut;
@@ -862,25 +905,25 @@ public abstract class ComponentTestBase
         {
             m_realOut = System.out;
             m_realErr = System.err;
-            System.setOut( new NullStdout() );
-            System.setErr( new NullStdout() );
-            m_logThread = new Thread( this );
+            System.setOut(new NullStdout());
+            System.setErr(new NullStdout());
+            m_logThread = new Thread(this);
             m_logThread.start();
         }
 
         public void stop()
         {
-            System.setOut( m_realOut );
-            System.setErr( m_realErr );
-            if ( restrictedLogging )
+            System.setOut(m_realOut);
+            System.setErr(m_realErr);
+            if (restrictedLogging)
             {
-                for ( int j = 0; j < RESTRICTED_LOG_SIZE; j++ )
+                for (int j = 0; j < RESTRICTED_LOG_SIZE; j++)
                 {
-                    if ( log[i] != null )
+                    if (log[i] != null)
                     {
-                        m_realErr.println( log[i++] );
+                        m_realErr.println(log[i++]);
                     }
-                    if ( i == RESTRICTED_LOG_SIZE )
+                    if (i == RESTRICTED_LOG_SIZE)
                         i = 0;
                 }
             }
@@ -894,7 +937,7 @@ public abstract class ComponentTestBase
             {
                 m_logThread.join();
             }
-            catch ( InterruptedException e )
+            catch (InterruptedException e)
             {
             }
         }
@@ -914,50 +957,51 @@ public abstract class ComponentTestBase
             try
             {
                 LogEntry entry = null;
-                while ( true )
+                while (true)
                 {
                     entry = m_logQueue.take();
-                    if ( entry.getLevel() <= 2 && acceptWarning( entry.getMessage() ) )
+                    if (entry.getLevel() <= 2 && acceptWarning(entry.getMessage()))
                     {
-                        if ( m_warnings.size() < 1024 )
+                        if (m_warnings.size() < 1024)
                         {
-                            m_warnings.add( entry.getMessage() );
+                            m_warnings.add(entry.getMessage());
                         }
                         else
                         {
                             // Avoid out of memory ...
-                            m_warnings.set( 1023, "Unexpected errors logged. Please look at previous logs" );
+                            m_warnings.set(1023,
+                                "Unexpected errors logged. Please look at previous logs");
                         }
                     }
 
                     StringWriter sw = new StringWriter();
-                    sw.append( "log level: " + entry.getLevel() );
-                    sw.append( " D=" );
-                    sw.append( m_sdf.format( new Date( entry.getTime() ) ) );
-                    sw.append( " T=" + entry.getThread() );
-                    sw.append( ": " );
-                    sw.append( entry.getMessage() );
-                    if ( entry.getError() != null )
+                    sw.append("log level: " + entry.getLevel());
+                    sw.append(" D=");
+                    sw.append(m_sdf.format(new Date(entry.getTime())));
+                    sw.append(" T=" + entry.getThread());
+                    sw.append(": ");
+                    sw.append(entry.getMessage());
+                    if (entry.getError() != null)
                     {
-                        sw.append( System.getProperty( "line.separator" ) );
-                        PrintWriter pw = new PrintWriter( sw );
-                        entry.getError().printStackTrace( pw );
+                        sw.append(System.getProperty("line.separator"));
+                        PrintWriter pw = new PrintWriter(sw);
+                        entry.getError().printStackTrace(pw);
                         pw.flush();
                     }
-                    if ( restrictedLogging )
+                    if (restrictedLogging)
                     {
                         log[i++] = sw.toString();
-                        if ( i == RESTRICTED_LOG_SIZE )
+                        if (i == RESTRICTED_LOG_SIZE)
                             i = 0;
                     }
                     else
                     {
-                        m_out.println( sw.toString() );
+                        m_out.println(sw.toString());
                         m_out.flush();
                     }
                 }
             }
-            catch ( InterruptedException e )
+            catch (InterruptedException e)
             {
                 return;
             }
@@ -967,11 +1011,11 @@ public abstract class ComponentTestBase
 
         private boolean acceptWarning(String message)
         {
-            if ( ignoredWarnings != null )
+            if (ignoredWarnings != null)
             {
-                for ( String ignore : ignoredWarnings )
+                for (String ignore : ignoredWarnings)
                 {
-                    if ( message.contains( ignore ) )
+                    if (message.contains(ignore))
                     {
                         return false;
                     }
@@ -983,10 +1027,11 @@ public abstract class ComponentTestBase
         public void frameworkEvent(final FrameworkEvent event)
         {
             int eventType = event.getType();
-            String msg = getFrameworkEventMessage( eventType );
-            int level = ( eventType == FrameworkEvent.ERROR )? LogService.LOG_ERROR: LogService.LOG_WARNING;
-            log( level, msg, event.getThrowable() );
-            if ( event.getThrowable() != null && firstFrameworkThrowable == null )
+            String msg = getFrameworkEventMessage(eventType);
+            int level = (eventType == FrameworkEvent.ERROR) ? LogService.LOG_ERROR
+                : LogService.LOG_WARNING;
+            log(level, msg, event.getThrowable());
+            if (event.getThrowable() != null && firstFrameworkThrowable == null)
             {
                 firstFrameworkThrowable = event.getThrowable();
             }
@@ -996,53 +1041,53 @@ public abstract class ComponentTestBase
 
         public void log(int level, String message)
         {
-            log( level, message, null );
+            log(level, message, null);
         }
 
         public void log(int level, String message, Throwable exception)
         {
-            if ( level > getEnabledLogLevel() )
+            if (level > getEnabledLogLevel())
             {
                 return;
             }
-            m_logQueue.offer( new LogEntry( level, message, exception ) );
+            m_logQueue.offer(new LogEntry(level, message, exception));
         }
 
         public void log(ServiceReference sr, int osgiLevel, String message)
         {
-            log( sr, osgiLevel, message, null );
+            log(sr, osgiLevel, message, null);
         }
 
         public void log(ServiceReference sr, int level, String msg, Throwable exception)
         {
-            if ( sr != null )
+            if (sr != null)
             {
                 StringBuilder sb = new StringBuilder();
-                Object serviceId = sr.getProperty( Constants.SERVICE_ID );
-                if ( serviceId != null )
+                Object serviceId = sr.getProperty(Constants.SERVICE_ID);
+                if (serviceId != null)
                 {
-                    sb.append( "[" + serviceId.toString() + "] " );
+                    sb.append("[" + serviceId.toString() + "] ");
                 }
-                sb.append( msg );
-                log( level, sb.toString(), exception );
+                sb.append(msg);
+                log(level, sb.toString(), exception);
             }
             else
             {
-                log( level, msg, exception );
+                log(level, msg, exception);
             }
         }
 
         private int getEnabledLogLevel()
         {
-            if ( DS_LOGLEVEL.regionMatches( true, 0, "err", 0, "err".length() ) )
+            if (DS_LOGLEVEL.regionMatches(true, 0, "err", 0, "err".length()))
             {
                 return LogService.LOG_ERROR;
             }
-            else if ( DS_LOGLEVEL.regionMatches( true, 0, "warn", 0, "warn".length() ) )
+            else if (DS_LOGLEVEL.regionMatches(true, 0, "warn", 0, "warn".length()))
             {
                 return LogService.LOG_WARNING;
             }
-            else if ( DS_LOGLEVEL.regionMatches( true, 0, "info", 0, "info".length() ) )
+            else if (DS_LOGLEVEL.regionMatches(true, 0, "info", 0, "info".length()))
             {
                 return LogService.LOG_INFO;
             }

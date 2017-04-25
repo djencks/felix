@@ -24,27 +24,26 @@ import org.osgi.service.component.ComponentFactory;
 
 public class FactoryClient
 {
-    
-    
+
     protected void setFactory(ComponentFactory cf)
     {
         cf.newInstance(new Hashtable<String, Object>());
-        
+
     }
-    
+
     protected void unsetFactory(ComponentFactory cf)
     {
-        
+
     }
-    
+
     protected void setFactoryInstance(FactoryInstance fi)
     {
-        
+
     }
-    
+
     protected void unsetFactoryInstance(FactoryInstance fi)
     {
-        
+
     }
 
 }

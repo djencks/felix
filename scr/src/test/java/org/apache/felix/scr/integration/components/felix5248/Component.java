@@ -25,9 +25,9 @@ public class Component
 
     void activate(Map<String, Object> props)
     {
-        if ( props.containsKey( "FAIL" ) )
+        if (props.containsKey("FAIL"))
         {
-            throw new IllegalStateException( "you said to fail" );
+            throw new IllegalStateException("you said to fail");
         }
     }
 

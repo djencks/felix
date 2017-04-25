@@ -22,25 +22,25 @@ import org.osgi.service.component.ComponentContext;
 
 public class EnableComponent
 {
-    
+
     private ComponentContext cc;
-    
+
     protected void activate(ComponentContext cc)
     {
         this.cc = cc;
     }
-    
+
     protected void deactivate()
     {
         cc = null;
     }
-    
-    public void enable( String component )
+
+    public void enable(String component)
     {
         cc.enableComponent(component);
     }
 
-    public void disable( String component )
+    public void disable(String component)
     {
         cc.disableComponent(component);
     }

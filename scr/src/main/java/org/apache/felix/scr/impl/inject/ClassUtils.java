@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.inject;
 
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
-
 
 /**
  * Utility methods for class handling used by method and field references.
@@ -71,17 +69,14 @@ public class ClassUtils
      *      if the class loader of the <code>targetClass</code> cannot see that
      *      class.
      */
-    public static Class<?> getClassFromComponentClassLoader(
-            final Class<?> componentClass,
-            final String className,
-            final SimpleLogger logger )
+    public static Class<?> getClassFromComponentClassLoader(final Class<?> componentClass,
+        final String className, final SimpleLogger logger)
     {
-        if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+        if (logger.isLogEnabled(LogService.LOG_DEBUG))
         {
-            logger.log(
-                LogService.LOG_DEBUG,
+            logger.log(LogService.LOG_DEBUG,
                 "getReferenceClass: Looking for interface class {0} through loader of {1}",
-                    new Object[] {className, componentClass.getName()}, null );
+                new Object[] { className, componentClass.getName() }, null);
         }
 
         try
@@ -89,89 +84,96 @@ public class ClassUtils
             // need the class loader of the target class, which may be the
             // system classloader, which case getClassLoader may retur null
             ClassLoader loader = componentClass.getClassLoader();
-            if ( loader == null )
+            if (loader == null)
             {
                 loader = ClassLoader.getSystemClassLoader();
             }
 
-            final Class<?> referenceClass = loader.loadClass( className );
-            if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+            final Class<?> referenceClass = loader.loadClass(className);
+            if (logger.isLogEnabled(LogService.LOG_DEBUG))
             {
-                logger.log( LogService.LOG_DEBUG,
-                    "getParameterClass: Found class {0}", new Object[] {referenceClass.getName()}, null );
+                logger.log(LogService.LOG_DEBUG, "getParameterClass: Found class {0}",
+                    new Object[] { referenceClass.getName() }, null);
             }
             return referenceClass;
         }
-        catch ( final ClassNotFoundException cnfe )
+        catch (final ClassNotFoundException cnfe)
         {
             // if we can't load the class, perhaps the method is declared in a
             // super class so we try this class next
         }
 
-        if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+        if (logger.isLogEnabled(LogService.LOG_DEBUG))
         {
-            logger.log( LogService.LOG_DEBUG,
-                "getParameterClass: Not found through component class, using PackageAdmin service", null );
+            logger.log(LogService.LOG_DEBUG,
+                "getParameterClass: Not found through component class, using PackageAdmin service",
+                null);
         }
 
         // try to load the class with the help of the PackageAdmin service
-        PackageAdmin pa = ( PackageAdmin ) getPackageAdmin();
-        if ( pa != null )
+        PackageAdmin pa = (PackageAdmin) getPackageAdmin();
+        if (pa != null)
         {
-            final String referenceClassPackage = className.substring( 0, className
-                .lastIndexOf( '.' ) );
-            ExportedPackage[] pkg = pa.getExportedPackages( referenceClassPackage );
-            if ( pkg != null )
+            final String referenceClassPackage = className.substring(0,
+                className.lastIndexOf('.'));
+            ExportedPackage[] pkg = pa.getExportedPackages(referenceClassPackage);
+            if (pkg != null)
             {
-                for ( int i = 0; i < pkg.length; i++ )
+                for (int i = 0; i < pkg.length; i++)
                 {
                     try
                     {
-                        if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+                        if (logger.isLogEnabled(LogService.LOG_DEBUG))
                         {
-                            logger.log(
-                                LogService.LOG_DEBUG,
+                            logger.log(LogService.LOG_DEBUG,
                                 "getParameterClass: Checking Bundle {0}/{1}",
-                                    new Object[] {pkg[i].getExportingBundle().getSymbolicName(), pkg[i].getExportingBundle().getBundleId()}, null );
+                                new Object[] {
+                                        pkg[i].getExportingBundle().getSymbolicName(),
+                                        pkg[i].getExportingBundle().getBundleId() },
+                                null);
                         }
 
-                        Class<?> referenceClass = pkg[i].getExportingBundle().loadClass( className );
-                        if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+                        Class<?> referenceClass = pkg[i].getExportingBundle().loadClass(
+                            className);
+                        if (logger.isLogEnabled(LogService.LOG_DEBUG))
                         {
-                            logger.log( LogService.LOG_DEBUG,
-                                    "getParameterClass: Found class {0}", new Object[] {referenceClass.getName()}, null );
+                            logger.log(LogService.LOG_DEBUG,
+                                "getParameterClass: Found class {0}",
+                                new Object[] { referenceClass.getName() }, null);
                         }
                         return referenceClass;
                     }
-                    catch ( ClassNotFoundException cnfe )
+                    catch (ClassNotFoundException cnfe)
                     {
                         // exported package does not provide the interface !!!!
                     }
                 }
             }
-            else if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+            else if (logger.isLogEnabled(LogService.LOG_DEBUG))
             {
-                logger.log( LogService.LOG_DEBUG,
-                    "getParameterClass: No bundles exporting package {0} found", new Object[] {referenceClassPackage}, null );
+                logger.log(LogService.LOG_DEBUG,
+                    "getParameterClass: No bundles exporting package {0} found",
+                    new Object[] { referenceClassPackage }, null);
             }
         }
-        else if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+        else if (logger.isLogEnabled(LogService.LOG_DEBUG))
         {
-            logger.log( LogService.LOG_DEBUG,
-                "getParameterClass: PackageAdmin service not available, cannot find class", null );
+            logger.log(LogService.LOG_DEBUG,
+                "getParameterClass: PackageAdmin service not available, cannot find class",
+                null);
         }
 
         // class cannot be found, neither through the component nor from an
         // export, so we fall back to assuming Object
-        if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
+        if (logger.isLogEnabled(LogService.LOG_DEBUG))
         {
-            logger.log( LogService.LOG_DEBUG,
-                "getParameterClass: No class found, falling back to class Object", null );
+            logger.log(LogService.LOG_DEBUG,
+                "getParameterClass: No class found, falling back to class Object", null);
         }
         return OBJECT_CLASS;
     }
 
-    public static void setBundleContext( BundleContext bundleContext )
+    public static void setBundleContext(BundleContext bundleContext)
     {
         ClassUtils.m_context = bundleContext;
     }

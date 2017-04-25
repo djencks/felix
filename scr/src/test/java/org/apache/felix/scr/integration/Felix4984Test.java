@@ -34,7 +34,6 @@ import org.osgi.service.log.LogService;
 
 import junit.framework.TestCase;
 
-
 @RunWith(JUnit4TestRunner.class)
 public class Felix4984Test extends ComponentTestBase
 {
@@ -55,27 +54,32 @@ public class Felix4984Test extends ComponentTestBase
         Bundle bundle = findABBundle(bundleContext);
         bundle.stop();
 
-        for (int i = 0; i < 1000; i ++) {
-        	bundle.start();
+        for (int i = 0; i < 1000; i++)
+        {
+            bundle.start();
 
             String componentNameA = "felix4984.A.1.1.dynamic";
-            ComponentConfigurationDTO componentA = findComponentConfigurationByName( componentNameA, ComponentConfigurationDTO.SATISFIED );
+            ComponentConfigurationDTO componentA = findComponentConfigurationByName(
+                componentNameA, ComponentConfigurationDTO.SATISFIED);
 
             String componentNameB = "felix4984.B.0.n.dynamic";
-            final ComponentConfigurationDTO componentB = findComponentConfigurationByName( componentNameB, ComponentConfigurationDTO.SATISFIED);
+            final ComponentConfigurationDTO componentB = findComponentConfigurationByName(
+                componentNameB, ComponentConfigurationDTO.SATISFIED);
 
-            ServiceReference[] serviceReferencesB = bundleContext.getServiceReferences( B.class.getName(), "(service.pid=" + componentNameB + ")" );
-            assertNotNull( serviceReferencesB );
-            TestCase.assertEquals( 1, serviceReferencesB.length );
+            ServiceReference[] serviceReferencesB = bundleContext.getServiceReferences(
+                B.class.getName(), "(service.pid=" + componentNameB + ")");
+            assertNotNull(serviceReferencesB);
+            TestCase.assertEquals(1, serviceReferencesB.length);
             ServiceReference serviceReferenceB = serviceReferencesB[0];
-            Object serviceB = bundleContext.getService( serviceReferenceB );
-            assertNotNull( serviceB );
+            Object serviceB = bundleContext.getService(serviceReferenceB);
+            assertNotNull(serviceB);
 
-            ServiceReference[] serviceReferencesA = bundleContext.getServiceReferences( A.class.getName(), "(service.pid=" + componentNameA + ")" );
-            TestCase.assertEquals( 1, serviceReferencesA.length );
+            ServiceReference[] serviceReferencesA = bundleContext.getServiceReferences(
+                A.class.getName(), "(service.pid=" + componentNameA + ")");
+            TestCase.assertEquals(1, serviceReferencesA.length);
             ServiceReference serviceReferenceA = serviceReferencesA[0];
-            Object serviceA = bundleContext.getService( serviceReferenceA );
-            assertNotNull( serviceA );
+            Object serviceA = bundleContext.getService(serviceReferenceA);
+            assertNotNull(serviceA);
 
             A a = getServiceFromConfiguration(componentA, A.class);
             assertABoundToOneB(a);
@@ -84,20 +88,25 @@ public class Felix4984Test extends ComponentTestBase
         }
     }
 
-    private Bundle findABBundle(BundleContext ctx) {
-        for (Bundle b : ctx.getBundles()) {
-            if (b.getSymbolicName().equals("simplecomponent")) {
+    private Bundle findABBundle(BundleContext ctx)
+    {
+        for (Bundle b : ctx.getBundles())
+        {
+            if (b.getSymbolicName().equals("simplecomponent"))
+            {
                 return b;
             }
         }
         throw new IllegalStateException("bundle \"simplecomponent\" not found");
     }
 
-    private void assertABoundToOneB(A a) {
-        if (a.getBs().size() != 1) {
+    private void assertABoundToOneB(A a)
+    {
+        if (a.getBs().size() != 1)
+        {
             log.log(LogService.LOG_WARNING, "detected problem ...");
             a.dumpStackTracesWhenBWasBound(log);
         }
-        assertEquals( 1, a.getBs().size());
+        assertEquals(1, a.getBs().size());
     }
 }

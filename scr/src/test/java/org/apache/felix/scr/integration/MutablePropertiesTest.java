@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -38,7 +37,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
 
-
 @RunWith(JUnit4TestRunner.class)
 public class MutablePropertiesTest extends ComponentTestBase
 {
@@ -51,31 +49,32 @@ public class MutablePropertiesTest extends ComponentTestBase
         descriptorFile = "/integration_test_mutable_properties.xml";
     }
 
-
     @Test
     public void test_mutable_properties() throws InvalidSyntaxException
     {
         String componentName = "components.mutable.properties";
-        findComponentConfigurationByName(componentName, ComponentConfigurationDTO.SATISFIED);
+        findComponentConfigurationByName(componentName,
+            ComponentConfigurationDTO.SATISFIED);
 
-        ServiceReference[] serviceReferences = bundleContext.getServiceReferences( MutatingService.class.getName(), "(service.pid=" + componentName + ")" );
-        TestCase.assertEquals( 1, serviceReferences.length );
+        ServiceReference[] serviceReferences = bundleContext.getServiceReferences(
+            MutatingService.class.getName(), "(service.pid=" + componentName + ")");
+        TestCase.assertEquals(1, serviceReferences.length);
         ServiceReference serviceReference = serviceReferences[0];
         Assert.assertEquals("otherValue", serviceReference.getProperty(PROP_NAME));
         Assert.assertEquals("p1", serviceReference.getProperty("p1"));
         Assert.assertEquals("p2", serviceReference.getProperty("p2"));
 
         //update theValue
-        MutatingService s = ( MutatingService ) bundleContext.getService(serviceReference );
+        MutatingService s = (MutatingService) bundleContext.getService(serviceReference);
         Assert.assertNotNull(s);
         findComponentConfigurationByName(componentName, ComponentConfigurationDTO.ACTIVE);
-        Dictionary d = new Hashtable(Collections.singletonMap( PROP_NAME, "anotherValue" ));
+        Dictionary d = new Hashtable(Collections.singletonMap(PROP_NAME, "anotherValue"));
         s.updateProperties(d);
         Assert.assertEquals("anotherValue", serviceReference.getProperty(PROP_NAME));
         checkPropertiesNotPresent(serviceReference, "p1", "p2");
 
         //configure with configAdmin
-        configure( componentName );
+        configure(componentName);
         delay();
         //no change
         Assert.assertEquals("anotherValue", serviceReference.getProperty(PROP_NAME));
@@ -94,29 +93,31 @@ public class MutablePropertiesTest extends ComponentTestBase
     public void test_mutable_properties_returned() throws InvalidSyntaxException
     {
         String componentName = "components.mutable.properties.return";
-        findComponentConfigurationByName(componentName, ComponentConfigurationDTO.SATISFIED);
+        findComponentConfigurationByName(componentName,
+            ComponentConfigurationDTO.SATISFIED);
 
-        ServiceReference[] serviceReferences = bundleContext.getServiceReferences( MutatingService.class.getName(), "(service.pid=" + componentName + ")" );
-        TestCase.assertEquals( 1, serviceReferences.length );
+        ServiceReference[] serviceReferences = bundleContext.getServiceReferences(
+            MutatingService.class.getName(), "(service.pid=" + componentName + ")");
+        TestCase.assertEquals(1, serviceReferences.length);
         ServiceReference serviceReference = serviceReferences[0];
         Assert.assertEquals("otherValue", serviceReference.getProperty(PROP_NAME));
         Assert.assertEquals("p1", serviceReference.getProperty("p1"));
         Assert.assertEquals("p2", serviceReference.getProperty("p2"));
 
         //update theValue
-        MutatingService s = ( MutatingService ) bundleContext.getService( serviceReference );
+        MutatingService s = (MutatingService) bundleContext.getService(serviceReference);
         Assert.assertNotNull(s);
         Assert.assertEquals("anotherValue1", serviceReference.getProperty(PROP_NAME));
         Assert.assertEquals("p1", serviceReference.getProperty("p1"));
         Assert.assertEquals("p2", serviceReference.getProperty("p2"));
         findComponentConfigurationByName(componentName, ComponentConfigurationDTO.ACTIVE);
-        Dictionary d = new Hashtable(Collections.singletonMap( PROP_NAME, "anotherValue" ));
+        Dictionary d = new Hashtable(Collections.singletonMap(PROP_NAME, "anotherValue"));
         s.updateProperties(d);
         Assert.assertEquals("anotherValue", serviceReference.getProperty(PROP_NAME));
         checkPropertiesNotPresent(serviceReference, "p1", "p2");
 
         //configure with configAdmin
-        configure( componentName );
+        configure(componentName);
         delay();
         delay();
         //no change
@@ -137,29 +138,31 @@ public class MutablePropertiesTest extends ComponentTestBase
     public void test_mutable_properties_returned_public() throws InvalidSyntaxException
     {
         String componentName = "components.mutable.properties.return.public";
-        findComponentConfigurationByName(componentName, ComponentConfigurationDTO.SATISFIED);
+        findComponentConfigurationByName(componentName,
+            ComponentConfigurationDTO.SATISFIED);
 
-        ServiceReference[] serviceReferences = bundleContext.getServiceReferences( MutatingService.class.getName(), "(service.pid=" + componentName + ")" );
-        TestCase.assertEquals( 1, serviceReferences.length );
+        ServiceReference[] serviceReferences = bundleContext.getServiceReferences(
+            MutatingService.class.getName(), "(service.pid=" + componentName + ")");
+        TestCase.assertEquals(1, serviceReferences.length);
         ServiceReference serviceReference = serviceReferences[0];
         Assert.assertEquals("otherValue", serviceReference.getProperty(PROP_NAME));
         Assert.assertEquals("p1", serviceReference.getProperty("p1"));
         Assert.assertEquals("p2", serviceReference.getProperty("p2"));
 
         //update theValue
-        MutatingService s = ( MutatingService ) bundleContext.getService( serviceReference );
+        MutatingService s = (MutatingService) bundleContext.getService(serviceReference);
         Assert.assertNotNull(s);
         Assert.assertEquals("anotherValue1", serviceReference.getProperty(PROP_NAME));
         Assert.assertEquals("p1", serviceReference.getProperty("p1"));
         Assert.assertEquals("p2", serviceReference.getProperty("p2"));
         findComponentConfigurationByName(componentName, ComponentConfigurationDTO.ACTIVE);
-        Dictionary d = new Hashtable(Collections.singletonMap( PROP_NAME, "anotherValue" ));
+        Dictionary d = new Hashtable(Collections.singletonMap(PROP_NAME, "anotherValue"));
         s.updateProperties(d);
         Assert.assertEquals("anotherValue", serviceReference.getProperty(PROP_NAME));
         checkPropertiesNotPresent(serviceReference, "p1", "p2");
 
         //configure with configAdmin
-        configure( componentName );
+        configure(componentName);
         delay();
         delay();
         //no change
@@ -180,21 +183,23 @@ public class MutablePropertiesTest extends ComponentTestBase
     public void test_mutable_properties_bind_returned() throws InvalidSyntaxException
     {
         String componentName = "components.mutable.properties.bind";
-        findComponentConfigurationByName(componentName, ComponentConfigurationDTO.SATISFIED);
+        findComponentConfigurationByName(componentName,
+            ComponentConfigurationDTO.SATISFIED);
 
-        ServiceReference[] serviceReferences = bundleContext.getServiceReferences( MutatingService.class.getName(), "(service.pid=" + componentName + ")" );
-        TestCase.assertEquals( 1, serviceReferences.length );
+        ServiceReference[] serviceReferences = bundleContext.getServiceReferences(
+            MutatingService.class.getName(), "(service.pid=" + componentName + ")");
+        TestCase.assertEquals(1, serviceReferences.length);
         ServiceReference serviceReference = serviceReferences[0];
         Assert.assertEquals("otherValue", serviceReference.getProperty(PROP_NAME));
         Assert.assertEquals("p1", serviceReference.getProperty("p1"));
         Assert.assertEquals("p2", serviceReference.getProperty("p2"));
-        MutatingService s = ( MutatingService ) bundleContext.getService( serviceReference );
+        MutatingService s = (MutatingService) bundleContext.getService(serviceReference);
 
-        SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
+        SimpleServiceImpl srv1 = SimpleServiceImpl.create(bundleContext, "srv1");
         checkPropertiesNotPresent(serviceReference, "p1", "p2");
         Assert.assertEquals("bound", serviceReference.getProperty("SimpleService"));
 
-        srv1.update( "foo" );
+        srv1.update("foo");
         checkPropertiesNotPresent(serviceReference, "p1", "p2");
         Assert.assertEquals("updated", serviceReference.getProperty("SimpleService"));
 
@@ -205,16 +210,21 @@ public class MutablePropertiesTest extends ComponentTestBase
         bundleContext.ungetService(serviceReference);
     }
 
-    private void checkPropertiesNotPresent(ServiceReference<?> serviceReference, String ... props) {
-        for (String p : props) {
-            Assert.assertFalse("Should not contain property " + p, Arrays.asList(serviceReference.getPropertyKeys()).contains(p));
+    private void checkPropertiesNotPresent(ServiceReference<?> serviceReference,
+        String... props)
+    {
+        for (String p : props)
+        {
+            Assert.assertFalse("Should not contain property " + p,
+                Arrays.asList(serviceReference.getPropertyKeys()).contains(p));
         }
     }
 
     @Test
     public void test_mutable_properties_consumer() throws Exception
     {
-        ServiceReference<MutatingServiceConsumer> mscRef = bundleContext.getServiceReference(MutatingServiceConsumer.class);
+        ServiceReference<MutatingServiceConsumer> mscRef = bundleContext.getServiceReference(
+            MutatingServiceConsumer.class);
         MutatingServiceConsumer msc = bundleContext.getService(mscRef);
         assertMsc(msc, null, null, null);
 
@@ -226,7 +236,8 @@ public class MutablePropertiesTest extends ComponentTestBase
         assertMsc(msc, true, true, null);
     }
 
-    private void assertMsc(MutatingServiceConsumer msc, Boolean set, Boolean updated, Boolean unset)
+    private void assertMsc(MutatingServiceConsumer msc, Boolean set, Boolean updated,
+        Boolean unset)
     {
         Assert.assertEquals("set ", set, msc.isUpdatedInSet());
         Assert.assertEquals("updated ", updated, msc.isUpdatedInUpdated());

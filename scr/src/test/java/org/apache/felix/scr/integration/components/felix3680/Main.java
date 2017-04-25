@@ -82,13 +82,15 @@ public class Main implements Runnable
                     {
                         if (enable)
                         {
-                            _logService.log(LogService.LOG_INFO, "enabling component " + _componentNames[i]);
+                            _logService.log(LogService.LOG_INFO,
+                                "enabling component " + _componentNames[i]);
                             _ctx.enableComponent(_componentNames[i]);
                             _enabledLatch.countDown();
                         }
                         else
                         {
-                            _logService.log(LogService.LOG_INFO, "disabling component " + _componentNames[i]);
+                            _logService.log(LogService.LOG_INFO,
+                                "disabling component " + _componentNames[i]);
                             _ctx.disableComponent(_componentNames[i]);
                             _disabledLatch.countDown();
                         }
@@ -106,7 +108,8 @@ public class Main implements Runnable
                 do
                 {
                     n = _rnd.nextInt(max);
-                } while (set.contains(n));
+                }
+                while (set.contains(n));
                 set.add(n);
             }
             for (int i = 0; i < max; i++)
@@ -135,7 +138,8 @@ public class Main implements Runnable
         A a = (A) sr.getBundle().getBundleContext().getService(sr);
         if (a == null)
         {
-            throw new IllegalStateException("bindA: bundleContext.getService returned null");
+            throw new IllegalStateException(
+                "bindA: bundleContext.getService returned null");
         }
         if (_counter.incrementAndGet() != 1)
         {
@@ -148,7 +152,8 @@ public class Main implements Runnable
     {
         if (_counter.decrementAndGet() != 0)
         {
-            throw new IllegalStateException("unbindA: invalid counter value: " + _counter);
+            throw new IllegalStateException(
+                "unbindA: invalid counter value: " + _counter);
         }
         _disabledLatch.countDown();
     }
@@ -161,8 +166,8 @@ public class Main implements Runnable
         _thread = new Thread(this);
         _thread.start();
     }
-    
-    void stop() 
+
+    void stop()
     {
         _running = false;
         _thread.interrupt();
@@ -177,17 +182,16 @@ public class Main implements Runnable
         {
             _enabledLatch = new CountDownLatch(11); // for B,C,D,E,F,G,H,I,J,K and Main.bindA()
             _disabledLatch = new CountDownLatch(11); // for B,C,D,E,F,G,H,I,J,K and Main.unbindA()
-            EnableManager manager =
-                    new EnableManager(new String[] { 
-                        "org.apache.felix.scr.integration.components.felix3680.B", 
-                        "org.apache.felix.scr.integration.components.felix3680.C", 
-                        "org.apache.felix.scr.integration.components.felix3680.D", 
-                        "org.apache.felix.scr.integration.components.felix3680.E", 
-                        "org.apache.felix.scr.integration.components.felix3680.F", 
-                        "org.apache.felix.scr.integration.components.felix3680.G", 
-                        "org.apache.felix.scr.integration.components.felix3680.H", 
-                        "org.apache.felix.scr.integration.components.felix3680.I", 
-                        "org.apache.felix.scr.integration.components.felix3680.J", 
+            EnableManager manager = new EnableManager(
+                new String[] { "org.apache.felix.scr.integration.components.felix3680.B",
+                        "org.apache.felix.scr.integration.components.felix3680.C",
+                        "org.apache.felix.scr.integration.components.felix3680.D",
+                        "org.apache.felix.scr.integration.components.felix3680.E",
+                        "org.apache.felix.scr.integration.components.felix3680.F",
+                        "org.apache.felix.scr.integration.components.felix3680.G",
+                        "org.apache.felix.scr.integration.components.felix3680.H",
+                        "org.apache.felix.scr.integration.components.felix3680.I",
+                        "org.apache.felix.scr.integration.components.felix3680.J",
                         "org.apache.felix.scr.integration.components.felix3680.K" });
             manager.enableComponents(exec);
 
@@ -210,7 +214,8 @@ public class Main implements Runnable
             {
                 if (!_disabledLatch.await(10000, TimeUnit.MILLISECONDS))
                 {
-                    System.out.println("Could not disable components timely ... see logs.txt");
+                    System.out.println(
+                        "Could not disable components timely ... see logs.txt");
                     _logService.log(LogService.LOG_ERROR, "disableLatch TIMEOUT");
                     dumpComponents();
                     return;
@@ -219,9 +224,10 @@ public class Main implements Runnable
             catch (InterruptedException e)
             {
             }
-            
-            loop ++;
-            if ((loop % 500) == 0) {
+
+            loop++;
+            if ((loop % 500) == 0)
+            {
                 _logService.log(LogService.LOG_WARNING, "Performed " + loop + " tests.");
             }
         }
@@ -246,10 +252,12 @@ public class Main implements Runnable
 
     private void dumpState(StringWriter sw, String name)
     {
-        ComponentDescriptionDTO c = _scr.getComponentDescriptionDTO(_ctx.getBundleContext().getBundle(), name);
-        if ( c != null )
+        ComponentDescriptionDTO c = _scr.getComponentDescriptionDTO(
+            _ctx.getBundleContext().getBundle(), name);
+        if (c != null)
         {
-            sw.append( name ).append( "[" ).append( _scr.isComponentEnabled(c)? "enabled":"disabled" ).append( "] " );
+            sw.append(name).append("[").append(
+                _scr.isComponentEnabled(c) ? "enabled" : "disabled").append("] ");
         }
     }
 

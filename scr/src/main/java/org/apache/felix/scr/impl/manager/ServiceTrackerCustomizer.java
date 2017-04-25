@@ -48,56 +48,60 @@ import org.osgi.framework.ServiceReference;
  * @ThreadSafe
  * @version $Id: c14b8d47026b6bd4ba1f2db7bf7e755d00fc6f6a $
  */
-public interface ServiceTrackerCustomizer<S, T, U extends ServiceEvent> {
-	/**
-	 * A service is being added to the {@code ServiceTracker}.
-	 * 
-	 * <p>
-	 * This method is called before a service which matched the search
-	 * parameters of the {@code ServiceTracker} is added to the
-	 * {@code ServiceTracker}. This method should return the service object to
-	 * be tracked for the specified {@code ServiceReference}. The returned
-	 * service object is stored in the {@code ServiceTracker} and is available
-	 * from the {@code getService} and {@code getServices} methods.
-	 * 
-	 *
+public interface ServiceTrackerCustomizer<S, T, U extends ServiceEvent>
+{
+    /**
+     * A service is being added to the {@code ServiceTracker}.
+     * 
+     * <p>
+     * This method is called before a service which matched the search
+     * parameters of the {@code ServiceTracker} is added to the
+     * {@code ServiceTracker}. This method should return the service object to
+     * be tracked for the specified {@code ServiceReference}. The returned
+     * service object is stored in the {@code ServiceTracker} and is available
+     * from the {@code getService} and {@code getServices} methods.
+     * 
+     *
      *
      * @param reference The reference to the service being added to the
      *        {@code ServiceTracker}.
      * @return The service object to be tracked for the specified referenced
-	 *         service or {@code null} if the specified referenced service
-	 *         should not be tracked.
-	 */
-	public T addingService( ServiceReference<S> reference );
+     *         service or {@code null} if the specified referenced service
+     *         should not be tracked.
+     */
+    public T addingService(ServiceReference<S> reference);
 
-    public void addedService( ServiceReference<S> reference, T service, int trackingCount, int serviceCount, U event );
+    public void addedService(ServiceReference<S> reference, T service, int trackingCount,
+        int serviceCount, U event);
 
-	/**
-	 * A service tracked by the {@code ServiceTracker} has been modified.
-	 * 
-	 * <p>
-	 * This method is called when a service being tracked by the
-	 * {@code ServiceTracker} has had it properties modified.
-	 *
+    /**
+     * A service tracked by the {@code ServiceTracker} has been modified.
+     * 
+     * <p>
+     * This method is called when a service being tracked by the
+     * {@code ServiceTracker} has had it properties modified.
+     *
      * @param reference The reference to the service that has been modified.
-	 * @param service The service object for the specified referenced service.
-	 * @param trackingCount
-	 * @param event TODO
+     * @param service The service object for the specified referenced service.
+     * @param trackingCount
+     * @param event TODO
      */
-	public void modifiedService( ServiceReference<S> reference, T service, int trackingCount, U event );
+    public void modifiedService(ServiceReference<S> reference, T service,
+        int trackingCount, U event);
 
-	/**
-	 * A service tracked by the {@code ServiceTracker} has been removed.
-	 * 
-	 * <p>
-	 * This method is called after a service is no longer being tracked by the
-	 * {@code ServiceTracker}.
-	 *
+    /**
+     * A service tracked by the {@code ServiceTracker} has been removed.
+     * 
+     * <p>
+     * This method is called after a service is no longer being tracked by the
+     * {@code ServiceTracker}.
+     *
      * @param reference The reference to the service that has been removed.
-	 * @param service The service object for the specified referenced service.
-	 * @param trackingCount
-	 * @param event TODO
+     * @param service The service object for the specified referenced service.
+     * @param trackingCount
+     * @param event TODO
      */
-	public void removedService( ServiceReference<S> reference, T service, int trackingCount, U event );
+    public void removedService(ServiceReference<S> reference, T service,
+        int trackingCount, U event);
 
 }

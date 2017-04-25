@@ -38,20 +38,21 @@ import org.osgi.service.component.ComponentException;
 public class Annotations
 {
 
-    static public <T> T toObject(Class<T> clazz, Map<String, Object> props, Bundle b, boolean supportsInterfaces )
+    static public <T> T toObject(Class<T> clazz, Map<String, Object> props, Bundle b,
+        boolean supportsInterfaces)
     {
         Map<String, Object> m = new HashMap<String, Object>();
 
         Method[] methods = clazz.getMethods();
         Map<String, Method> complexFields = new HashMap<String, Method>();
-        for ( Method method: methods )
+        for (Method method : methods)
         {
             String name = method.getName();
             String key = fixup(name);
             Object raw = props.get(key);
             Class<?> returnType = method.getReturnType();
             Object cooked;
-            if ( returnType.isInterface() || returnType.isAnnotation())
+            if (returnType.isInterface() || returnType.isAnnotation())
             {
                 complexFields.put(key, method);
                 continue;
@@ -78,22 +79,23 @@ public class Annotations
             {
                 cooked = new Invalid(e);
             }
-            m.put( name, cooked );
+            m.put(name, cooked);
         }
         if (!complexFields.isEmpty())
         {
-            if (supportsInterfaces )
+            if (supportsInterfaces)
             {
-                Map<String, List<Map<String, Object>>> nested = extractSubMaps(complexFields.keySet(), props);
-                for (Map.Entry<String, Method> entry: complexFields.entrySet())
+                Map<String, List<Map<String, Object>>> nested = extractSubMaps(
+                    complexFields.keySet(), props);
+                for (Map.Entry<String, Method> entry : complexFields.entrySet())
                 {
                     List<Map<String, Object>> proplist = nested.get(entry.getKey());
                     if (proplist == null)
                     {
-                    	proplist = Collections.emptyList();
+                        proplist = Collections.emptyList();
                     }
                     Method method = entry.getValue();
-                    Class<?> returnType  = method.getReturnType();
+                    Class<?> returnType = method.getReturnType();
                     if (returnType.isArray())
                     {
                         Class<?> componentType = returnType.getComponentType();
@@ -101,7 +103,8 @@ public class Annotations
                         for (int i = 0; i < proplist.size(); i++)
                         {
                             Map<String, Object> rawElement = proplist.get(i);
-                            Object cooked = toObject(componentType, rawElement, b, supportsInterfaces);
+                            Object cooked = toObject(componentType, rawElement, b,
+                                supportsInterfaces);
                             Array.set(result, i, cooked);
                         }
                         m.put(method.getName(), result);
@@ -110,7 +113,8 @@ public class Annotations
                     {
                         if (!proplist.isEmpty())
                         {
-                            Object cooked = toObject(returnType, proplist.get(0), b, supportsInterfaces);
+                            Object cooked = toObject(returnType, proplist.get(0), b,
+                                supportsInterfaces);
                             m.put(method.getName(), cooked);
                         }
                     }
@@ -118,30 +122,35 @@ public class Annotations
             }
             else
             {
-                for (Method method: complexFields.values())
+                for (Method method : complexFields.values())
                 {
-                    m.put(method.getName(), new Invalid("Invalid annotation member type" + method.getReturnType().getName() + " for member: " + method.getName()));
+                    m.put(method.getName(),
+                        new Invalid("Invalid annotation member type"
+                            + method.getReturnType().getName() + " for member: "
+                            + method.getName()));
                 }
             }
         }
 
         InvocationHandler h = new Handler(m);
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] { clazz }, h);
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(),
+            new Class<?>[] { clazz }, h);
     }
 
-    private static Map<String, List<Map<String, Object>>> extractSubMaps(Collection<String> keys, Map<String, Object> map)
+    private static Map<String, List<Map<String, Object>>> extractSubMaps(
+        Collection<String> keys, Map<String, Object> map)
     {
         Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
         //Form a regexp to recognize all the keys as prefixes in the map keys.
         StringBuilder b = new StringBuilder("(");
-        for (String key: keys)
+        for (String key : keys)
         {
             b.append(key).append("|");
         }
-        b.deleteCharAt(b.length() -1);
+        b.deleteCharAt(b.length() - 1);
         b.append(")\\.([0-9]*)\\.(.*)");
         Pattern p = Pattern.compile(b.toString());
-        for (Map.Entry<String, Object> entry: map.entrySet())
+        for (Map.Entry<String, Object> entry : map.entrySet())
         {
             String longKey = entry.getKey();
             Matcher m = p.matcher(longKey);
@@ -192,7 +201,7 @@ public class Annotations
             int size = raws.size();
             Object result = Array.newInstance(componentType, size);
             int i = 0;
-            for (Object rawElement: raws)
+            for (Object rawElement : raws)
             {
                 Object cooked = Coercions.coerce(componentType, rawElement, bundle);
                 Array.set(result, i++, cooked);
@@ -216,10 +225,14 @@ public class Annotations
         while (m.find())
         {
             String replacement = "";//null;
-            if (m.group(1) != null) replacement = "\\$";
-            if (m.group(2) != null) replacement = "";
-            if (m.group(3) != null) replacement = "_";
-            if (m.group(4) != null) replacement = ".";
+            if (m.group(1) != null)
+                replacement = "\\$";
+            if (m.group(2) != null)
+                replacement = "";
+            if (m.group(3) != null)
+                replacement = "_";
+            if (m.group(4) != null)
+                replacement = ".";
 
             m.appendReplacement(b, replacement);
         }
@@ -241,7 +254,7 @@ public class Annotations
             Object value = values.get(method.getName());
             if (value instanceof Invalid)
             {
-                throw new ComponentException(((Invalid)value).getMessage());
+                throw new ComponentException(((Invalid) value).getMessage());
             }
             return value;
         }

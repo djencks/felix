@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.manager;
 
 import org.apache.felix.scr.impl.helper.SimpleLogger;
@@ -33,7 +32,7 @@ public class SinglePrototypeRefPair<S, T> extends SingleRefPair<S, T>
 {
     private final ServiceObjects<T> serviceObjects;
 
-    public SinglePrototypeRefPair( BundleContext context, ServiceReference<T> ref )
+    public SinglePrototypeRefPair(BundleContext context, ServiceReference<T> ref)
     {
         super(ref);
         this.serviceObjects = context.getServiceObjects(ref);
@@ -48,26 +47,28 @@ public class SinglePrototypeRefPair<S, T> extends SingleRefPair<S, T>
     @Override
     public String toString()
     {
-        return "[SinglePrototypeRefPair: ref: [" + getRef() + "] service: [" + getServiceObject(null) + "]]";
+        return "[SinglePrototypeRefPair: ref: [" + getRef() + "] service: ["
+            + getServiceObject(null) + "]]";
     }
 
     @Override
     public boolean getServiceObject(ComponentContextImpl<S> key, BundleContext context,
         SimpleLogger logger)
     {
-    	final T service = key.getComponentServiceObjectsHelper().getPrototypeRefInstance(this.getRef(), serviceObjects);
-        if ( service == null )
+        final T service = key.getComponentServiceObjectsHelper().getPrototypeRefInstance(
+            this.getRef(), serviceObjects);
+        if (service == null)
         {
             setFailed();
-            logger.log(
-                 LogService.LOG_WARNING,
-                 "Could not get service from serviceobjects for ref {0}", new Object[] {getRef()}, null );
+            logger.log(LogService.LOG_WARNING,
+                "Could not get service from serviceobjects for ref {0}",
+                new Object[] { getRef() }, null);
             return false;
         }
         if (!setServiceObject(key, service))
         {
             // Another thread got the service before, so unget our
-            serviceObjects.ungetService( service );
+            serviceObjects.ungetService(service);
         }
         return true;
     }

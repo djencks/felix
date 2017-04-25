@@ -18,50 +18,50 @@
  */
 package org.apache.felix.scr.integration.components.annoconfig;
 
-
-
-
 public class NestedAnnoComponent
 {
 
-    public enum E2 {a, b, c}
-    
-    public @interface A2 {
+    public enum E2
+    {
+        a, b, c
+    }
+
+    public @interface A2
+    {
         B2 b2();
+
         B2 b2null();
+
         B2[] b2s();
     }
-    
-    public @interface B2 {
+
+    public @interface B2
+    {
         boolean bool();
+
         E2 e2();
     }
-    
-    
+
     public A2 m_a2_activate;
     public A2 m_a2_modified;
     public A2 m_a2_deactivate;
-    
 
     @SuppressWarnings("unused")
-    private void activate( A2 a1 )
+    private void activate(A2 a1)
     {
         m_a2_activate = a1;
     }
 
-
-
     @SuppressWarnings("unused")
-    private void modified( A2 a1)
+    private void modified(A2 a1)
     {
         m_a2_modified = a1;
     }
-    
+
     @SuppressWarnings("unused")
-    private void deactivate( A2 a1 )
+    private void deactivate(A2 a1)
     {
         m_a2_deactivate = a1;
     }
-
 
 }

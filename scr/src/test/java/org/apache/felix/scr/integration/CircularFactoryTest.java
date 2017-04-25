@@ -35,21 +35,22 @@ public class CircularFactoryTest extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//        paxRunnerVmOption = DEBUG_VM_OPTION;
+        //        paxRunnerVmOption = DEBUG_VM_OPTION;
 
         descriptorFile = "/integration_test_circularFactory.xml";
         COMPONENT_PACKAGE = COMPONENT_PACKAGE + ".circularFactory";
-   }
-    
+    }
+
     @Test
     public void testCircularFactory() throws Exception
     {
-        ServiceReference<FactoryClient> sr = bundle.getBundleContext().getServiceReference( FactoryClient.class );
-        FactoryClient fc = bundle.getBundleContext().getService( sr );
+        ServiceReference<FactoryClient> sr = bundle.getBundleContext().getServiceReference(
+            FactoryClient.class);
+        FactoryClient fc = bundle.getBundleContext().getService(sr);
 
-        for ( String message: log.foundWarnings() )
+        for (String message : log.foundWarnings())
         {
-            TestCase.fail( "unexpected warning or error logged: " + message );
+            TestCase.fail("unexpected warning or error logged: " + message);
         }
 
     }

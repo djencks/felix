@@ -13,47 +13,63 @@ package org.apache.felix.scr.integration.components.concurrency;
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
 
-public class CFactory implements Runnable {
+public class CFactory implements Runnable
+{
     private ComponentFactory _cFactory;
     private Thread[] _threads = new Thread[2];
-    
-    public void bindCFactory(ComponentFactory cFactory) {
-      _cFactory = cFactory;
+
+    public void bindCFactory(ComponentFactory cFactory)
+    {
+        _cFactory = cFactory;
     }
-    
-    void activate() {
-      System.out.println("CFactory started");
-      for (int i = 0; i < _threads.length; i++) {
-        _threads[i] = new Thread(this);
-        _threads[i].start();
-      }
-    }
-    
-    void deactivate() {
-      System.out.println("CFactory stopped");
-      for (int i = 0; i < _threads.length; i++) {
-        _threads[i].interrupt();
-        try {
-          _threads[i].join();
-        } catch (InterruptedException e) {
+
+    void activate()
+    {
+        System.out.println("CFactory started");
+        for (int i = 0; i < _threads.length; i++)
+        {
+            _threads[i] = new Thread(this);
+            _threads[i].start();
         }
-      }
     }
-    
-    public void run() {
-      while (true) {
-        try {
-          ComponentInstance ci = _cFactory.newInstance(null);
-          ci.dispose();
-          if (Thread.currentThread().isInterrupted()) {
-            return;
-          }
-        } catch (Throwable t) {
-          if (!(t instanceof InterruptedException)) {
-            //System.out.println("CFactory thread exiting: got exception: " + t.toString());
-          }
-          return;
+
+    void deactivate()
+    {
+        System.out.println("CFactory stopped");
+        for (int i = 0; i < _threads.length; i++)
+        {
+            _threads[i].interrupt();
+            try
+            {
+                _threads[i].join();
+            }
+            catch (InterruptedException e)
+            {
+            }
         }
-      }
     }
-  }
+
+    public void run()
+    {
+        while (true)
+        {
+            try
+            {
+                ComponentInstance ci = _cFactory.newInstance(null);
+                ci.dispose();
+                if (Thread.currentThread().isInterrupted())
+                {
+                    return;
+                }
+            }
+            catch (Throwable t)
+            {
+                if (!(t instanceof InterruptedException))
+                {
+                    //System.out.println("CFactory thread exiting: got exception: " + t.toString());
+                }
+                return;
+            }
+        }
+    }
+}

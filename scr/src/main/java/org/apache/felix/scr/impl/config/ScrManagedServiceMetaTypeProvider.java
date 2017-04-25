@@ -40,8 +40,7 @@ import org.osgi.service.metatype.ObjectClassDefinition;
  *
  * @see ScrManagedServiceServiceFactory
  */
-class ScrManagedServiceMetaTypeProvider extends ScrManagedService
-    implements MetaTypeProvider
+class ScrManagedServiceMetaTypeProvider extends ScrManagedService implements MetaTypeProvider
 {
 
     static ScrManagedService create(final ScrConfigurationImpl scrConfiguration)
@@ -65,70 +64,65 @@ class ScrManagedServiceMetaTypeProvider extends ScrManagedService
     /**
      * @see org.osgi.service.metatype.MetaTypeProvider#getObjectClassDefinition(java.lang.String, java.lang.String)
      */
-    public ObjectClassDefinition getObjectClassDefinition( String id, String locale )
+    public ObjectClassDefinition getObjectClassDefinition(String id, String locale)
     {
-        if ( !ScrConfiguration.PID.equals( id ) )
+        if (!ScrConfiguration.PID.equals(id))
         {
             return null;
         }
 
         final ArrayList<AttributeDefinition> adList = new ArrayList<AttributeDefinition>();
 
-        adList.add(new AttributeDefinitionImpl(ScrConfiguration.PROP_LOGLEVEL, "SCR Log Level",
-            "Allows limiting the amount of logging information sent to the OSGi LogService."
-                + " Supported values are DEBUG, INFO, WARN, and ERROR. Default is ERROR.", AttributeDefinition.INTEGER,
-            new String[]
-                { String.valueOf(this.getScrConfiguration().getLogLevel()) }, 0, new String[]
-                { "Debug", "Information", "Warnings", "Error" }, new String[]
-                { "4", "3", "2", "1" }));
+        adList.add(
+            new AttributeDefinitionImpl(ScrConfiguration.PROP_LOGLEVEL, "SCR Log Level",
+                "Allows limiting the amount of logging information sent to the OSGi LogService."
+                    + " Supported values are DEBUG, INFO, WARN, and ERROR. Default is ERROR.",
+                AttributeDefinition.INTEGER,
+                new String[] { String.valueOf(this.getScrConfiguration().getLogLevel()) },
+                0, new String[] { "Debug", "Information", "Warnings", "Error" },
+                new String[] { "4", "3", "2", "1" }));
 
-        adList
-        .add(new AttributeDefinitionImpl(
-            ScrConfiguration.PROP_FACTORY_ENABLED,
+        adList.add(new AttributeDefinitionImpl(ScrConfiguration.PROP_FACTORY_ENABLED,
             "Extended Factory Components",
             "Whether or not to enable the support for creating Factory Component instances based on factory configuration."
                 + " This is an Apache Felix SCR specific extension, explicitly not supported by the Declarative Services "
                 + "specification. Reliance on this feature prevent the component from being used with other Declarative "
-                + "Services implementations. The default value is false to disable this feature.", this
-                .getScrConfiguration().isFactoryEnabled()));
+                + "Services implementations. The default value is false to disable this feature.",
+            this.getScrConfiguration().isFactoryEnabled()));
 
-        adList.add( new AttributeDefinitionImpl(
-                ScrConfiguration.PROP_DELAYED_KEEP_INSTANCES,
-                "Keep Component Instances",
-                "Whether or not to keep instances of delayed components once they are not referred to any more. The "
-                    + "Declarative Services specifications suggests that instances of delayed components are disposed off "
-                    + "if there is not used any longer. Setting this flag causes the components to not be disposed off "
-                    + "and thus prevent them from being constantly recreated if often used. Examples of such components "
-                    + "may be EventHandler services. The default is to dispose of unused components.", this
-                    .getScrConfiguration().keepInstances() ) );
+        adList.add(new AttributeDefinitionImpl(
+            ScrConfiguration.PROP_DELAYED_KEEP_INSTANCES, "Keep Component Instances",
+            "Whether or not to keep instances of delayed components once they are not referred to any more. The "
+                + "Declarative Services specifications suggests that instances of delayed components are disposed off "
+                + "if there is not used any longer. Setting this flag causes the components to not be disposed off "
+                + "and thus prevent them from being constantly recreated if often used. Examples of such components "
+                + "may be EventHandler services. The default is to dispose of unused components.",
+            this.getScrConfiguration().keepInstances()));
 
-        adList.add( new AttributeDefinitionImpl(
-                ScrConfiguration.PROP_LOCK_TIMEOUT,
-                "Lock timeout milliseconds",
-                "How long a lock is held before releasing due to suspected deadlock",
-                AttributeDefinition.LONG,
-                new String[] { String.valueOf(this.getScrConfiguration().lockTimeout())},
-                0, null, null) );
+        adList.add(new AttributeDefinitionImpl(ScrConfiguration.PROP_LOCK_TIMEOUT,
+            "Lock timeout milliseconds",
+            "How long a lock is held before releasing due to suspected deadlock",
+            AttributeDefinition.LONG,
+            new String[] { String.valueOf(this.getScrConfiguration().lockTimeout()) }, 0,
+            null, null));
 
-        adList.add( new AttributeDefinitionImpl(
-                ScrConfiguration.PROP_STOP_TIMEOUT,
-                "Stop timeout milliseconds",
-                "How long stopping a bundle is waited for before continuing due to suspected deadlock",
-                AttributeDefinition.LONG,
-                new String[] { String.valueOf(this.getScrConfiguration().stopTimeout())},
-                0, null, null) );
+        adList.add(new AttributeDefinitionImpl(ScrConfiguration.PROP_STOP_TIMEOUT,
+            "Stop timeout milliseconds",
+            "How long stopping a bundle is waited for before continuing due to suspected deadlock",
+            AttributeDefinition.LONG,
+            new String[] { String.valueOf(this.getScrConfiguration().stopTimeout()) }, 0,
+            null, null));
 
-        adList.add( new AttributeDefinitionImpl(
-                ScrConfiguration.PROP_GLOBAL_EXTENDER,
-                "Global Extender",
-                "Whether to extend all bundles whether or not visible to this bundle.",
-                false ) );
+        adList.add(new AttributeDefinitionImpl(ScrConfiguration.PROP_GLOBAL_EXTENDER,
+            "Global Extender",
+            "Whether to extend all bundles whether or not visible to this bundle.",
+            false));
 
         return new ObjectClassDefinition()
         {
 
-            private final AttributeDefinition[] attrs = adList
-                .toArray(new AttributeDefinition[adList.size()]);
+            private final AttributeDefinition[] attrs = adList.toArray(
+                new AttributeDefinition[adList.size()]);
 
             public String getName()
             {
@@ -170,16 +164,13 @@ class ScrManagedServiceMetaTypeProvider extends ScrManagedService
         private final String[] optionLabels;
         private final String[] optionValues;
 
-
-        AttributeDefinitionImpl( final String id, final String name, final String description, final boolean defaultValue )
+        AttributeDefinitionImpl(final String id, final String name, final String description, final boolean defaultValue)
         {
-            this( id, name, description, BOOLEAN, new String[]
-                { String.valueOf(defaultValue) }, 0, null, null );
+            this(id, name, description, BOOLEAN,
+                new String[] { String.valueOf(defaultValue) }, 0, null, null);
         }
 
-        AttributeDefinitionImpl( final String id, final String name, final String description, final int type,
-            final String[] defaultValues, final int cardinality, final String[] optionLabels,
-            final String[] optionValues )
+        AttributeDefinitionImpl(final String id, final String name, final String description, final int type, final String[] defaultValues, final int cardinality, final String[] optionLabels, final String[] optionValues)
         {
             this.id = id;
             this.name = name;
@@ -191,56 +182,47 @@ class ScrManagedServiceMetaTypeProvider extends ScrManagedService
             this.optionValues = optionValues;
         }
 
-
         public int getCardinality()
         {
             return cardinality;
         }
-
 
         public String[] getDefaultValue()
         {
             return defaultValues;
         }
 
-
         public String getDescription()
         {
             return description;
         }
-
 
         public String getID()
         {
             return id;
         }
 
-
         public String getName()
         {
             return name;
         }
-
 
         public String[] getOptionLabels()
         {
             return optionLabels;
         }
 
-
         public String[] getOptionValues()
         {
             return optionValues;
         }
-
 
         public int getType()
         {
             return type;
         }
 
-
-        public String validate( String arg0 )
+        public String validate(String arg0)
         {
             return null;
         }

@@ -37,9 +37,9 @@ public class BundleComponentActivatorTest extends TestCase
      */
     public void test_findDescriptors_withNullBundle()
     {
-        final URL[] urls = BundleComponentActivator.findDescriptors( null, "foo.xml" );
-        assertNotNull( "Descriptor array is not null", urls );
-        assertEquals( "Descriptor array length", 0, urls.length );
+        final URL[] urls = BundleComponentActivator.findDescriptors(null, "foo.xml");
+        assertNotNull("Descriptor array is not null", urls);
+        assertEquals("Descriptor array length", 0, urls.length);
     }
 
     /**
@@ -47,9 +47,10 @@ public class BundleComponentActivatorTest extends TestCase
      */
     public void test_findDescriptors_withNullLocation()
     {
-        final URL[] urls = BundleComponentActivator.findDescriptors( new MockBundle(), null );
-        assertNotNull( "Descriptor array is not null", urls );
-        assertEquals( "Descriptor array length", 0, urls.length );
+        final URL[] urls = BundleComponentActivator.findDescriptors(new MockBundle(),
+            null);
+        assertNotNull("Descriptor array is not null", urls);
+        assertEquals("Descriptor array length", 0, urls.length);
     }
 
     /**
@@ -57,9 +58,9 @@ public class BundleComponentActivatorTest extends TestCase
      */
     public void test_findDescriptors_withEmptyLocation()
     {
-        final URL[] urls = BundleComponentActivator.findDescriptors( new MockBundle(), "" );
-        assertNotNull( "Descriptor array is not null", urls );
-        assertEquals( "Descriptor array length", 0, urls.length );
+        final URL[] urls = BundleComponentActivator.findDescriptors(new MockBundle(), "");
+        assertNotNull("Descriptor array is not null", urls);
+        assertEquals("Descriptor array length", 0, urls.length);
     }
 
     /**
@@ -67,9 +68,10 @@ public class BundleComponentActivatorTest extends TestCase
      */
     public void test_findDescriptors_withBlankLocation()
     {
-        final URL[] urls = BundleComponentActivator.findDescriptors( new MockBundle(), " " );
-        assertNotNull( "Descriptor array is not null", urls );
-        assertEquals( "Descriptor array length", 0, urls.length );
+        final URL[] urls = BundleComponentActivator.findDescriptors(new MockBundle(),
+            " ");
+        assertNotNull("Descriptor array is not null", urls);
+        assertEquals("Descriptor array length", 0, urls.length);
     }
 
     /**
@@ -78,49 +80,44 @@ public class BundleComponentActivatorTest extends TestCase
      *
      * @throws MalformedURLException unexpected
      */
-    public void test_findDescriptors_withNonWildcardLocation() throws MalformedURLException
-    {
-        final URL[] descriptors = new URL[]
-            { new URL( "file:foo.xml" ) };
-        final Enumeration de = new Vector( Arrays.asList( descriptors ) ).elements();
-        final Bundle bundle = ( Bundle ) EasyMock.createNiceMock( Bundle.class );
-        EasyMock.expect( bundle.findEntries( "/some/location", "foo.xml", false ) ).andReturn( de );
-
-        EasyMock.replay( new Object[]
-            { bundle } );
-        final URL[] urls = BundleComponentActivator.findDescriptors( bundle, "/some/location/foo.xml" );
-        EasyMock.verify( new Object[]
-            { bundle } );
-
-        assertNotNull( "Descriptor array is not null", urls );
-        assertEquals( "Descriptor length", 1, urls.length );
-        assertEquals( "Descriptor", descriptors[0], urls[0] );
-    }
-
-
-    public void findDescriptors_withWildcardLocation( final String location,
-                                                      final String path,
-                                                      final String filePattern )
+    public void test_findDescriptors_withNonWildcardLocation()
         throws MalformedURLException
     {
-        final URL[] urls = new URL[]
-            {
-                new URL( "file:foo1.xml" ),
-                new URL( "file:foo2.xml" )
-            };
-        final Enumeration de = new Vector( Arrays.asList( urls ) ).elements();
-        final Bundle bundle = (Bundle) EasyMock.createNiceMock( Bundle.class );
-        EasyMock.expect( bundle.findEntries( path, filePattern, false ) ).andReturn( de );
+        final URL[] descriptors = new URL[] { new URL("file:foo.xml") };
+        final Enumeration de = new Vector(Arrays.asList(descriptors)).elements();
+        final Bundle bundle = (Bundle) EasyMock.createNiceMock(Bundle.class);
+        EasyMock.expect(bundle.findEntries("/some/location", "foo.xml", false)).andReturn(
+            de);
 
-        EasyMock.replay( new Object[]{ bundle } );
-        final URL[] actualUrls = BundleComponentActivator.findDescriptors( bundle, location );
-        EasyMock.verify( new Object[]{ bundle } );
+        EasyMock.replay(new Object[] { bundle });
+        final URL[] urls = BundleComponentActivator.findDescriptors(bundle,
+            "/some/location/foo.xml");
+        EasyMock.verify(new Object[] { bundle });
 
-        assertNotNull( "Descriptor array is not null", actualUrls );
-        assertEquals( "Descriptor length", urls.length, actualUrls.length );
-        for( int i = 0; i < actualUrls.length; i++ )
+        assertNotNull("Descriptor array is not null", urls);
+        assertEquals("Descriptor length", 1, urls.length);
+        assertEquals("Descriptor", descriptors[0], urls[0]);
+    }
+
+    public void findDescriptors_withWildcardLocation(final String location,
+        final String path, final String filePattern) throws MalformedURLException
+    {
+        final URL[] urls = new URL[] { new URL("file:foo1.xml"),
+                new URL("file:foo2.xml") };
+        final Enumeration de = new Vector(Arrays.asList(urls)).elements();
+        final Bundle bundle = (Bundle) EasyMock.createNiceMock(Bundle.class);
+        EasyMock.expect(bundle.findEntries(path, filePattern, false)).andReturn(de);
+
+        EasyMock.replay(new Object[] { bundle });
+        final URL[] actualUrls = BundleComponentActivator.findDescriptors(bundle,
+            location);
+        EasyMock.verify(new Object[] { bundle });
+
+        assertNotNull("Descriptor array is not null", actualUrls);
+        assertEquals("Descriptor length", urls.length, actualUrls.length);
+        for (int i = 0; i < actualUrls.length; i++)
         {
-            assertEquals( "Descriptor", urls[ i ], actualUrls[ i ] );
+            assertEquals("Descriptor", urls[i], actualUrls[i]);
         }
     }
 
@@ -129,10 +126,9 @@ public class BundleComponentActivatorTest extends TestCase
      *
      * @throws MalformedURLException unexpected
      */
-    public void test_findDescriptors_withWildcardLocation01()
-        throws MalformedURLException
+    public void test_findDescriptors_withWildcardLocation01() throws MalformedURLException
     {
-        findDescriptors_withWildcardLocation( "*.xml", "/", "*.xml" );
+        findDescriptors_withWildcardLocation("*.xml", "/", "*.xml");
     }
 
     /**
@@ -140,10 +136,9 @@ public class BundleComponentActivatorTest extends TestCase
      *
      * @throws MalformedURLException unexpected
      */
-    public void test_findDescriptors_withWildcardLocation02()
-        throws MalformedURLException
+    public void test_findDescriptors_withWildcardLocation02() throws MalformedURLException
     {
-        findDescriptors_withWildcardLocation( "/foo/*.xml", "/foo", "*.xml" );
+        findDescriptors_withWildcardLocation("/foo/*.xml", "/foo", "*.xml");
     }
 
     /**
@@ -154,15 +149,16 @@ public class BundleComponentActivatorTest extends TestCase
     public void test_findDescriptors_withWildcardLocation_nullEnum()
         throws MalformedURLException
     {
-        final Bundle bundle = (Bundle) EasyMock.createNiceMock( Bundle.class );
-        EasyMock.expect( bundle.findEntries( "/", "*.xml", false ) ).andReturn( null );
+        final Bundle bundle = (Bundle) EasyMock.createNiceMock(Bundle.class);
+        EasyMock.expect(bundle.findEntries("/", "*.xml", false)).andReturn(null);
 
-        EasyMock.replay( new Object[]{ bundle } );
-        final URL[] actualUrls = BundleComponentActivator.findDescriptors( bundle, "*.xml" );
-        EasyMock.verify( new Object[]{ bundle } );
+        EasyMock.replay(new Object[] { bundle });
+        final URL[] actualUrls = BundleComponentActivator.findDescriptors(bundle,
+            "*.xml");
+        EasyMock.verify(new Object[] { bundle });
 
-        assertNotNull( "Descriptor array is not null", actualUrls );
-        assertEquals( "Descriptor length", 0, actualUrls.length );
+        assertNotNull("Descriptor array is not null", actualUrls);
+        assertEquals("Descriptor length", 0, actualUrls.length);
     }
 
     /**
@@ -173,15 +169,17 @@ public class BundleComponentActivatorTest extends TestCase
     public void test_findDescriptors_withWildcardLocation_emptyEnum()
         throws MalformedURLException
     {
-        final Bundle bundle = (Bundle) EasyMock.createNiceMock( Bundle.class );
-        EasyMock.expect( bundle.findEntries( "/", "*.xml", false ) ).andReturn( new Vector().elements() );
+        final Bundle bundle = (Bundle) EasyMock.createNiceMock(Bundle.class);
+        EasyMock.expect(bundle.findEntries("/", "*.xml", false)).andReturn(
+            new Vector().elements());
 
-        EasyMock.replay( new Object[]{ bundle } );
-        final URL[] actualUrls = BundleComponentActivator.findDescriptors( bundle, "*.xml" );
-        EasyMock.verify( new Object[]{ bundle } );
+        EasyMock.replay(new Object[] { bundle });
+        final URL[] actualUrls = BundleComponentActivator.findDescriptors(bundle,
+            "*.xml");
+        EasyMock.verify(new Object[] { bundle });
 
-        assertNotNull( "Descriptor array is not null", actualUrls );
-        assertEquals( "Descriptor length", 0, actualUrls.length );
+        assertNotNull("Descriptor array is not null", actualUrls);
+        assertEquals("Descriptor length", 0, actualUrls.length);
     }
 
 }

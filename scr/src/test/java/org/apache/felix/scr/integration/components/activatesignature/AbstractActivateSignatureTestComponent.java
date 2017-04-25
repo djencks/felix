@@ -18,51 +18,46 @@
  */
 package org.apache.felix.scr.integration.components.activatesignature;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
 
-
 public abstract class AbstractActivateSignatureTestComponent
 {
-	
-	private static final  Map<String, AbstractActivateSignatureTestComponent> instances = new HashMap<String, AbstractActivateSignatureTestComponent>();
-	
-	public static  AbstractActivateSignatureTestComponent getInstance(String name)
-	{
-		return instances.get(name);
-	}
+
+    private static final Map<String, AbstractActivateSignatureTestComponent> instances = new HashMap<String, AbstractActivateSignatureTestComponent>();
+
+    public static AbstractActivateSignatureTestComponent getInstance(String name)
+    {
+        return instances.get(name);
+    }
 
     private String methodCalled;
-
 
     public String getMethodCalled()
     {
         return methodCalled;
     }
 
-
-    protected void setMethodCalled( String methodCalled )
+    protected void setMethodCalled(String methodCalled)
     {
         this.methodCalled = methodCalled;
         instances.put(methodCalled, this);
     }
 
-
-    protected void setMethodCalled( ComponentContext context )
+    protected void setMethodCalled(ComponentContext context)
     {
-        final String method = ( String ) context.getProperties().get( ComponentConstants.COMPONENT_NAME );
-        setMethodCalled( method );
+        final String method = (String) context.getProperties().get(
+            ComponentConstants.COMPONENT_NAME);
+        setMethodCalled(method);
     }
 
-
-    protected void setMethodCalled( Map<?, ?> context )
+    protected void setMethodCalled(Map<?, ?> context)
     {
-        final String method = ( String ) context.get( ComponentConstants.COMPONENT_NAME );
-        setMethodCalled( method );
+        final String method = (String) context.get(ComponentConstants.COMPONENT_NAME);
+        setMethodCalled(method);
     }
 
 }

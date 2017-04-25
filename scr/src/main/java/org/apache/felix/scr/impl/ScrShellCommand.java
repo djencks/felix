@@ -66,7 +66,7 @@ class ScrShellCommand implements Command
         String[] st = commandLine.split("\\s+");
         // Ignore the invoking command.
         // Try to get the OBR command, default is HELP command.
-        String command = st.length > 1? st[1]: HELP_CMD;
+        String command = st.length > 1 ? st[1] : HELP_CMD;
         String arg = (st.length > 2) ? st[2] : null;
 
         // Perform the specified command.
@@ -104,7 +104,7 @@ class ScrShellCommand implements Command
                     err.println("Unknown command: " + command);
                 }
             }
-            catch ( IllegalArgumentException e )
+            catch (IllegalArgumentException e)
             {
                 System.err.println(e.getMessage());
             }
@@ -113,16 +113,17 @@ class ScrShellCommand implements Command
 
     private void help(PrintStream out, String command)
     {
-        if (LIST_CMD.equals( command ))
+        if (LIST_CMD.equals(command))
         {
             out.println("");
             out.println("scr " + LIST_CMD + " [ <bundleId> ]");
             out.println("");
-            out.println("This command lists registered component configurations. If a bundle ID is\n"
-                + "added, only the component configurations of the selected bundles are listed.");
+            out.println(
+                "This command lists registered component configurations. If a bundle ID is\n"
+                    + "added, only the component configurations of the selected bundles are listed.");
             out.println("");
         }
-        else if (INFO_CMD.equals( command ))
+        else if (INFO_CMD.equals(command))
         {
             out.println("");
             out.println("scr " + INFO_CMD + " <componentId>");
@@ -131,23 +132,25 @@ class ScrShellCommand implements Command
                 + "component name or component configuration ID is given as command argument.");
             out.println("");
         }
-        else if (ENABLE_CMD.equals( command ))
+        else if (ENABLE_CMD.equals(command))
         {
             out.println("");
             out.println("scr " + ENABLE_CMD + " <componentName>");
             out.println("");
-            out.println("This command enables the component whose component name\n" + "is given as command argument.");
+            out.println("This command enables the component whose component name\n"
+                + "is given as command argument.");
             out.println("");
         }
-        else if (DISABLE_CMD.equals( command ))
+        else if (DISABLE_CMD.equals(command))
         {
             out.println("");
             out.println("scr " + DISABLE_CMD + " <componentName>");
             out.println("");
-            out.println("This command disables the component whose component name\n" + "is given as command argument.");
+            out.println("This command disables the component whose component name\n"
+                + "is given as command argument.");
             out.println("");
         }
-        else if (CONFIG_CMD.equals( command ))
+        else if (CONFIG_CMD.equals(command))
         {
             out.println("");
             out.println("scr " + CONFIG_CMD);
