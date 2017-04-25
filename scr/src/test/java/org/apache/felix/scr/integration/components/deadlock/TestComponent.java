@@ -23,26 +23,26 @@ import org.osgi.service.component.ComponentContext;
 
 public class TestComponent
 {
-    
+
     private ComponentContext cc;
-    
+
     private ServiceReference sr;
     private boolean success1;
     private boolean success2;
-    
+
     protected void activate(ComponentContext cc)
     {
-        this.cc =cc;
+        this.cc = cc;
     }
-    
+
     protected void setRef(ServiceReference sr)
     {
         this.sr = sr;
     }
-    
+
     protected void unsetRef(ServiceReference sr)
     {
-        if (sr == this.sr)
+        if ( sr == this.sr )
         {
             this.sr = null;
         }
@@ -50,19 +50,19 @@ public class TestComponent
 
     public void doIt()
     {
-        Thread t = new Thread() 
+        Thread t = new Thread()
         {
 
             @Override
             public void run()
             {
-                Object sc = cc.locateService("Ref", sr);
-                if (sc != null)
+                Object sc = cc.locateService( "Ref", sr );
+                if ( sc != null )
                 {
                     success1 = true;
                 }
             }
-            
+
         };
         t.start();
         try
@@ -74,9 +74,9 @@ public class TestComponent
         {
             e.printStackTrace();
         }
-       
+
     }
-    
+
     public boolean isSuccess1()
     {
         return success1;
@@ -86,6 +86,5 @@ public class TestComponent
     {
         return success2;
     }
-
 
 }

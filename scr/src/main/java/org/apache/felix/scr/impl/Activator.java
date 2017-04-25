@@ -160,8 +160,7 @@ public class Activator extends AbstractExtender implements SimpleLogger
         m_runtime_reg = m_context.registerService( ServiceComponentRuntime.class, runtime, null );
 
         // log SCR startup
-        log( LogService.LOG_INFO, m_bundle, " Version = {0}",
-            new Object[] { m_bundle.getVersion().toString() }, null);
+        log( LogService.LOG_INFO, m_bundle, " Version = {0}", new Object[] { m_bundle.getVersion().toString() }, null );
 
         // create and start the component actor
         m_componentActor = new ComponentActorThread( this );
@@ -313,7 +312,7 @@ public class Activator extends AbstractExtender implements SimpleLogger
      */
     private void loadComponents(Bundle bundle)
     {
-        if (bundle.getHeaders("").get(ComponentConstants.SERVICE_COMPONENT) == null)
+        if ( bundle.getHeaders( "" ).get( ComponentConstants.SERVICE_COMPONENT ) == null )
         {
             // no components in the bundle, abandon
             return;
@@ -434,7 +433,7 @@ public class Activator extends AbstractExtender implements SimpleLogger
         {
             try
             {
-                int reason = isStopping()? ComponentConstants.DEACTIVATION_REASON_DISPOSED
+                int reason = isStopping() ? ComponentConstants.DEACTIVATION_REASON_DISPOSED
                     : ComponentConstants.DEACTIVATION_REASON_BUNDLE_STOPPED;
                 ga.dispose( reason );
             }
@@ -516,15 +515,15 @@ public class Activator extends AbstractExtender implements SimpleLogger
         if ( isLogEnabled( level ) )
         {
             ServiceTracker<LogService, LogService> t = m_logService;
-            LogService logger = ( t != null )? t.getService(): null;
+            LogService logger = ( t != null ) ? t.getService() : null;
             if ( logger == null )
             {
                 // output depending on level
-                PrintStream out = ( level == LogService.LOG_ERROR )? System.err: System.out;
+                PrintStream out = ( level == LogService.LOG_ERROR ) ? System.err : System.out;
 
                 // level as a string
                 StringBuffer buf = new StringBuffer();
-                switch (level)
+                switch ( level )
                 {
                     case ( LogService.LOG_DEBUG ):
                         buf.append( "DEBUG: " );

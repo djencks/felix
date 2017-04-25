@@ -111,13 +111,13 @@ public class Coercions
         o = multipleToSingle( o, byte0 );
         if ( o instanceof Byte )
         {
-            return (Byte) o;
+            return ( Byte ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Byte.parseByte( (String) o );
+                return Byte.parseByte( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -126,15 +126,15 @@ public class Coercions
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: byte0;
+            return ( Boolean ) o ? 1 : byte0;
         }
         if ( o instanceof Character )
         {
-            return (byte) ( (Character) o ).charValue();
+            return ( byte ) ( ( Character ) o ).charValue();
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).byteValue();
+            return ( ( Number ) o ).byteValue();
         }
         if ( o == null )
         {
@@ -148,23 +148,23 @@ public class Coercions
         o = multipleToSingle( o, byte0 );
         if ( o instanceof Character )
         {
-            return (Character) o;
+            return ( Character ) o;
         }
         if ( o instanceof String )
         {
-            if ( ( (String) o ).length() > 0 )
+            if ( ( ( String ) o ).length() > 0 )
             {
-                return ( (String) o ).charAt( 0 );
+                return ( ( String ) o ).charAt( 0 );
             }
             return char0;
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: char0;
+            return ( Boolean ) o ? 1 : char0;
         }
         if ( o instanceof Number )
         {
-            return (char) ( (Number) o ).intValue();
+            return ( char ) ( ( Number ) o ).intValue();
         }
         if ( o == null )
         {
@@ -178,13 +178,13 @@ public class Coercions
         o = multipleToSingle( o, double0 );
         if ( o instanceof Double )
         {
-            return (Double) o;
+            return ( Double ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Double.parseDouble( (String) o );
+                return Double.parseDouble( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -193,15 +193,15 @@ public class Coercions
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: 0;
+            return ( Boolean ) o ? 1 : 0;
         }
         if ( o instanceof Character )
         {
-            return (double) ( (Character) o ).charValue();
+            return ( double ) ( ( Character ) o ).charValue();
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).doubleValue();
+            return ( ( Number ) o ).doubleValue();
         }
         if ( o == null )
         {
@@ -215,13 +215,13 @@ public class Coercions
         o = multipleToSingle( o, float0 );
         if ( o instanceof Float )
         {
-            return (Float) o;
+            return ( Float ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Float.parseFloat( (String) o );
+                return Float.parseFloat( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -230,15 +230,15 @@ public class Coercions
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: 0;
+            return ( Boolean ) o ? 1 : 0;
         }
         if ( o instanceof Character )
         {
-            return (float) ( (Character) o ).charValue();
+            return ( float ) ( ( Character ) o ).charValue();
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).floatValue();
+            return ( ( Number ) o ).floatValue();
         }
         if ( o == null )
         {
@@ -252,13 +252,13 @@ public class Coercions
         o = multipleToSingle( o, int0 );
         if ( o instanceof Integer )
         {
-            return (Integer) o;
+            return ( Integer ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Integer.parseInt( (String) o );
+                return Integer.parseInt( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -267,15 +267,15 @@ public class Coercions
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: 0;
+            return ( Boolean ) o ? 1 : 0;
         }
         if ( o instanceof Character )
         {
-            return (int) ( (Character) o ).charValue();
+            return ( int ) ( ( Character ) o ).charValue();
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).intValue();
+            return ( ( Number ) o ).intValue();
         }
         if ( o == null )
         {
@@ -289,13 +289,13 @@ public class Coercions
         o = multipleToSingle( o, long0 );
         if ( o instanceof Long )
         {
-            return (Long) o;
+            return ( Long ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Long.parseLong( (String) o );
+                return Long.parseLong( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -304,15 +304,15 @@ public class Coercions
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: 0;
+            return ( Boolean ) o ? 1 : 0;
         }
         if ( o instanceof Character )
         {
-            return (long) ( (Character) o ).charValue();
+            return ( long ) ( ( Character ) o ).charValue();
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).longValue();
+            return ( ( Number ) o ).longValue();
         }
         if ( o == null )
         {
@@ -326,13 +326,13 @@ public class Coercions
         o = multipleToSingle( o, short0 );
         if ( o instanceof Short )
         {
-            return (Short) o;
+            return ( Short ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Short.parseShort( (String) o );
+                return Short.parseShort( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -341,15 +341,15 @@ public class Coercions
         }
         if ( o instanceof Boolean )
         {
-            return (Boolean) o? 1: short0;
+            return ( Boolean ) o ? 1 : short0;
         }
         if ( o instanceof Character )
         {
-            return (short) ( (Character) o ).charValue();
+            return ( short ) ( ( Character ) o ).charValue();
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).shortValue();
+            return ( ( Number ) o ).shortValue();
         }
         if ( o == null )
         {
@@ -363,7 +363,7 @@ public class Coercions
         o = multipleToSingle( o, null );
         if ( o instanceof String )
         {
-            return (String) o;
+            return ( String ) o;
         }
         if ( o == null )
         {
@@ -378,13 +378,13 @@ public class Coercions
         o = multipleToSingle( o, false );
         if ( o instanceof Boolean )
         {
-            return (Boolean) o;
+            return ( Boolean ) o;
         }
         if ( o instanceof String )
         {
             try
             {
-                return Boolean.parseBoolean( (String) o );
+                return Boolean.parseBoolean( ( String ) o );
             }
             catch ( NumberFormatException e )
             {
@@ -393,11 +393,11 @@ public class Coercions
         }
         if ( o instanceof Character )
         {
-            return ( (Character) o ).charValue() != 0;
+            return ( ( Character ) o ).charValue() != 0;
         }
         if ( o instanceof Number )
         {
-            return ( (Number) o ).doubleValue() != 0D;
+            return ( ( Number ) o ).doubleValue() != 0D;
         }
         if ( o == null )
         {
@@ -417,7 +417,7 @@ public class Coercions
         {
             try
             {
-                return b.loadClass( (String) o );
+                return b.loadClass( ( String ) o );
             }
             catch ( ClassNotFoundException e )
             {
@@ -434,7 +434,7 @@ public class Coercions
         {
             try
             {
-                return Enum.valueOf( clazz, (String) o );
+                return Enum.valueOf( clazz, ( String ) o );
             }
             catch ( IllegalArgumentException e )
             {
@@ -467,7 +467,7 @@ public class Coercions
         {
             throw new ComponentException( "Not a collection: " + raw );
         }
-        Collection<?> c = (Collection<?>) raw;
+        Collection<?> c = ( Collection<?> ) raw;
         if ( c.isEmpty() )
         {
             return defaultValue;

@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.manager.components;
 
-
 public class T1a extends T1
 {
 

@@ -18,24 +18,21 @@
  */
 package org.apache.felix.scr.impl.metadata.instances;
 
-
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 
-
 public class Level1Object extends BaseObject
 {
 
-    private void activate_level1_bundle( BundleContext ctx )
+    private void activate_level1_bundle(BundleContext ctx)
     {
-        setCalledMethod("activate_level1_bundle");
+        setCalledMethod( "activate_level1_bundle" );
     }
 
-
-    protected void activate_level1_map( Map props )
+    protected void activate_level1_map(Map props)
     {
-        setCalledMethod("activate_level1_map");
+        setCalledMethod( "activate_level1_map" );
     }
 
 }

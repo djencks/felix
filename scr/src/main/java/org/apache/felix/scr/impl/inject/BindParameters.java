@@ -23,23 +23,24 @@ import org.apache.felix.scr.impl.manager.RefPair;
 
 public class BindParameters
 {
-    
+
     private final ComponentContextImpl<?> componentContext;
     private final RefPair<?, ?> refPair;
+
     public BindParameters(ComponentContextImpl<?> componentContext, RefPair<?, ?> refPair)
     {
         this.componentContext = componentContext;
         this.refPair = refPair;
     }
-    
+
     public ComponentContextImpl<?> getComponentContext()
     {
         return componentContext;
     }
-    
+
     public RefPair<?, ?> getRefPair()
     {
         return refPair;
     }
-    
+
 }

@@ -205,7 +205,7 @@ public class BundleComponentActivator implements ComponentActivator
                 }
                 catch ( InvalidSyntaxException e )
                 {
-                    throw (IllegalArgumentException) new IllegalArgumentException(
+                    throw ( IllegalArgumentException ) new IllegalArgumentException(
                         "invalid class name filter" ).initCause( e );
                 }
             }
@@ -259,7 +259,7 @@ public class BundleComponentActivator implements ComponentActivator
             new Object[] { m_bundle.getBundleId() }, null, null, null );
 
         // Get the Metadata-Location value from the manifest
-        String descriptorLocations = (String) m_bundle.getHeaders("").get("Service-Component");
+        String descriptorLocations = ( String ) m_bundle.getHeaders( "" ).get( "Service-Component" );
         if ( descriptorLocations == null )
         {
             throw new ComponentException( "Service-Component entry not found in the manifest" );
@@ -438,7 +438,7 @@ public class BundleComponentActivator implements ComponentActivator
             // or one or more component elements embedded in a larger document
             for ( Object o : handler.getComponentMetadataList() )
             {
-                ComponentMetadata metadata = (ComponentMetadata) o;
+                ComponentMetadata metadata = ( ComponentMetadata ) o;
                 ComponentRegistryKey key = null;
                 try
                 {

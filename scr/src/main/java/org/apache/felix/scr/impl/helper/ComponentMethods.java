@@ -25,7 +25,7 @@ import org.apache.felix.scr.impl.metadata.ComponentMetadata;
  */
 public interface ComponentMethods
 {
-    void initComponentMethods( ComponentMetadata componentMetadata, Class<?> implementationObjectClass );
+    void initComponentMethods(ComponentMetadata componentMetadata, Class<?> implementationObjectClass);
 
     ComponentMethod getActivateMethod();
 
@@ -33,6 +33,6 @@ public interface ComponentMethods
 
     ComponentMethod getModifiedMethod();
 
-    ReferenceMethods getBindMethods(String refName );
+    ReferenceMethods getBindMethods(String refName);
 
 }

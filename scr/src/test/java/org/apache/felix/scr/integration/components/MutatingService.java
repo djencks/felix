@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.Dictionary;
 
 public interface MutatingService

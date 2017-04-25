@@ -41,7 +41,7 @@ public class TargetPropertyTest extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//         paxRunnerVmOption = DEBUG_VM_OPTION;
+        //         paxRunnerVmOption = DEBUG_VM_OPTION;
 
         descriptorFile = "/integration_test_target_properties.xml";
     }
@@ -81,41 +81,39 @@ public class TargetPropertyTest extends ComponentTestBase
         singleTest( pid, "bar" );
     }
 
-
     private void singleTest(String pid, String expected) throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, expected );
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "baz" );
 
-		getDisabledConfigurationAndEnable(pid, ComponentConfigurationDTO.ACTIVE);
-        checkTarget(expected, srv1);
-        
+        getDisabledConfigurationAndEnable( pid, ComponentConfigurationDTO.ACTIVE );
+        checkTarget( expected, srv1 );
+
         //configuration not setting target property does not change it
         configure( pid );
         delay();//all cm event to complete
-        checkTarget(expected, srv1);
-        
+        checkTarget( expected, srv1 );
+
         // update configuration to target srv2
-        theConfig.put("one.target", "(value=baz)");
+        theConfig.put( "one.target", "(value=baz)" );
         configure( pid );
         delay();
-        checkTarget("baz", srv2);
-        
+        checkTarget( "baz", srv2 );
+
         //update configuration removing target property
-        theConfig.remove("one.target");
+        theConfig.remove( "one.target" );
         configure( pid );
         delay();//all cm event to complete
-        checkTarget(expected, srv1);
-        
+        checkTarget( expected, srv1 );
+
     }
 
     void checkTarget(String expected, final SimpleServiceImpl srv1)
     {
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
-        TestCase.assertEquals("(value=" + expected + ")", comp10.getProperty("one.target"));
+        TestCase.assertEquals( "(value=" + expected + ")", comp10.getProperty( "one.target" ) );
         TestCase.assertEquals( srv1, comp10.m_singleRef );
     }
-
 
 }

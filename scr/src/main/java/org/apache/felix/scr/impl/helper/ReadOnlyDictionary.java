@@ -33,8 +33,7 @@ import org.osgi.framework.ServiceReference;
  * a <code>Map</code> whose modification methods (like {@link #put(Object, Object)},
  * {@link #remove(Object)}, etc.) throw an {@link UnsupportedOperationException}.
  */
-public class ReadOnlyDictionary extends Dictionary<String, Object>
-    implements Map<String, Object>, Comparable<ReadOnlyDictionary>
+public class ReadOnlyDictionary extends Dictionary<String, Object> implements Map<String, Object>, Comparable<ReadOnlyDictionary>
 {
 
     private final Hashtable<String, Object> m_delegate;
@@ -45,7 +44,7 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
      * Creates a wrapper for the given delegate dictionary providing read
      * only access to the data.
      */
-    public ReadOnlyDictionary( final Map<String, Object> delegate )
+    public ReadOnlyDictionary(final Map<String, Object> delegate)
     {
         if ( delegate instanceof Hashtable )
         {
@@ -54,7 +53,7 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
         else
         {
             this.m_delegate = new Hashtable<String, Object>();
-            for ( Map.Entry<String, Object> entry: delegate.entrySet() )
+            for ( Map.Entry<String, Object> entry : delegate.entrySet() )
             {
                 this.m_delegate.put( entry.getKey(), entry.getValue() );
             }
@@ -66,7 +65,7 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
      * Creates a wrapper for the given service reference providing read only
      * access to the reference properties.
      */
-    public ReadOnlyDictionary( final ServiceReference<?> serviceReference )
+    public ReadOnlyDictionary(final ServiceReference<?> serviceReference)
     {
         Hashtable<String, Object> properties = new Hashtable<String, Object>();
         final String[] keys = serviceReference.getPropertyKeys();
@@ -82,7 +81,6 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
         m_serviceReference = serviceReference;
     }
 
-
     //---------- Dictionary API
 
     @Override
@@ -92,11 +90,10 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
     }
 
     @Override
-    public Object get( final Object key )
+    public Object get(final Object key)
     {
         return m_delegate.get( key );
     }
-
 
     @Override
     public boolean isEmpty()
@@ -104,35 +101,31 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
         return m_delegate.isEmpty();
     }
 
-
     @Override
     public Enumeration<String> keys()
     {
         return m_delegate.keys();
     }
 
+    /**
+     * This method has no effect and always returns <code>null</code> as this
+     * instance is read-only and cannot modify and properties.
+     */
+    @Override
+    public Object put(final String key, final Object value)
+    {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * This method has no effect and always returns <code>null</code> as this
      * instance is read-only and cannot modify and properties.
      */
     @Override
-    public Object put( final String key, final Object value )
+    public Object remove(final Object key)
     {
         throw new UnsupportedOperationException();
     }
-
-
-    /**
-     * This method has no effect and always returns <code>null</code> as this
-     * instance is read-only and cannot modify and properties.
-     */
-    @Override
-    public Object remove( final Object key )
-    {
-        throw new UnsupportedOperationException();
-    }
-
 
     @Override
     public int size()
@@ -140,13 +133,11 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
         return m_delegate.size();
     }
 
-
     @Override
     public String toString()
     {
         return m_delegate.toString();
     }
-
 
     //---------- Map API
 
@@ -155,42 +146,35 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
         throw new UnsupportedOperationException();
     }
 
-
-    public boolean containsKey( Object key )
+    public boolean containsKey(Object key)
     {
         return m_delegate.containsKey( key );
     }
 
-
-    public boolean containsValue( Object value )
+    public boolean containsValue(Object value)
     {
         return m_delegate.containsValue( value );
     }
-
 
     public Set<Entry<String, Object>> entrySet()
     {
         return Collections.unmodifiableSet( m_delegate.entrySet() );
     }
 
-
     public Set<String> keySet()
     {
         return Collections.unmodifiableSet( m_delegate.keySet() );
     }
 
-
-    public void putAll( Map<? extends String, ? extends Object> m )
+    public void putAll(Map<? extends String, ? extends Object> m)
     {
         throw new UnsupportedOperationException();
     }
-
 
     public Collection<Object> values()
     {
         return Collections.unmodifiableCollection( m_delegate.values() );
     }
-
 
     public int compareTo(final ReadOnlyDictionary o)
     {
@@ -206,7 +190,7 @@ public class ReadOnlyDictionary extends Dictionary<String, Object>
         {
             return -1;
         }
-        return m_serviceReference.compareTo(o.m_serviceReference);
+        return m_serviceReference.compareTo( o.m_serviceReference );
     }
 
 }

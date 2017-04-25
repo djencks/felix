@@ -38,131 +38,133 @@ import org.osgi.service.component.ComponentException;
 public class Annotations
 {
 
-    static public <T> T toObject(Class<T> clazz, Map<String, Object> props, Bundle b, boolean supportsInterfaces )
+    static public <T> T toObject(Class<T> clazz, Map<String, Object> props, Bundle b, boolean supportsInterfaces)
     {
         Map<String, Object> m = new HashMap<String, Object>();
 
         Method[] methods = clazz.getMethods();
         Map<String, Method> complexFields = new HashMap<String, Method>();
-        for ( Method method: methods )
+        for ( Method method : methods )
         {
             String name = method.getName();
-            String key = fixup(name);
-            Object raw = props.get(key);
+            String key = fixup( name );
+            Object raw = props.get( key );
             Class<?> returnType = method.getReturnType();
             Object cooked;
-            if ( returnType.isInterface() || returnType.isAnnotation())
+            if ( returnType.isInterface() || returnType.isAnnotation() )
             {
-                complexFields.put(key, method);
+                complexFields.put( key, method );
                 continue;
             }
 
             try
             {
-                if (returnType.isArray())
+                if ( returnType.isArray() )
                 {
                     Class<?> componentType = returnType.getComponentType();
-                    if (componentType.isInterface() || componentType.isAnnotation())
+                    if ( componentType.isInterface() || componentType.isAnnotation() )
                     {
-                        complexFields.put(key, method);
+                        complexFields.put( key, method );
                         continue;
                     }
-                    cooked = coerceToArray(componentType, raw, b);
+                    cooked = coerceToArray( componentType, raw, b );
                 }
                 else
                 {
-                    cooked = Coercions.coerce(returnType, raw, b);
+                    cooked = Coercions.coerce( returnType, raw, b );
                 }
             }
-            catch (ComponentException e)
+            catch ( ComponentException e )
             {
-                cooked = new Invalid(e);
+                cooked = new Invalid( e );
             }
             m.put( name, cooked );
         }
-        if (!complexFields.isEmpty())
+        if ( !complexFields.isEmpty() )
         {
-            if (supportsInterfaces )
+            if ( supportsInterfaces )
             {
-                Map<String, List<Map<String, Object>>> nested = extractSubMaps(complexFields.keySet(), props);
-                for (Map.Entry<String, Method> entry: complexFields.entrySet())
+                Map<String, List<Map<String, Object>>> nested = extractSubMaps( complexFields.keySet(), props );
+                for ( Map.Entry<String, Method> entry : complexFields.entrySet() )
                 {
-                    List<Map<String, Object>> proplist = nested.get(entry.getKey());
-                    if (proplist == null)
+                    List<Map<String, Object>> proplist = nested.get( entry.getKey() );
+                    if ( proplist == null )
                     {
-                    	proplist = Collections.emptyList();
+                        proplist = Collections.emptyList();
                     }
                     Method method = entry.getValue();
-                    Class<?> returnType  = method.getReturnType();
-                    if (returnType.isArray())
+                    Class<?> returnType = method.getReturnType();
+                    if ( returnType.isArray() )
                     {
                         Class<?> componentType = returnType.getComponentType();
-                        Object result = Array.newInstance(componentType, proplist.size());
-                        for (int i = 0; i < proplist.size(); i++)
+                        Object result = Array.newInstance( componentType, proplist.size() );
+                        for ( int i = 0; i < proplist.size(); i++ )
                         {
-                            Map<String, Object> rawElement = proplist.get(i);
-                            Object cooked = toObject(componentType, rawElement, b, supportsInterfaces);
-                            Array.set(result, i, cooked);
+                            Map<String, Object> rawElement = proplist.get( i );
+                            Object cooked = toObject( componentType, rawElement, b, supportsInterfaces );
+                            Array.set( result, i, cooked );
                         }
-                        m.put(method.getName(), result);
+                        m.put( method.getName(), result );
                     }
                     else
                     {
-                        if (!proplist.isEmpty())
+                        if ( !proplist.isEmpty() )
                         {
-                            Object cooked = toObject(returnType, proplist.get(0), b, supportsInterfaces);
-                            m.put(method.getName(), cooked);
+                            Object cooked = toObject( returnType, proplist.get( 0 ), b, supportsInterfaces );
+                            m.put( method.getName(), cooked );
                         }
                     }
                 }
             }
             else
             {
-                for (Method method: complexFields.values())
+                for ( Method method : complexFields.values() )
                 {
-                    m.put(method.getName(), new Invalid("Invalid annotation member type" + method.getReturnType().getName() + " for member: " + method.getName()));
+                    m.put( method.getName(), new Invalid( "Invalid annotation member type"
+                        + method.getReturnType().getName() + " for member: " + method.getName() ) );
                 }
             }
         }
 
-        InvocationHandler h = new Handler(m);
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] { clazz }, h);
+        InvocationHandler h = new Handler( m );
+        return ( T ) Proxy.newProxyInstance( clazz.getClassLoader(), new Class<?>[] { clazz }, h );
     }
 
-    private static Map<String, List<Map<String, Object>>> extractSubMaps(Collection<String> keys, Map<String, Object> map)
+    private static Map<String, List<Map<String, Object>>> extractSubMaps(Collection<String> keys,
+        Map<String, Object> map)
     {
         Map<String, List<Map<String, Object>>> result = new HashMap<String, List<Map<String, Object>>>();
         //Form a regexp to recognize all the keys as prefixes in the map keys.
-        StringBuilder b = new StringBuilder("(");
-        for (String key: keys)
+        StringBuilder b = new StringBuilder( "(" );
+        for ( String key : keys )
         {
-            b.append(key).append("|");
+            b.append( key ).append( "|" );
         }
-        b.deleteCharAt(b.length() -1);
-        b.append(")\\.([0-9]*)\\.(.*)");
-        Pattern p = Pattern.compile(b.toString());
-        for (Map.Entry<String, Object> entry: map.entrySet())
+        b.deleteCharAt( b.length() - 1 );
+        b.append( ")\\.([0-9]*)\\.(.*)" );
+        Pattern p = Pattern.compile( b.toString() );
+        for ( Map.Entry<String, Object> entry : map.entrySet() )
         {
             String longKey = entry.getKey();
-            Matcher m = p.matcher(longKey);
-            if (m.matches())
+            Matcher m = p.matcher( longKey );
+            if ( m.matches() )
             {
-                String key = m.group(1);
-                int index = Integer.parseInt(m.group(2));
-                String subkey = m.group(3);
-                List<Map<String, Object>> subMapsForKey = result.get(key);
-                if (subMapsForKey == null)
+                String key = m.group( 1 );
+                int index = Integer.parseInt( m.group( 2 ) );
+                String subkey = m.group( 3 );
+                List<Map<String, Object>> subMapsForKey = result.get( key );
+                if ( subMapsForKey == null )
                 {
                     subMapsForKey = new ArrayList<Map<String, Object>>();
-                    result.put(key, subMapsForKey);
+                    result.put( key, subMapsForKey );
                 }
                 //make sure there is room for the possible new submap
-                for (int i = subMapsForKey.size(); i <= index; i++)
+                for ( int i = subMapsForKey.size(); i <= index; i++ )
                 {
-                    subMapsForKey.add(new HashMap<String, Object>());
+                    subMapsForKey.add( new HashMap<String, Object>() );
                 }
-                Map<String, Object> subMap = subMapsForKey.get(index);
-                subMap.put(subkey, entry.getValue());
+                Map<String, Object> subMap = subMapsForKey.get( index );
+                subMap.put( subkey, entry.getValue() );
             }
         }
         return result;
@@ -170,60 +172,64 @@ public class Annotations
 
     private static Object coerceToArray(Class<?> componentType, Object raw, Bundle bundle)
     {
-        if (raw == null)
+        if ( raw == null )
         {
             return null;
         }
-        if (raw.getClass().isArray())
+        if ( raw.getClass().isArray() )
         {
-            int size = Array.getLength(raw);
-            Object result = Array.newInstance(componentType, size);
-            for (int i = 0; i < size; i++)
+            int size = Array.getLength( raw );
+            Object result = Array.newInstance( componentType, size );
+            for ( int i = 0; i < size; i++ )
             {
-                Object rawElement = Array.get(raw, i);
-                Object cooked = Coercions.coerce(componentType, rawElement, bundle);
-                Array.set(result, i, cooked);
+                Object rawElement = Array.get( raw, i );
+                Object cooked = Coercions.coerce( componentType, rawElement, bundle );
+                Array.set( result, i, cooked );
             }
             return result;
         }
-        if (raw instanceof Collection)
+        if ( raw instanceof Collection )
         {
-            Collection raws = (Collection) raw;
+            Collection raws = ( Collection ) raw;
             int size = raws.size();
-            Object result = Array.newInstance(componentType, size);
+            Object result = Array.newInstance( componentType, size );
             int i = 0;
-            for (Object rawElement: raws)
+            for ( Object rawElement : raws )
             {
-                Object cooked = Coercions.coerce(componentType, rawElement, bundle);
-                Array.set(result, i++, cooked);
+                Object cooked = Coercions.coerce( componentType, rawElement, bundle );
+                Array.set( result, i++, cooked );
             }
             return result;
 
         }
-        Object cooked = Coercions.coerce(componentType, raw, bundle);
-        Object result = Array.newInstance(componentType, 1);
-        Array.set(result, 0, cooked);
+        Object cooked = Coercions.coerce( componentType, raw, bundle );
+        Object result = Array.newInstance( componentType, 1 );
+        Array.set( result, 0, cooked );
         return result;
 
     }
 
-    private static final Pattern p = Pattern.compile("(\\$\\$)|(\\$)|(__)|(_)");
+    private static final Pattern p = Pattern.compile( "(\\$\\$)|(\\$)|(__)|(_)" );
 
     static String fixup(String name)
     {
-        Matcher m = p.matcher(name);
+        Matcher m = p.matcher( name );
         StringBuffer b = new StringBuffer();
-        while (m.find())
+        while ( m.find() )
         {
             String replacement = "";//null;
-            if (m.group(1) != null) replacement = "\\$";
-            if (m.group(2) != null) replacement = "";
-            if (m.group(3) != null) replacement = "_";
-            if (m.group(4) != null) replacement = ".";
+            if ( m.group( 1 ) != null )
+                replacement = "\\$";
+            if ( m.group( 2 ) != null )
+                replacement = "";
+            if ( m.group( 3 ) != null )
+                replacement = "_";
+            if ( m.group( 4 ) != null )
+                replacement = ".";
 
-            m.appendReplacement(b, replacement);
+            m.appendReplacement( b, replacement );
         }
-        m.appendTail(b);
+        m.appendTail( b );
         return b.toString();
     }
 
@@ -238,10 +244,10 @@ public class Annotations
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
         {
-            Object value = values.get(method.getName());
-            if (value instanceof Invalid)
+            Object value = values.get( method.getName() );
+            if ( value instanceof Invalid )
             {
-                throw new ComponentException(((Invalid)value).getMessage());
+                throw new ComponentException( ( ( Invalid ) value ).getMessage() );
             }
             return value;
         }

@@ -20,12 +20,10 @@ package org.apache.felix.scr.impl.helper;
 
 import org.osgi.service.component.ComponentContext;
 
-public interface ComponentMethod {
+public interface ComponentMethod
+{
 
-    MethodResult invoke(Object componentInstance,
-                        ComponentContext componentContext,
-                        int reason,
-                        MethodResult methodCallFailureResult,
-                        SimpleLogger logger );
+    MethodResult invoke(Object componentInstance, ComponentContext componentContext, int reason,
+        MethodResult methodCallFailureResult, SimpleLogger logger);
 
 }

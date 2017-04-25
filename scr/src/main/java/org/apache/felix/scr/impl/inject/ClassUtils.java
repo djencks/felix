@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.inject;
 
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,6 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
-
 
 /**
  * Utility methods for class handling used by method and field references.
@@ -71,17 +69,14 @@ public class ClassUtils
      *      if the class loader of the <code>targetClass</code> cannot see that
      *      class.
      */
-    public static Class<?> getClassFromComponentClassLoader(
-            final Class<?> componentClass,
-            final String className,
-            final SimpleLogger logger )
+    public static Class<?> getClassFromComponentClassLoader(final Class<?> componentClass, final String className,
+        final SimpleLogger logger)
     {
         if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
         {
-            logger.log(
-                LogService.LOG_DEBUG,
+            logger.log( LogService.LOG_DEBUG,
                 "getReferenceClass: Looking for interface class {0} through loader of {1}",
-                    new Object[] {className, componentClass.getName()}, null );
+                new Object[] { className, componentClass.getName() }, null );
         }
 
         try
@@ -97,8 +92,8 @@ public class ClassUtils
             final Class<?> referenceClass = loader.loadClass( className );
             if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
             {
-                logger.log( LogService.LOG_DEBUG,
-                    "getParameterClass: Found class {0}", new Object[] {referenceClass.getName()}, null );
+                logger.log( LogService.LOG_DEBUG, "getParameterClass: Found class {0}",
+                    new Object[] { referenceClass.getName() }, null );
             }
             return referenceClass;
         }
@@ -118,8 +113,7 @@ public class ClassUtils
         PackageAdmin pa = ( PackageAdmin ) getPackageAdmin();
         if ( pa != null )
         {
-            final String referenceClassPackage = className.substring( 0, className
-                .lastIndexOf( '.' ) );
+            final String referenceClassPackage = className.substring( 0, className.lastIndexOf( '.' ) );
             ExportedPackage[] pkg = pa.getExportedPackages( referenceClassPackage );
             if ( pkg != null )
             {
@@ -129,17 +123,17 @@ public class ClassUtils
                     {
                         if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
                         {
-                            logger.log(
-                                LogService.LOG_DEBUG,
-                                "getParameterClass: Checking Bundle {0}/{1}",
-                                    new Object[] {pkg[i].getExportingBundle().getSymbolicName(), pkg[i].getExportingBundle().getBundleId()}, null );
+                            logger.log( LogService.LOG_DEBUG, "getParameterClass: Checking Bundle {0}/{1}",
+                                new Object[] { pkg[i].getExportingBundle().getSymbolicName(),
+                                        pkg[i].getExportingBundle().getBundleId() },
+                                null );
                         }
 
                         Class<?> referenceClass = pkg[i].getExportingBundle().loadClass( className );
                         if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
                         {
-                            logger.log( LogService.LOG_DEBUG,
-                                    "getParameterClass: Found class {0}", new Object[] {referenceClass.getName()}, null );
+                            logger.log( LogService.LOG_DEBUG, "getParameterClass: Found class {0}",
+                                new Object[] { referenceClass.getName() }, null );
                         }
                         return referenceClass;
                     }
@@ -151,8 +145,8 @@ public class ClassUtils
             }
             else if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
             {
-                logger.log( LogService.LOG_DEBUG,
-                    "getParameterClass: No bundles exporting package {0} found", new Object[] {referenceClassPackage}, null );
+                logger.log( LogService.LOG_DEBUG, "getParameterClass: No bundles exporting package {0} found",
+                    new Object[] { referenceClassPackage }, null );
             }
         }
         else if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
@@ -165,27 +159,25 @@ public class ClassUtils
         // export, so we fall back to assuming Object
         if ( logger.isLogEnabled( LogService.LOG_DEBUG ) )
         {
-            logger.log( LogService.LOG_DEBUG,
-                "getParameterClass: No class found, falling back to class Object", null );
+            logger.log( LogService.LOG_DEBUG, "getParameterClass: No class found, falling back to class Object", null );
         }
         return OBJECT_CLASS;
     }
 
-    public static void setBundleContext( BundleContext bundleContext )
+    public static void setBundleContext(BundleContext bundleContext)
     {
         ClassUtils.m_context = bundleContext;
     }
 
     public static Object getPackageAdmin()
     {
-        if (m_packageAdmin == null)
+        if ( m_packageAdmin == null )
         {
-            synchronized (ClassUtils.class)
+            synchronized ( ClassUtils.class )
             {
-                if (m_packageAdmin == null)
+                if ( m_packageAdmin == null )
                 {
-                    m_packageAdmin = new ServiceTracker(m_context, PACKAGEADMIN_CLASS,
-                        null);
+                    m_packageAdmin = new ServiceTracker( m_context, PACKAGEADMIN_CLASS, null );
                     m_packageAdmin.open();
                 }
             }
@@ -197,7 +189,7 @@ public class ClassUtils
     public static void close()
     {
         // close the PackageAdmin tracker now
-        if (m_packageAdmin != null)
+        if ( m_packageAdmin != null )
         {
             m_packageAdmin.close();
             m_packageAdmin = null;

@@ -18,14 +18,12 @@
  */
 package org.apache.felix.scr.impl.manager;
 
-
 import java.util.Dictionary;
 import java.util.List;
 
 import org.apache.felix.scr.impl.metadata.ComponentMetadata;
 import org.apache.felix.scr.impl.metadata.TargetedPID;
 import org.osgi.util.promise.Promise;
-
 
 /**
  * The <code>ComponentHolder</code> interface provides the API for supporting
@@ -59,8 +57,7 @@ public interface ComponentHolder<S>
      * @param pid The PID of the deleted configuration
      * @param factoryPid The factory PID of the deleted configuration
      */
-    void configurationDeleted(TargetedPID pid, TargetedPID factoryPid );
-
+    void configurationDeleted(TargetedPID pid, TargetedPID factoryPid);
 
     /**
      * Configure a component with configuration from the given PID.
@@ -72,8 +69,9 @@ public interface ComponentHolder<S>
      * @return true if a new component is created for a factory PID, false if an existing factory pid configuration is updated or 
      * we have no factory pid
      */
-    boolean configurationUpdated( TargetedPID targetedPid, TargetedPID factoryTargetedPid, Dictionary<String, Object> props, long changeCount );
-    
+    boolean configurationUpdated(TargetedPID targetedPid, TargetedPID factoryTargetedPid,
+        Dictionary<String, Object> props, long changeCount);
+
     /**
      * Returns the targeted PID used to configure this component
      * @param pid a targetedPID containing the service pid for the component desired (the rest of the targeted pid is ignored)
@@ -94,8 +92,7 @@ public interface ComponentHolder<S>
      * @param async Whether the actual activation should take place
      *      asynchronously or not.
      */
-    Promise<Void> enableComponents( boolean async );
-
+    Promise<Void> enableComponents(boolean async);
 
     /**
      * Disables all components of this holder.
@@ -103,19 +100,18 @@ public interface ComponentHolder<S>
      * @param async Whether the actual deactivation should take place
      *      asynchronously or not.
      */
-    Promise<Void> disableComponents( boolean async );
-    
+    Promise<Void> disableComponents(boolean async);
+
     /**
      * whether the component is currently enabled
      * @return whether the component is enabled
      */
     boolean isEnabled();
 
-
     /**
      * Disposes off all components of this holder.
      * @param reason
      */
-    void disposeComponents( int reason );
+    void disposeComponents(int reason);
 
 }

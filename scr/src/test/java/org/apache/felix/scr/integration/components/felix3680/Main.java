@@ -64,59 +64,60 @@ public class Main implements Runnable
 
         public void enableComponents(Executor exec)
         {
-            enableOrDisable(exec, true);
+            enableOrDisable( exec, true );
         }
 
         public void disableComponents(Executor exec)
         {
-            enableOrDisable(exec, false);
+            enableOrDisable( exec, false );
         }
 
         private void enableOrDisable(Executor exec, final boolean enable)
         {
-            for (final int i : getRandomIndexes(_componentNames.length))
+            for ( final int i : getRandomIndexes( _componentNames.length ) )
             {
-                exec.execute(new Runnable()
+                exec.execute( new Runnable()
                 {
                     public void run()
                     {
-                        if (enable)
+                        if ( enable )
                         {
-                            _logService.log(LogService.LOG_INFO, "enabling component " + _componentNames[i]);
-                            _ctx.enableComponent(_componentNames[i]);
+                            _logService.log( LogService.LOG_INFO, "enabling component " + _componentNames[i] );
+                            _ctx.enableComponent( _componentNames[i] );
                             _enabledLatch.countDown();
                         }
                         else
                         {
-                            _logService.log(LogService.LOG_INFO, "disabling component " + _componentNames[i]);
-                            _ctx.disableComponent(_componentNames[i]);
+                            _logService.log( LogService.LOG_INFO, "disabling component " + _componentNames[i] );
+                            _ctx.disableComponent( _componentNames[i] );
                             _disabledLatch.countDown();
                         }
                     }
-                });
+                } );
             }
         }
 
         private Integer[] getRandomIndexes(int max)
         {
             Set<Integer> set = new LinkedHashSet<Integer>();
-            for (int i = 0; i < max; i++)
+            for ( int i = 0; i < max; i++ )
             {
                 int n;
                 do
                 {
-                    n = _rnd.nextInt(max);
-                } while (set.contains(n));
-                set.add(n);
+                    n = _rnd.nextInt( max );
+                }
+                while ( set.contains( n ) );
+                set.add( n );
             }
-            for (int i = 0; i < max; i++)
+            for ( int i = 0; i < max; i++ )
             {
-                if (!set.contains(i))
+                if ( !set.contains( i ) )
                 {
-                    throw new IllegalStateException("invalid rnd indexes: " + set);
+                    throw new IllegalStateException( "invalid rnd indexes: " + set );
                 }
             }
-            return set.toArray(new Integer[set.size()]);
+            return set.toArray( new Integer[set.size()] );
         }
     }
 
@@ -132,37 +133,37 @@ public class Main implements Runnable
 
     void bindA(ServiceReference sr)
     {
-        A a = (A) sr.getBundle().getBundleContext().getService(sr);
-        if (a == null)
+        A a = ( A ) sr.getBundle().getBundleContext().getService( sr );
+        if ( a == null )
         {
-            throw new IllegalStateException("bindA: bundleContext.getService returned null");
+            throw new IllegalStateException( "bindA: bundleContext.getService returned null" );
         }
-        if (_counter.incrementAndGet() != 1)
+        if ( _counter.incrementAndGet() != 1 )
         {
-            throw new IllegalStateException("bindA: invalid counter value: " + _counter);
+            throw new IllegalStateException( "bindA: invalid counter value: " + _counter );
         }
         _enabledLatch.countDown();
     }
 
     void unbindA(ServiceReference sr)
     {
-        if (_counter.decrementAndGet() != 0)
+        if ( _counter.decrementAndGet() != 0 )
         {
-            throw new IllegalStateException("unbindA: invalid counter value: " + _counter);
+            throw new IllegalStateException( "unbindA: invalid counter value: " + _counter );
         }
         _disabledLatch.countDown();
     }
 
     void start(ComponentContext ctx)
     {
-        _logService.log(LogService.LOG_INFO, "Main.start");
+        _logService.log( LogService.LOG_INFO, "Main.start" );
         _ctx = ctx;
         _running = true;
-        _thread = new Thread(this);
+        _thread = new Thread( this );
         _thread.start();
     }
-    
-    void stop() 
+
+    void stop()
     {
         _running = false;
         _thread.interrupt();
@@ -170,59 +171,59 @@ public class Main implements Runnable
 
     public void run()
     {
-        Executor exec = Executors.newFixedThreadPool(50);
-        _logService.log(LogService.LOG_INFO, "Main.run");
+        Executor exec = Executors.newFixedThreadPool( 50 );
+        _logService.log( LogService.LOG_INFO, "Main.run" );
         int loop = 0;
-        while (_running)
+        while ( _running )
         {
-            _enabledLatch = new CountDownLatch(11); // for B,C,D,E,F,G,H,I,J,K and Main.bindA()
-            _disabledLatch = new CountDownLatch(11); // for B,C,D,E,F,G,H,I,J,K and Main.unbindA()
-            EnableManager manager =
-                    new EnableManager(new String[] { 
-                        "org.apache.felix.scr.integration.components.felix3680.B", 
-                        "org.apache.felix.scr.integration.components.felix3680.C", 
-                        "org.apache.felix.scr.integration.components.felix3680.D", 
-                        "org.apache.felix.scr.integration.components.felix3680.E", 
-                        "org.apache.felix.scr.integration.components.felix3680.F", 
-                        "org.apache.felix.scr.integration.components.felix3680.G", 
-                        "org.apache.felix.scr.integration.components.felix3680.H", 
-                        "org.apache.felix.scr.integration.components.felix3680.I", 
-                        "org.apache.felix.scr.integration.components.felix3680.J", 
-                        "org.apache.felix.scr.integration.components.felix3680.K" });
-            manager.enableComponents(exec);
+            _enabledLatch = new CountDownLatch( 11 ); // for B,C,D,E,F,G,H,I,J,K and Main.bindA()
+            _disabledLatch = new CountDownLatch( 11 ); // for B,C,D,E,F,G,H,I,J,K and Main.unbindA()
+            EnableManager manager = new EnableManager(
+                new String[] { "org.apache.felix.scr.integration.components.felix3680.B",
+                        "org.apache.felix.scr.integration.components.felix3680.C",
+                        "org.apache.felix.scr.integration.components.felix3680.D",
+                        "org.apache.felix.scr.integration.components.felix3680.E",
+                        "org.apache.felix.scr.integration.components.felix3680.F",
+                        "org.apache.felix.scr.integration.components.felix3680.G",
+                        "org.apache.felix.scr.integration.components.felix3680.H",
+                        "org.apache.felix.scr.integration.components.felix3680.I",
+                        "org.apache.felix.scr.integration.components.felix3680.J",
+                        "org.apache.felix.scr.integration.components.felix3680.K" } );
+            manager.enableComponents( exec );
 
             try
             {
-                if (!_enabledLatch.await(10000, TimeUnit.MILLISECONDS))
+                if ( !_enabledLatch.await( 10000, TimeUnit.MILLISECONDS ) )
                 {
-                    System.out.println("Did not get A injected timely ... see logs.txt");
-                    _logService.log(LogService.LOG_ERROR, "enableLatch TIMEOUT");
+                    System.out.println( "Did not get A injected timely ... see logs.txt" );
+                    _logService.log( LogService.LOG_ERROR, "enableLatch TIMEOUT" );
                     dumpComponents();
                     return;
                 }
             }
-            catch (InterruptedException e)
+            catch ( InterruptedException e )
             {
             }
 
-            manager.disableComponents(exec);
+            manager.disableComponents( exec );
             try
             {
-                if (!_disabledLatch.await(10000, TimeUnit.MILLISECONDS))
+                if ( !_disabledLatch.await( 10000, TimeUnit.MILLISECONDS ) )
                 {
-                    System.out.println("Could not disable components timely ... see logs.txt");
-                    _logService.log(LogService.LOG_ERROR, "disableLatch TIMEOUT");
+                    System.out.println( "Could not disable components timely ... see logs.txt" );
+                    _logService.log( LogService.LOG_ERROR, "disableLatch TIMEOUT" );
                     dumpComponents();
                     return;
                 }
             }
-            catch (InterruptedException e)
+            catch ( InterruptedException e )
             {
             }
-            
-            loop ++;
-            if ((loop % 500) == 0) {
-                _logService.log(LogService.LOG_WARNING, "Performed " + loop + " tests.");
+
+            loop++;
+            if ( ( loop % 500 ) == 0 )
+            {
+                _logService.log( LogService.LOG_WARNING, "Performed " + loop + " tests." );
             }
         }
     }
@@ -230,26 +231,27 @@ public class Main implements Runnable
     private void dumpComponents()
     {
         StringWriter sw = new StringWriter();
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.A");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.B");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.C");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.D");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.E");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.F");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.G");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.H");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.I");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.J");
-        dumpState(sw, "org.apache.felix.scr.integration.components.felix3680.K");
-        _logService.log(LogService.LOG_WARNING, sw.toString());
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.A" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.B" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.C" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.D" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.E" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.F" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.G" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.H" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.I" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.J" );
+        dumpState( sw, "org.apache.felix.scr.integration.components.felix3680.K" );
+        _logService.log( LogService.LOG_WARNING, sw.toString() );
     }
 
     private void dumpState(StringWriter sw, String name)
     {
-        ComponentDescriptionDTO c = _scr.getComponentDescriptionDTO(_ctx.getBundleContext().getBundle(), name);
+        ComponentDescriptionDTO c = _scr.getComponentDescriptionDTO( _ctx.getBundleContext().getBundle(), name );
         if ( c != null )
         {
-            sw.append( name ).append( "[" ).append( _scr.isComponentEnabled(c)? "enabled":"disabled" ).append( "] " );
+            sw.append( name ).append( "[" ).append( _scr.isComponentEnabled( c ) ? "enabled" : "disabled" ).append(
+                "] " );
         }
     }
 

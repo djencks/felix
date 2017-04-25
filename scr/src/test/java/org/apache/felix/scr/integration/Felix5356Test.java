@@ -53,21 +53,23 @@ public class Felix5356Test extends ComponentTestBase
     @Test
     public void test_factory_component_instance_with_factory_configuration_after_enable() throws Exception
     {
-        do_test_factory_component_with_factory_configuration(false);
+        do_test_factory_component_with_factory_configuration( false );
     }
 
     @Test
     public void test_factory_component_instance_with_factory_configuration_before_enable() throws Exception
     {
-        do_test_factory_component_with_factory_configuration(true);
+        do_test_factory_component_with_factory_configuration( true );
     }
 
-    private void do_test_factory_component_with_factory_configuration(boolean createConfigBeforeEnable) throws Exception {
+    private void do_test_factory_component_with_factory_configuration(boolean createConfigBeforeEnable) throws Exception
+    {
         final String componentname = "factory.component.referred";
         final String componentfactory = "factory.component.factory.referred";
 
         String factoryConfigPid = null;
-        if ( createConfigBeforeEnable ) {
+        if ( createConfigBeforeEnable )
+        {
             // create the factory configuration before enabling
             factoryConfigPid = createFactoryConfiguration( componentname, "?" );
             delay();
@@ -88,17 +90,18 @@ public class Felix5356Test extends ComponentTestBase
         // check registered components
         checkConfigurationCount( componentname, 1, ComponentConfigurationDTO.ACTIVE );
         // check registered service
-        findServices(SimpleService.class.getName(), null, 1);
+        findServices( SimpleService.class.getName(), null, 1 );
 
-        if ( !createConfigBeforeEnable ) {
+        if ( !createConfigBeforeEnable )
+        {
             factoryConfigPid = createFactoryConfiguration( componentname, "?" );
             delay();
 
             // check registered components, again should only be 1
             checkConfigurationCount( componentname, 1, ComponentConfigurationDTO.ACTIVE );
             // check registered service
-            findServices(SimpleService.class.getName(), null, 1);
-            TestCase.assertNotNull(instance.getInstance());
+            findServices( SimpleService.class.getName(), null, 1 );
+            TestCase.assertNotNull( instance.getInstance() );
         }
 
         // delete the factory config
@@ -114,12 +117,15 @@ public class Felix5356Test extends ComponentTestBase
         checkConfigurationCount( componentname, 0, ComponentConfigurationDTO.ACTIVE );
     }
 
-    private void findServices(String clazz, String filter, int expected) throws InvalidSyntaxException {
-        ServiceReference<?>[] services = bundleContext.getServiceReferences(clazz, filter);
-        if (services == null) {
+    private void findServices(String clazz, String filter, int expected) throws InvalidSyntaxException
+    {
+        ServiceReference<?>[] services = bundleContext.getServiceReferences( clazz, filter );
+        if ( services == null )
+        {
             services = new ServiceReference<?>[0];
         }
-        TestCase.assertEquals("Wrong number of services found for clazz \"" + clazz + "\" and filter \"" + filter + "\" found: " + Arrays.toString(services), expected, services.length);
+        TestCase.assertEquals( "Wrong number of services found for clazz \"" + clazz + "\" and filter \"" + filter
+            + "\" found: " + Arrays.toString( services ), expected, services.length );
     }
 
 }

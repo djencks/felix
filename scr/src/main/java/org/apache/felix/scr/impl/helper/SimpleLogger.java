@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.helper;
 
 /**
@@ -25,9 +24,9 @@ package org.apache.felix.scr.impl.helper;
  */
 public interface SimpleLogger
 {
-    void log( int level, String message, Throwable ex );
+    void log(int level, String message, Throwable ex);
 
-    void log( int level, String message, Object[] arguments, Throwable ex );
+    void log(int level, String message, Object[] arguments, Throwable ex);
 
-    boolean isLogEnabled( int level );
+    boolean isLogEnabled(int level);
 }

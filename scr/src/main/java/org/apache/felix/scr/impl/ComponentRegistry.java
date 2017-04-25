@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentException;
 import org.osgi.service.log.LogService;
-
 
 /**
  * The <code>ComponentRegistry</code> class acts as the global registry for
@@ -109,11 +107,11 @@ public class ComponentRegistry
      */
     private long m_componentCounter = -1;
 
-    private final Map<ServiceReference<?>, List<Entry<?, ?>>> m_missingDependencies = new HashMap<ServiceReference<?>, List<Entry<?, ?>>>( );
+    private final Map<ServiceReference<?>, List<Entry<?, ?>>> m_missingDependencies = new HashMap<ServiceReference<?>, List<Entry<?, ?>>>();
 
     private final SimpleLogger m_logger;
 
-    public ComponentRegistry( SimpleLogger logger )
+    public ComponentRegistry(SimpleLogger logger)
     {
         m_logger = logger;
         m_componentHoldersByName = new HashMap<ComponentRegistryKey, ComponentHolder<?>>();
@@ -133,7 +131,7 @@ public class ComponentRegistry
      *
      * @return the assigned component ID
      */
-    final long registerComponentId( final AbstractComponentManager<?> componentManager )
+    final long registerComponentId(final AbstractComponentManager<?> componentManager)
     {
         long componentId;
         synchronized ( m_componentsById )
@@ -146,7 +144,6 @@ public class ComponentRegistry
         return componentId;
     }
 
-
     /**
      * Unregisters the component with the given component ID from the internal
      * registry. After unregistration, the component ID should be considered
@@ -155,14 +152,13 @@ public class ComponentRegistry
      * @param componentId The ID of the component to be removed from the
      *      internal component registry.
      */
-    final void unregisterComponentId( final long componentId )
+    final void unregisterComponentId(final long componentId)
     {
         synchronized ( m_componentsById )
         {
             m_componentsById.remove( componentId );
         }
     }
-
 
     //---------- ComponentHolder registration by component name
 
@@ -179,7 +175,7 @@ public class ComponentRegistry
      * @throws ComponentException if the name is already in use by another
      *      component.
      */
-    final ComponentRegistryKey checkComponentName( final Bundle bundle, final String name )
+    final ComponentRegistryKey checkComponentName(final Bundle bundle, final String name)
     {
         // register the name if no registration for that name exists already
         final ComponentRegistryKey key = new ComponentRegistryKey( bundle, name );
@@ -225,7 +221,6 @@ public class ComponentRegistry
         return key;
     }
 
-
     /**
      * Registers the given component under the given name. If the name has not
      * already been reserved calling {@link #checkComponentName(String)} this
@@ -237,31 +232,29 @@ public class ComponentRegistry
      * @throws ComponentException if the name has not been reserved through
      *      {@link #checkComponentName(String)} yet.
      */
-    final void registerComponentHolder( final ComponentRegistryKey key, ComponentHolder<?> componentHolder )
+    final void registerComponentHolder(final ComponentRegistryKey key, ComponentHolder<?> componentHolder)
     {
-        m_logger.log(LogService.LOG_DEBUG,
-                "Registering component with pid {0} for bundle {1}",
-                new Object[] {componentHolder.getComponentMetadata().getConfigurationPid(), key.getBundleId()},
-                null);
+        m_logger.log( LogService.LOG_DEBUG, "Registering component with pid {0} for bundle {1}",
+            new Object[] { componentHolder.getComponentMetadata().getConfigurationPid(), key.getBundleId() }, null );
         synchronized ( m_componentHoldersByName )
         {
             // only register the component if there is a m_registration for it !
             if ( m_componentHoldersByName.get( key ) != null )
             {
                 // this is not expected if all works ok
-                throw new ComponentException( "The component name '{0}" + componentHolder.getComponentMetadata().getName()
-                    + "' has already been registered." );
+                throw new ComponentException( "The component name '{0}"
+                    + componentHolder.getComponentMetadata().getName() + "' has already been registered." );
             }
 
             m_componentHoldersByName.put( key, componentHolder );
         }
 
-        synchronized (m_componentHoldersByPid)
+        synchronized ( m_componentHoldersByPid )
         {
             // See if the component declares a specific configuration pid (112.4.4 configuration-pid)
             List<String> configurationPids = componentHolder.getComponentMetadata().getConfigurationPid();
 
-            for ( String configurationPid: configurationPids )
+            for ( String configurationPid : configurationPids )
             {
                 // Since several components may refer to the same configuration pid, we have to
                 // store the component holder in a Set, in order to be able to lookup every
@@ -276,13 +269,13 @@ public class ComponentRegistry
             }
         }
 
-  }
+    }
 
     /**
      * Returns the component registered under the given name or <code>null</code>
      * if no component is registered yet.
      */
-    public final ComponentHolder<?> getComponentHolder( final Bundle bundle, final String name )
+    public final ComponentHolder<?> getComponentHolder(final Bundle bundle, final String name)
     {
         synchronized ( m_componentHoldersByName )
         {
@@ -300,16 +293,16 @@ public class ComponentRegistry
     {
         String pid = targetedPid.getServicePid();
         Set<ComponentHolder<?>> componentHoldersUsingPid = new HashSet<ComponentHolder<?>>();
-        synchronized (m_componentHoldersByPid)
+        synchronized ( m_componentHoldersByPid )
         {
-            Set<ComponentHolder<?>> set = m_componentHoldersByPid.get(pid);
+            Set<ComponentHolder<?>> set = m_componentHoldersByPid.get( pid );
             // only return the entry if non-null and not a reservation
-            if (set != null)
+            if ( set != null )
             {
-                for (ComponentHolder<?> holder: set)
+                for ( ComponentHolder<?> holder : set )
                 {
                     Bundle bundle = holder.getActivator().getBundleContext().getBundle();
-                    if (targetedPid.matchesTarget(bundle))
+                    if ( targetedPid.matchesTarget( bundle ) )
                     {
                         componentHoldersUsingPid.add( holder );
                     }
@@ -327,63 +320,61 @@ public class ComponentRegistry
      */
     public final List<ComponentHolder<?>> getComponentHolders()
     {
-    	List<ComponentHolder<?>> all = new ArrayList<ComponentHolder<?>>();
+        List<ComponentHolder<?>> all = new ArrayList<ComponentHolder<?>>();
         synchronized ( m_componentHoldersByName )
         {
-        	all.addAll(m_componentHoldersByName.values());
+            all.addAll( m_componentHoldersByName.values() );
         }
         return all;
     }
 
-    public final List<ComponentHolder<?>> getComponentHolders(Bundle...bundles)
+    public final List<ComponentHolder<?>> getComponentHolders(Bundle... bundles)
     {
-    	List<ComponentHolder<?>> all =getComponentHolders();
+        List<ComponentHolder<?>> all = getComponentHolders();
         List<ComponentHolder<?>> holders = new ArrayList<ComponentHolder<?>>();
-        for ( ComponentHolder<?> holder: all)
+        for ( ComponentHolder<?> holder : all )
         {
-        	ComponentActivator activator = holder.getActivator();
-        	if (activator != null)
-        	{
-        	    try
-        	    {
-            		Bundle holderBundle = activator.getBundleContext().getBundle();
-            		for (Bundle b: bundles)
-            		{
-            			if (b == holderBundle)
-            			{
-            				holders.add(holder);
-            			}
-            		}
-        	    }
-        	    catch ( IllegalStateException ise)
-        	    {
-        	        // ignore inactive bundles
-        	    }
-        	}
+            ComponentActivator activator = holder.getActivator();
+            if ( activator != null )
+            {
+                try
+                {
+                    Bundle holderBundle = activator.getBundleContext().getBundle();
+                    for ( Bundle b : bundles )
+                    {
+                        if ( b == holderBundle )
+                        {
+                            holders.add( holder );
+                        }
+                    }
+                }
+                catch ( IllegalStateException ise )
+                {
+                    // ignore inactive bundles
+                }
+            }
         }
         return holders;
     }
 
-
     /**
      * Removes the component registered under that name. If no component is
      * yet registered but the name is reserved, it is unreserved.
      * <p>
      * After calling this method, the name can be reused by other components.
      */
-    final void unregisterComponentHolder( final Bundle bundle, final String name )
+    final void unregisterComponentHolder(final Bundle bundle, final String name)
     {
         unregisterComponentHolder( new ComponentRegistryKey( bundle, name ) );
     }
 
-
     /**
      * Removes the component registered under that name. If no component is
      * yet registered but the name is reserved, it is unreserved.
      * <p>
      * After calling this method, the name can be reused by other components.
      */
-    final void unregisterComponentHolder( final ComponentRegistryKey key )
+    final void unregisterComponentHolder(final ComponentRegistryKey key)
     {
         ComponentHolder<?> component;
         synchronized ( m_componentHoldersByName )
@@ -391,14 +382,14 @@ public class ComponentRegistry
             component = m_componentHoldersByName.remove( key );
         }
 
-        if (component != null) {
-            m_logger.log(LogService.LOG_DEBUG,
-                    "Unregistering component with pid {0} for bundle {1}",
-                    new Object[] {component.getComponentMetadata().getConfigurationPid(), key.getBundleId()}, null);
-            synchronized (m_componentHoldersByPid)
+        if ( component != null )
+        {
+            m_logger.log( LogService.LOG_DEBUG, "Unregistering component with pid {0} for bundle {1}",
+                new Object[] { component.getComponentMetadata().getConfigurationPid(), key.getBundleId() }, null );
+            synchronized ( m_componentHoldersByPid )
             {
                 List<String> configurationPids = component.getComponentMetadata().getConfigurationPid();
-                for ( String configurationPid: configurationPids )
+                for ( String configurationPid : configurationPids )
                 {
                     Set<ComponentHolder<?>> componentsForPid = m_componentHoldersByPid.get( configurationPid );
                     if ( componentsForPid != null )
@@ -420,16 +411,16 @@ public class ComponentRegistry
      * Factory method to issue {@link ComponentHolder} instances to manage
      * components described by the given component <code>metadata</code>.
      */
-    public <S> ComponentHolder<S> createComponentHolder( ComponentActivator activator, ComponentMetadata metadata )
+    public <S> ComponentHolder<S> createComponentHolder(ComponentActivator activator, ComponentMetadata metadata)
     {
-        return new DefaultConfigurableComponentHolder<S>(activator, metadata);
+        return new DefaultConfigurableComponentHolder<S>( activator, metadata );
     }
 
     static class DefaultConfigurableComponentHolder<S> extends ConfigurableComponentHolder<S>
     {
         public DefaultConfigurableComponentHolder(ComponentActivator activator, ComponentMetadata metadata)
         {
-            super(activator, metadata);
+            super( activator, metadata );
         }
 
         @Override
@@ -438,7 +429,6 @@ public class ComponentRegistry
             return new ComponentMethodsImpl();
         }
     }
-
 
     //---------- ServiceListener
 
@@ -463,7 +453,7 @@ public class ComponentRegistry
      *
      * @see <a href="https://issues.apache.org/jira/browse/FELIX-1666">FELIX-1666</a>
      */
-    static boolean isBundleActive( final Bundle bundle )
+    static boolean isBundleActive(final Bundle bundle)
     {
         if ( bundle != null )
         {
@@ -478,7 +468,7 @@ public class ComponentRegistry
                 // set to request a bundle to be lazily activated. So in this
                 // simple check we just verify the header is set to assume
                 // the bundle is considered a lazily activated bundle
-                return bundle.getHeaders("").get(Constants.BUNDLE_ACTIVATIONPOLICY) != null;
+                return bundle.getHeaders( "" ).get( Constants.BUNDLE_ACTIVATIONPOLICY ) != null;
             }
         }
 
@@ -486,7 +476,7 @@ public class ComponentRegistry
         return false;
     }
 
-    private final ThreadLocal<List<ServiceReference<?>>> circularInfos = new ThreadLocal<List<ServiceReference<?>>> ()
+    private final ThreadLocal<List<ServiceReference<?>>> circularInfos = new ThreadLocal<List<ServiceReference<?>>>()
     {
 
         @Override
@@ -496,7 +486,6 @@ public class ComponentRegistry
         }
     };
 
-
     /**
      * Track getService calls by service reference.
      * @param serviceReference
@@ -505,48 +494,42 @@ public class ComponentRegistry
     public <T> boolean enterCreate(final ServiceReference<T> serviceReference)
     {
         List<ServiceReference<?>> info = circularInfos.get();
-        if (info.contains(serviceReference))
+        if ( info.contains( serviceReference ) )
         {
-            m_logger.log(LogService.LOG_ERROR,
+            m_logger.log( LogService.LOG_ERROR,
                 "Circular reference detected trying to get service {0}\n stack of references: {1}",
-                new Object[] {serviceReference, new Info(info)},
-                new Exception("stack trace"));
+                new Object[] { serviceReference, new Info( info ) }, new Exception( "stack trace" ) );
             return true;
         }
-        m_logger.log(LogService.LOG_DEBUG,
-            "getService  {0}: stack of references: {1}",
-            new Object[] {serviceReference, info},
-            null);
-        info.add(serviceReference);
+        m_logger.log( LogService.LOG_DEBUG, "getService  {0}: stack of references: {1}",
+            new Object[] { serviceReference, info }, null );
+        info.add( serviceReference );
         return false;
     }
-
 
     private class Info
     {
 
         private final List<ServiceReference<?>> info;
 
-
         public Info(List<ServiceReference<?>> info)
         {
             this.info = info;
         }
 
-
         @Override
         public String toString()
         {
             StringBuffer sb = new StringBuffer();
-            for (ServiceReference<?> sr: info)
+            for ( ServiceReference<?> sr : info )
             {
-                sb.append("ServiceReference: ").append(sr).append("\n");
-                List<Entry<?, ?>> entries = m_missingDependencies.get(sr);
-                if (entries != null)
+                sb.append( "ServiceReference: " ).append( sr ).append( "\n" );
+                List<Entry<?, ?>> entries = m_missingDependencies.get( sr );
+                if ( entries != null )
                 {
-                    for (Entry<?, ?> entry: entries)
+                    for ( Entry<?, ?> entry : entries )
                     {
-                        sb.append("    Dependency: ").append(entry.getDm()).append("\n");
+                        sb.append( "    Dependency: " ).append( entry.getDm() ).append( "\n" );
                     }
                 }
             }
@@ -558,15 +541,15 @@ public class ComponentRegistry
     public <T> void leaveCreate(final ServiceReference<T> serviceReference)
     {
         List<ServiceReference<?>> info = circularInfos.get();
-        if (info != null)
+        if ( info != null )
         {
-            if (!info.isEmpty() && info.iterator().next().equals(serviceReference))
+            if ( !info.isEmpty() && info.iterator().next().equals( serviceReference ) )
             {
                 circularInfos.remove();
             }
             else
             {
-                info.remove(serviceReference);
+                info.remove( serviceReference );
             }
         }
 
@@ -579,7 +562,8 @@ public class ComponentRegistry
      * @param serviceReference
      * @param actor
      */
-    public synchronized <T> void missingServicePresent( final ServiceReference<T> serviceReference, ComponentActorThread actor )
+    public synchronized <T> void missingServicePresent(final ServiceReference<T> serviceReference,
+        ComponentActorThread actor)
     {
         final List<Entry<?, ?>> dependencyManagers = m_missingDependencies.remove( serviceReference );
         if ( dependencyManagers != null )
@@ -593,38 +577,36 @@ public class ComponentRegistry
                 {
                     for ( Entry<?, ?> entry : dependencyManagers )
                     {
-                        ((DependencyManager<?, T>)entry.getDm()).invokeBindMethodLate( serviceReference, entry.getTrackingCount() );
+                        ( ( DependencyManager<?, T> ) entry.getDm() ).invokeBindMethodLate( serviceReference,
+                            entry.getTrackingCount() );
                     }
-                    m_logger.log(LogService.LOG_DEBUG,
-                        "Ran {0} asynchronously",
-                        new Object[] {this},
-                        null);
+                    m_logger.log( LogService.LOG_DEBUG, "Ran {0} asynchronously", new Object[] { this }, null );
                 }
 
                 @Override
                 public String toString()
                 {
-                    return "Late binding task of reference " + serviceReference + " for dependencyManagers " + dependencyManagers;
+                    return "Late binding task of reference " + serviceReference + " for dependencyManagers "
+                        + dependencyManagers;
                 }
 
-            } ;
-            m_logger.log(LogService.LOG_DEBUG,
-                "Scheduling runnable {0} asynchronously",
-                new Object[] {runnable},
-                null);
+            };
+            m_logger.log( LogService.LOG_DEBUG, "Scheduling runnable {0} asynchronously", new Object[] { runnable },
+                null );
             actor.schedule( runnable );
         }
     }
 
-    public synchronized <S, T> void registerMissingDependency( DependencyManager<S, T> dependencyManager, ServiceReference<T> serviceReference, int trackingCount )
+    public synchronized <S, T> void registerMissingDependency(DependencyManager<S, T> dependencyManager,
+        ServiceReference<T> serviceReference, int trackingCount)
     {
         //check that the service reference is from scr
-        if ( serviceReference.getProperty( ComponentConstants.COMPONENT_NAME ) == null || serviceReference.getProperty( ComponentConstants.COMPONENT_ID ) == null )
+        if ( serviceReference.getProperty( ComponentConstants.COMPONENT_NAME ) == null
+            || serviceReference.getProperty( ComponentConstants.COMPONENT_ID ) == null )
         {
-            m_logger.log(LogService.LOG_DEBUG,
+            m_logger.log( LogService.LOG_DEBUG,
                 "Missing service {0} for dependency manager {1} is not a DS service, cannot resolve circular dependency",
-                new Object[] {serviceReference, dependencyManager},
-                null);
+                new Object[] { serviceReference, dependencyManager }, null );
             return;
         }
         List<Entry<?, ?>> dependencyManagers = m_missingDependencies.get( serviceReference );
@@ -634,18 +616,16 @@ public class ComponentRegistry
             m_missingDependencies.put( serviceReference, dependencyManagers );
         }
         dependencyManagers.add( new Entry<S, T>( dependencyManager, trackingCount ) );
-        m_logger.log(LogService.LOG_DEBUG,
-            "Dependency managers {0} waiting for missing service {1}",
-            new Object[] {dependencyManagers, serviceReference},
-            null);
-        }
+        m_logger.log( LogService.LOG_DEBUG, "Dependency managers {0} waiting for missing service {1}",
+            new Object[] { dependencyManagers, serviceReference }, null );
+    }
 
-    private static class Entry<S,T>
+    private static class Entry<S, T>
     {
         private final DependencyManager<S, T> dm;
         private final int trackingCount;
 
-        private Entry( DependencyManager<S, T> dm, int trackingCount )
+        private Entry(DependencyManager<S, T> dm, int trackingCount)
         {
             this.dm = dm;
             this.trackingCount = trackingCount;
@@ -670,55 +650,56 @@ public class ComponentRegistry
 
     private final ConcurrentMap<Long, RegionConfigurationSupport> bundleToRcsMap = new ConcurrentHashMap<Long, RegionConfigurationSupport>();
 
-    public RegionConfigurationSupport registerRegionConfigurationSupport(
-            ServiceReference<ConfigurationAdmin> reference) {
-        RegionConfigurationSupport trialRcs = new RegionConfigurationSupport(m_logger, reference) {
+    public RegionConfigurationSupport registerRegionConfigurationSupport(ServiceReference<ConfigurationAdmin> reference)
+    {
+        RegionConfigurationSupport trialRcs = new RegionConfigurationSupport( m_logger, reference )
+        {
             @Override
             protected Collection<ComponentHolder<?>> getComponentHolders(TargetedPID pid)
             {
-                return ComponentRegistry.this.getComponentHoldersByPid(pid);
+                return ComponentRegistry.this.getComponentHoldersByPid( pid );
             }
         };
-        return registerRegionConfigurationSupport(trialRcs);
+        return registerRegionConfigurationSupport( trialRcs );
     }
 
-    public RegionConfigurationSupport registerRegionConfigurationSupport(
-			RegionConfigurationSupport trialRcs) {
-		Long bundleId = trialRcs.getBundleId();
-		RegionConfigurationSupport existing = null;
-		RegionConfigurationSupport previous = null;
-		while (true)
-		{
-			existing = bundleToRcsMap.putIfAbsent(bundleId, trialRcs);
-			if (existing == null)
-			{
-				trialRcs.start();
-				return trialRcs;
-			}
-			if (existing == previous)
-			{
-				//the rcs we referenced is still current
-				return existing;
-			}
-			if (existing.reference())
-			{
-				//existing can still be used
-				previous = existing;
-			}
-			else
-			{
-				//existing was discarded in another thread, start over
-				previous = null;
-			}
-		}
-	}
+    public RegionConfigurationSupport registerRegionConfigurationSupport(RegionConfigurationSupport trialRcs)
+    {
+        Long bundleId = trialRcs.getBundleId();
+        RegionConfigurationSupport existing = null;
+        RegionConfigurationSupport previous = null;
+        while ( true )
+        {
+            existing = bundleToRcsMap.putIfAbsent( bundleId, trialRcs );
+            if ( existing == null )
+            {
+                trialRcs.start();
+                return trialRcs;
+            }
+            if ( existing == previous )
+            {
+                //the rcs we referenced is still current
+                return existing;
+            }
+            if ( existing.reference() )
+            {
+                //existing can still be used
+                previous = existing;
+            }
+            else
+            {
+                //existing was discarded in another thread, start over
+                previous = null;
+            }
+        }
+    }
 
-	public void unregisterRegionConfigurationSupport(
-			RegionConfigurationSupport rcs) {
-		if (rcs.dereference())
-		{
-			bundleToRcsMap.remove(rcs.getBundleId());
-		}
+    public void unregisterRegionConfigurationSupport(RegionConfigurationSupport rcs)
+    {
+        if ( rcs.dereference() )
+        {
+            bundleToRcsMap.remove( rcs.getBundleId() );
+        }
 
-	}
+    }
 }

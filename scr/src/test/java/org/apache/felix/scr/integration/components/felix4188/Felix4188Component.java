@@ -21,7 +21,8 @@ package org.apache.felix.scr.integration.components.felix4188;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-public class Felix4188Component {
+public class Felix4188Component
+{
 
     public Bundle bundle;
     public Throwable throwable;
@@ -29,16 +30,19 @@ public class Felix4188Component {
 
     void start()
     {
-        bundle = FrameworkUtil.getBundle(getClass());
+        bundle = FrameworkUtil.getBundle( getClass() );
     }
 
     void stop()
     {
-        try {
-            Thread.sleep(2000);
+        try
+        {
+            Thread.sleep( 2000 );
             state = bundle.getState();
             bundle.getBundleContext().getBundle();
-        } catch (Throwable t) {
+        }
+        catch ( Throwable t )
+        {
             throwable = t;
         }
     }

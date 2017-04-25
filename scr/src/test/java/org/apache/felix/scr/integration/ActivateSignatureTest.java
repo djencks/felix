@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration;
 
-
 import java.util.Collection;
 
 import junit.framework.TestCase;
@@ -29,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
-
 
 /**
  * The <code>ActivateSignatureTest</code> tests various DS 1.1 activation
@@ -49,7 +47,6 @@ public class ActivateSignatureTest extends ComponentTestBase
         // paxRunnerVmOption = DEBUG_VM_OPTION;
     }
 
-
     @Test
     public void test()
     {
@@ -61,14 +58,14 @@ public class ActivateSignatureTest extends ComponentTestBase
 
         for ( ComponentDescriptionDTO component : components )
         {
-            TestCase.assertTrue( "Expecting component " + component.name + " to be enabled", component
-                .defaultEnabled );
+            TestCase.assertTrue( "Expecting component " + component.name + " to be enabled", component.defaultEnabled );
 
-            ComponentConfigurationDTO cc = findComponentConfigurationByName(component.name, 0);
+            ComponentConfigurationDTO cc = findComponentConfigurationByName( component.name, 0 );
             TestCase.assertEquals( "Expecting component " + component.name + " to be active",
-            		ComponentConfigurationDTO.ACTIVE, cc.state );
-            
-            TestCase.assertNotNull("Expect activate method to be called", AbstractActivateSignatureTestComponent.getInstance(component.name));
+                ComponentConfigurationDTO.ACTIVE, cc.state );
+
+            TestCase.assertNotNull( "Expect activate method to be called",
+                AbstractActivateSignatureTestComponent.getInstance( component.name ) );
 
         }
     }

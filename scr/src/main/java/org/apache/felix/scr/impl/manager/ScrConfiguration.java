@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.manager;
 
-
 /**
  * The <code>ScrConfiguration</code> class conveys configuration for the
  * Felix DS implementation bundle.
@@ -62,7 +61,7 @@ public interface ScrConfiguration
 
     String PROP_LOGLEVEL = "ds.loglevel";
 
-    String PROP_GLOBAL_EXTENDER="ds.global.extender";
+    String PROP_GLOBAL_EXTENDER = "ds.global.extender";
 
     /**
      * Returns the current log level.
@@ -70,12 +69,10 @@ public interface ScrConfiguration
      */
     int getLogLevel();
 
-
     boolean isFactoryEnabled();
 
-
     boolean keepInstances();
-    
+
     boolean infoAsService();
 
     long lockTimeout();

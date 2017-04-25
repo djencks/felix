@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.inject;
 
-
 import junit.framework.TestCase;
 
 import org.apache.felix.scr.impl.BundleComponentActivator;
@@ -44,14 +43,12 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
-
 public class BindMethodTest extends TestCase
 {
 
     private ServiceReference m_serviceReference;
     private FakeService m_serviceInstance;
     private BundleContext m_context;
-
 
     @Override
     public void setUp()
@@ -60,17 +57,14 @@ public class BindMethodTest extends TestCase
         m_serviceInstance = EasyMock.createNiceMock( FakeService.class );
         m_context = EasyMock.createNiceMock( BundleContext.class );
 
-        EasyMock.expect( m_context.getService( m_serviceReference ) ).andReturn( m_serviceInstance )
-                .anyTimes();
+        EasyMock.expect( m_context.getService( m_serviceReference ) ).andReturn( m_serviceInstance ).anyTimes();
 
-        EasyMock.expect( m_serviceReference.getPropertyKeys() ).andReturn( new String[]
-            { Constants.SERVICE_ID } ).anyTimes();
-        EasyMock.expect( m_serviceReference.getProperty( Constants.SERVICE_ID ) ).andReturn( "Fake Service" )
-            .anyTimes();
-        EasyMock.replay( new Object[]
-            { m_serviceReference, m_context } );
+        EasyMock.expect( m_serviceReference.getPropertyKeys() ).andReturn(
+            new String[] { Constants.SERVICE_ID } ).anyTimes();
+        EasyMock.expect( m_serviceReference.getProperty( Constants.SERVICE_ID ) ).andReturn(
+            "Fake Service" ).anyTimes();
+        EasyMock.replay( new Object[] { m_serviceReference, m_context } );
     }
-
 
     public void test_Unexistent()
     {
@@ -82,7 +76,6 @@ public class BindMethodTest extends TestCase
         testMethod( "unexistent", new T3(), DSVersion.DS11, null );
     }
 
-
     public void test_privateT1()
     {
         testMethod( "privateT1", new T1(), DSVersion.DS10, null );
@@ -93,7 +86,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT1", new T3(), DSVersion.DS11, null );
     }
 
-
     public void test_privateT1SR()
     {
         testMethod( "privateT1SR", new T1(), DSVersion.DS10, null );
@@ -101,7 +93,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT1SR", new T2(), DSVersion.DS10, null );
         testMethod( "privateT1SR", new T2(), DSVersion.DS11, null );
     }
-
 
     public void test_privateT1SI()
     {
@@ -111,7 +102,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT1SI", new T2(), DSVersion.DS11, null );
     }
 
-
     public void test_privateT1SIMap()
     {
         testMethod( "privateT1SIMap", new T1(), DSVersion.DS10, null );
@@ -119,7 +109,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT1SIMap", new T2(), DSVersion.DS10, null );
         testMethod( "privateT1SIMap", new T2(), DSVersion.DS11, null );
     }
-
 
     public void test_privateT1SSI()
     {
@@ -129,7 +118,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT1SSI", new T2(), DSVersion.DS11, null );
     }
 
-
     public void test_privateT1SSIMap()
     {
         testMethod( "privateT1SSIMap", new T1(), DSVersion.DS10, null );
@@ -137,7 +125,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT1SSIMap", new T2(), DSVersion.DS10, null );
         testMethod( "privateT1SSIMap", new T2(), DSVersion.DS11, null );
     }
-
 
     public void test_privateT2()
     {
@@ -147,7 +134,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT2", new T2(), DSVersion.DS11, null );
     }
 
-
     public void test_privateT2SR()
     {
         testMethod( "privateT2SR", new T1(), DSVersion.DS10, null );
@@ -155,7 +141,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT2SR", new T2(), DSVersion.DS10, null );
         testMethod( "privateT2SR", new T2(), DSVersion.DS11, "privateT2SR" );
     }
-
 
     public void test_privateT2SI()
     {
@@ -165,7 +150,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT2SI", new T2(), DSVersion.DS11, "privateT2SI" );
     }
 
-
     public void test_privateT2SIMap()
     {
         testMethod( "privateT2SIMap", new T1(), DSVersion.DS10, null );
@@ -173,7 +157,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT2SIMap", new T2(), DSVersion.DS10, null );
         testMethod( "privateT2SIMap", new T2(), DSVersion.DS11, "privateT2SIMap" );
     }
-
 
     public void test_privateT2SSI()
     {
@@ -183,7 +166,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT2SSI", new T2(), DSVersion.DS11, "privateT2SSI" );
     }
 
-
     public void test_privateT2SSIMap()
     {
         testMethod( "privateT2SSIMap", new T1(), DSVersion.DS10, null );
@@ -191,7 +173,6 @@ public class BindMethodTest extends TestCase
         testMethod( "privateT2SSIMap", new T2(), DSVersion.DS10, null );
         testMethod( "privateT2SSIMap", new T2(), DSVersion.DS11, "privateT2SSIMap" );
     }
-
 
     public void test_packageT1()
     {
@@ -205,7 +186,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT1", new T1a(), DSVersion.DS11, null );
     }
 
-
     public void test_packageT1SR()
     {
         testMethod( "packageT1SR", new T1(), DSVersion.DS10, null );
@@ -217,7 +197,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT1SR", new T1a(), DSVersion.DS10, null );
         testMethod( "packageT1SR", new T1a(), DSVersion.DS11, "packageT1SR" );
     }
-
 
     public void test_packageT1SI()
     {
@@ -231,7 +210,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT1SI", new T1a(), DSVersion.DS11, "packageT1SI" );
     }
 
-
     public void test_packageT1SIMap()
     {
         testMethod( "packageT1SIMap", new T1(), DSVersion.DS10, null );
@@ -243,7 +221,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT1SIMap", new T1a(), DSVersion.DS10, null );
         testMethod( "packageT1SIMap", new T1a(), DSVersion.DS11, "packageT1SIMap" );
     }
-
 
     public void test_packageT1SSI()
     {
@@ -257,7 +234,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT1SSI", new T1a(), DSVersion.DS11, "packageT1SSI" );
     }
 
-
     public void test_packageT1SSIMap()
     {
         testMethod( "packageT1SSIMap", new T1(), DSVersion.DS10, null );
@@ -270,7 +246,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT1SSIMap", new T1a(), DSVersion.DS11, "packageT1SSIMap" );
     }
 
-
     public void test_packageT2()
     {
         testMethod( "packageT2", new T1(), DSVersion.DS10, null );
@@ -278,7 +253,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT2", new T2(), DSVersion.DS10, null );
         testMethod( "packageT2", new T2(), DSVersion.DS11, null );
     }
-
 
     public void test_packageT2SR()
     {
@@ -288,7 +262,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT2SR", new T2(), DSVersion.DS11, "packageT2SR" );
     }
 
-
     public void test_packageT2SI()
     {
         testMethod( "packageT2SI", new T1(), DSVersion.DS10, null );
@@ -296,7 +269,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT2SI", new T2(), DSVersion.DS10, null );
         testMethod( "packageT2SI", new T2(), DSVersion.DS11, "packageT2SI" );
     }
-
 
     public void test_packageT2SIMap()
     {
@@ -306,7 +278,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT2SIMap", new T2(), DSVersion.DS11, "packageT2SIMap" );
     }
 
-
     public void test_packageT2SSI()
     {
         testMethod( "packageT2SSI", new T1(), DSVersion.DS10, null );
@@ -314,7 +285,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT2SSI", new T2(), DSVersion.DS10, null );
         testMethod( "packageT2SSI", new T2(), DSVersion.DS11, "packageT2SSI" );
     }
-
 
     public void test_packageT2SSIMap()
     {
@@ -324,7 +294,6 @@ public class BindMethodTest extends TestCase
         testMethod( "packageT2SSIMap", new T2(), DSVersion.DS11, "packageT2SSIMap" );
     }
 
-
     public void test_protectedT1()
     {
         testMethod( "protectedT1", new T1(), DSVersion.DS10, null );
@@ -332,7 +301,6 @@ public class BindMethodTest extends TestCase
         testMethod( "protectedT1", new T2(), DSVersion.DS10, null );
         testMethod( "protectedT1", new T2(), DSVersion.DS11, null );
     }
-
 
     public void test_protectedT1SR()
     {
@@ -342,7 +310,6 @@ public class BindMethodTest extends TestCase
         testMethod( "protectedT1SR", new T2(), DSVersion.DS11, "protectedT1SR" );
     }
 
-
     public void test_protectedT1SI()
     {
         testMethod( "protectedT1SI", new T1(), DSVersion.DS10, "protectedT1SI" );
@@ -350,7 +317,6 @@ public class BindMethodTest extends TestCase
         testMethod( "protectedT1SI", new T2(), DSVersion.DS10, "protectedT1SI" );
         testMethod( "protectedT1SI", new T2(), DSVersion.DS11, "protectedT1SI" );
     }
-
 
     public void test_protectedT1SSI()
     {
@@ -360,7 +326,6 @@ public class BindMethodTest extends TestCase
         testMethod( "protectedT1SSI", new T2(), DSVersion.DS11, "protectedT1SSI" );
     }
 
-
     public void test_publicT1()
     {
         testMethod( "publicT1", new T1(), DSVersion.DS10, null );
@@ -368,7 +333,6 @@ public class BindMethodTest extends TestCase
         testMethod( "publicT1", new T2(), DSVersion.DS10, null );
         testMethod( "publicT1", new T2(), DSVersion.DS11, null );
     }
-
 
     public void test_publicT1SR()
     {
@@ -378,7 +342,6 @@ public class BindMethodTest extends TestCase
         testMethod( "publicT1SR", new T2(), DSVersion.DS11, "publicT1SR" );
     }
 
-
     public void test_publicT1SI()
     {
         testMethod( "publicT1SI", new T1(), DSVersion.DS10, "publicT1SI" );
@@ -386,7 +349,6 @@ public class BindMethodTest extends TestCase
         testMethod( "publicT1SI", new T2(), DSVersion.DS10, "publicT1SI" );
         testMethod( "publicT1SI", new T2(), DSVersion.DS11, "publicT1SI" );
     }
-
 
     public void test_publicT1SIMap()
     {
@@ -396,7 +358,6 @@ public class BindMethodTest extends TestCase
         testMethod( "publicT1SIMap", new T2(), DSVersion.DS11, "publicT1SIMap" );
     }
 
-
     public void test_publicT1SSI()
     {
         testMethod( "publicT1SSI", new T1(), DSVersion.DS10, "publicT1SSI" );
@@ -405,7 +366,6 @@ public class BindMethodTest extends TestCase
         testMethod( "publicT1SSI", new T2(), DSVersion.DS11, "publicT1SSI" );
     }
 
-
     public void test_publicT1SSIMap()
     {
         testMethod( "publicT1SSIMap", new T1(), DSVersion.DS10, null );
@@ -413,7 +373,6 @@ public class BindMethodTest extends TestCase
         testMethod( "publicT1SSIMap", new T2(), DSVersion.DS10, null );
         testMethod( "publicT1SSIMap", new T2(), DSVersion.DS11, "publicT1SSIMap" );
     }
-
 
     public void test_suitable()
     {
@@ -437,26 +396,25 @@ public class BindMethodTest extends TestCase
     public void test_13()
     {
         //single map param
-        testMethod( "packageT1Map", new T1(), DSVersion.DS12, null);
-        testMethod( "packageT1Map", new T1(), DSVersion.DS13, "packageT1Map");
+        testMethod( "packageT1Map", new T1(), DSVersion.DS12, null );
+        testMethod( "packageT1Map", new T1(), DSVersion.DS13, "packageT1Map" );
 
         //map, sr
-        testMethod( "packageT1MapSR", new T1MapSR(), DSVersion.DS12, null);
-        testMethod( "packageT1MapSR", new T1MapSR(), DSVersion.DS13, "packageT1MapSR");
+        testMethod( "packageT1MapSR", new T1MapSR(), DSVersion.DS12, null );
+        testMethod( "packageT1MapSR", new T1MapSR(), DSVersion.DS13, "packageT1MapSR" );
     }
 
-
-    private void testMethod( final String methodName, final T1 component, final DSVersion dsVersion,
-        final String expectCallPerformed )
+    private void testMethod(final String methodName, final T1 component, final DSVersion dsVersion,
+        final String expectCallPerformed)
     {
         ComponentContainer container = newContainer();
         SingleComponentManager icm = new SingleComponentManager( container, new ComponentMethodsImpl() );
-        BindMethod bm = new BindMethod( methodName, component.getClass(),
-                FakeService.class.getName(), dsVersion, false );
+        BindMethod bm = new BindMethod( methodName, component.getClass(), FakeService.class.getName(), dsVersion,
+            false );
         RefPair refPair = new SingleRefPair( m_serviceReference );
-        ComponentContextImpl<T1> cc = new ComponentContextImpl(icm, new MockBundle(), null);
+        ComponentContextImpl<T1> cc = new ComponentContextImpl( icm, new MockBundle(), null );
         assertTrue( bm.getServiceObject( cc, refPair, m_context, icm ) );
-        BindParameters bp = new BindParameters(cc, refPair);
+        BindParameters bp = new BindParameters( cc, refPair );
         bm.invoke( component, bp, null, icm );
         assertEquals( expectCallPerformed, component.callPerformed );
     }
@@ -464,7 +422,8 @@ public class BindMethodTest extends TestCase
     private ComponentContainer newContainer()
     {
         final ComponentMetadata metadata = newMetadata();
-        ComponentContainer container = new ComponentContainer() {
+        ComponentContainer container = new ComponentContainer()
+        {
 
             public BundleComponentActivator getActivator()
             {
@@ -489,12 +448,13 @@ public class BindMethodTest extends TestCase
         return container;
     }
 
-	private ComponentMetadata newMetadata() {
-		ComponentMetadata metadata = new ComponentMetadata( DSVersion.DS11 );
-        metadata.setName("foo");
-        metadata.setImplementationClassName(Object.class.getName());
-        metadata.validate(null);
-		return metadata;
-	}
+    private ComponentMetadata newMetadata()
+    {
+        ComponentMetadata metadata = new ComponentMetadata( DSVersion.DS11 );
+        metadata.setName( "foo" );
+        metadata.setImplementationClassName( Object.class.getName() );
+        metadata.validate( null );
+        return metadata;
+    }
 
 }

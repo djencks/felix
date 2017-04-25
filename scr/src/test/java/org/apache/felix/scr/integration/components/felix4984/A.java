@@ -43,13 +43,13 @@ public class A
     private void setB(B b)
     {
         bs.add( b );
-        bsStackTraces.add(new Exception());
+        bsStackTraces.add( new Exception() );
     }
 
     private void unsetB(B b)
     {
         bs.remove( b );
-        bsStackTraces.remove(bsStackTraces.size()-1);
+        bsStackTraces.remove( bsStackTraces.size() - 1 );
     }
 
     public List<B> getBs()
@@ -57,10 +57,12 @@ public class A
         return bs;
     }
 
-    public void dumpStackTracesWhenBWasBound(LogService log) {
-        log.log(LogService.LOG_WARNING, "Stack traces when B was bound:");
-        for (Exception e : bsStackTraces) {
-            log.log(LogService.LOG_WARNING, "stack trace:", e);
+    public void dumpStackTracesWhenBWasBound(LogService log)
+    {
+        log.log( LogService.LOG_WARNING, "Stack traces when B was bound:" );
+        for ( Exception e : bsStackTraces )
+        {
+            log.log( LogService.LOG_WARNING, "stack trace:", e );
         }
     }
 

@@ -53,7 +53,6 @@ public class TargetedPID
      */
     private final short bindingLevel;
 
-
     /**
      * Returns the bundle's version as required for targeted PIDs: If the
      * bundle has a version the string representation of the version
@@ -63,14 +62,13 @@ public class TargetedPID
      *
      * @param bundle The bundle whose version is to be returned.
      */
-    public static String getBundleVersion( final Bundle bundle )
+    public static String getBundleVersion(final Bundle bundle)
     {
         Version version = bundle.getVersion();
         return version.toString();
     }
 
-
-    public TargetedPID( final String rawPid )
+    public TargetedPID(final String rawPid)
     {
         this.rawPid = rawPid;
 
@@ -118,7 +116,6 @@ public class TargetedPID
         }
     }
 
-
     /**
      * Returns true if the target of this PID (bundle symbolic name,
      * version, and location) match the bundle registering the referenced
@@ -138,7 +135,7 @@ public class TargetedPID
      * @return <code>true</code> if the referenced service matches the
      *      target of this PID.
      */
-    public boolean matchesTarget( Bundle serviceBundle )
+    public boolean matchesTarget(Bundle serviceBundle)
     {
         // already unregistered
         if ( serviceBundle == null )
@@ -175,7 +172,6 @@ public class TargetedPID
         return this.location == null || this.location.equals( serviceBundle.getLocation() );
     }
 
-
     /**
      * Gets the raw PID with which this instance has been created.
      * <p>
@@ -189,7 +185,6 @@ public class TargetedPID
         return rawPid;
     }
 
-
     /**
      * Returns the service PID of this targeted PID which basically is
      * the targeted PID without the targeting information.
@@ -198,7 +193,6 @@ public class TargetedPID
     {
         return servicePid;
     }
-
 
     /**
      * Returns <code>true</code> if this targeted PID binds stronger than
@@ -212,11 +206,10 @@ public class TargetedPID
      * @return <code>true</code> if the <code>other</code> targeted PID
      *      is binding strong.
      */
-    public boolean bindsStronger( final TargetedPID other )
+    public boolean bindsStronger(final TargetedPID other)
     {
         return other == null || this.bindingLevel > other.bindingLevel;
     }
-
 
     @Override
     public int hashCode()
@@ -224,9 +217,8 @@ public class TargetedPID
         return this.rawPid.hashCode();
     }
 
-
     @Override
-    public boolean equals( Object obj )
+    public boolean equals(Object obj)
     {
         if ( obj == null )
         {
@@ -246,7 +238,6 @@ public class TargetedPID
         // not the same class or different raw PID
         return false;
     }
-
 
     @Override
     public String toString()

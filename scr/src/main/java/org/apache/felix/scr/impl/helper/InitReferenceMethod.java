@@ -29,5 +29,5 @@ public interface InitReferenceMethod
      * @param logger The logger
      * @return {@code true} if initialization succeeded
      */
-    boolean init( Object componentInstance, SimpleLogger logger );
+    boolean init(Object componentInstance, SimpleLogger logger);
 }

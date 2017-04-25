@@ -18,9 +18,7 @@
  */
 package org.apache.felix.scr.impl.manager.components;
 
-
 import org.apache.felix.scr.impl.manager.components2.T2;
-
 
 public class T3 extends T2
 {

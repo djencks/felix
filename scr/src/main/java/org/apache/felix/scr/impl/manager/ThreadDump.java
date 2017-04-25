@@ -33,14 +33,17 @@ public class ThreadDump implements Callable<String>
     {
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         StringBuffer b = new StringBuffer( "Thread dump\n" );
-        ThreadInfo[] infos = threadMXBean.dumpAllThreads( threadMXBean.isObjectMonitorUsageSupported(), threadMXBean.isSynchronizerUsageSupported() );
+        ThreadInfo[] infos = threadMXBean.dumpAllThreads( threadMXBean.isObjectMonitorUsageSupported(),
+            threadMXBean.isSynchronizerUsageSupported() );
         for ( int i = 0; i < infos.length; i++ )
         {
             ThreadInfo ti = infos[i];
-            b.append( "\n\nThreadId: " ).append( ti.getThreadId() ).append( " : name: " ).append( ti.getThreadName() ).append( " State: " ).append( ti.getThreadState() );
-            b.append( "\n  LockInfo: " ).append( ti.getLockInfo() ).append( " LockOwnerId: " ).append( ti.getLockOwnerId() ).append( " LockOwnerName: ").append( ti.getLockOwnerName() );
+            b.append( "\n\nThreadId: " ).append( ti.getThreadId() ).append( " : name: " ).append(
+                ti.getThreadName() ).append( " State: " ).append( ti.getThreadState() );
+            b.append( "\n  LockInfo: " ).append( ti.getLockInfo() ).append( " LockOwnerId: " ).append(
+                ti.getLockOwnerId() ).append( " LockOwnerName: " ).append( ti.getLockOwnerName() );
             StackTraceElement[] stackTrace = ti.getStackTrace();
-            for (int j = 0; j < stackTrace.length; j++ )
+            for ( int j = 0; j < stackTrace.length; j++ )
             {
                 b.append( "\n  " ).append( stackTrace[j] );
             }

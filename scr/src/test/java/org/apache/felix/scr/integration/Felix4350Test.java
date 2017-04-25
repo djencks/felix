@@ -42,110 +42,116 @@ public class Felix4350Test extends ComponentTestBase
     static
     {
         // uncomment to enable debugging of this test class
-//                paxRunnerVmOption = DEBUG_VM_OPTION;
+        //                paxRunnerVmOption = DEBUG_VM_OPTION;
         descriptorFile = "/integration_test_FELIX_4350.xml";
         //comment to get debug logging if the test fails.
-//        DS_LOGLEVEL = "warn";
+        //        DS_LOGLEVEL = "warn";
     }
 
     @Test
     public void test_unbind_while_activating_single_static() throws Exception
     {
-        doTest("SingleStatic");
+        doTest( "SingleStatic" );
     }
 
     @Test
     public void test_unbind_while_activating_single_dynamic() throws Exception
     {
-        doTest("SingleDynamic");
+        doTest( "SingleDynamic" );
     }
 
     @Test
     public void test_unbind_while_activating_multiple_dynamic() throws Exception
     {
-        doTest("MultipleDynamic");
+        doTest( "MultipleDynamic" );
     }
 
     @Test
     public void test_unbind_while_activating_multiple_static_greedy() throws Exception
     {
-        doTest("MultipleStaticGreedy");
+        doTest( "MultipleStaticGreedy" );
     }
 
     @Test
     public void test_unbind_while_activating_multiple_static_reluctant() throws Exception
     {
-        doTest("MultipleStaticReluctant");
+        doTest( "MultipleStaticReluctant" );
     }
 
     protected void doTest(String componentName) throws Exception
     {
-        ServiceRegistration dep1Reg = register(new SimpleComponent(), 0);
-        ServiceRegistration dep2Reg = register(new SimpleComponent2(), 1000);
-        
-        final ComponentDescriptionDTO main = findComponentDescriptorByName(componentName);
-        TestCase.assertNotNull(main);
+        ServiceRegistration dep1Reg = register( new SimpleComponent(), 0 );
+        ServiceRegistration dep2Reg = register( new SimpleComponent2(), 1000 );
 
-        asyncEnable(main); //needs to be async
-        delay(300); //dep2 getService has not yet returned
+        final ComponentDescriptionDTO main = findComponentDescriptorByName( componentName );
+        TestCase.assertNotNull( main );
+
+        asyncEnable( main ); //needs to be async
+        delay( 300 ); //dep2 getService has not yet returned
         dep1Reg.unregister();
-        delay(2000); //dep2 getService has returned
+        delay( 2000 ); //dep2 getService has returned
 
-        Felix4350Component.check(0, 0, false);
+        Felix4350Component.check( 0, 0, false );
 
-        dep1Reg = register(new SimpleComponent(), 0);
-        delay(300);
+        dep1Reg = register( new SimpleComponent(), 0 );
+        delay( 300 );
 
-        Felix4350Component.check(1, 0, true);
+        Felix4350Component.check( 1, 0, true );
 
-        disableAndCheck(main);  //does not need to be asyncv??
+        disableAndCheck( main ); //does not need to be asyncv??
         dep1Reg.unregister();
         dep2Reg.unregister();
 
-        Felix4350Component.check(1, 1, false);
-        dep1Reg = register(new SimpleComponent(), 0);
-        dep2Reg = register(new SimpleComponent2(), 1000);
-        Felix4350Component.check(1, 1, false);
-        
-        asyncEnable(main); //needs to be async
-        delay(300);
+        Felix4350Component.check( 1, 1, false );
+        dep1Reg = register( new SimpleComponent(), 0 );
+        dep2Reg = register( new SimpleComponent2(), 1000 );
+        Felix4350Component.check( 1, 1, false );
+
+        asyncEnable( main ); //needs to be async
+        delay( 300 );
         dep1Reg.unregister();
-        delay(100);
-        dep1Reg = register(new SimpleComponent(), 0);
-        delay(2000);
+        delay( 100 );
+        dep1Reg = register( new SimpleComponent(), 0 );
+        delay( 2000 );
 
-        Felix4350Component.check(2, 1, true); //n.b. counts are cumulative
+        Felix4350Component.check( 2, 1, true ); //n.b. counts are cumulative
     }
-    
-    protected void asyncEnable( final ComponentDescriptionDTO cd ) throws Exception
-    {
-    	new Thread( new Runnable() {
 
-			public void run() {
-				try
+    protected void asyncEnable(final ComponentDescriptionDTO cd) throws Exception
+    {
+        new Thread( new Runnable()
+        {
+
+            public void run()
+            {
+                try
                 {
                     enableAndCheck( cd );
                 }
-                catch (InvocationTargetException e)
+                catch ( InvocationTargetException e )
                 {
                 }
-                catch (InterruptedException e)
+                catch ( InterruptedException e )
                 {
                 }
-			}}).start();
+            }
+        } ).start();
     }
 
-    protected ServiceRegistration register(final Object service, final int delay) {
-        return bundleContext.registerService(service.getClass().getName(), new ServiceFactory() {
+    protected ServiceRegistration register(final Object service, final int delay)
+    {
+        return bundleContext.registerService( service.getClass().getName(), new ServiceFactory()
+        {
             public Object getService(Bundle bundle, ServiceRegistration registration)
             {
-                delay(delay);
+                delay( delay );
                 return service;
             }
+
             public void ungetService(Bundle bundle, ServiceRegistration registration, Object service)
             {
             }
-        }, null);
+        }, null );
     }
 
 }

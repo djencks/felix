@@ -24,7 +24,7 @@ import org.osgi.service.component.ComponentInstance;
 
 public interface ExtFactoryComponentInstance extends ComponentInstance
 {
-    
-    void modify( Dictionary<String, ?> properties );
+
+    void modify(Dictionary<String, ?> properties);
 
 }

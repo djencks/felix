@@ -183,7 +183,7 @@ public abstract class ComponentTestBase
             systemProperty( "ds.loglevel" ).value( DS_LOGLEVEL )
 
         );
-        final Option vmOption = ( paxRunnerVmOption != null )? CoreOptions.vmOption( paxRunnerVmOption ): null;
+        final Option vmOption = ( paxRunnerVmOption != null ) ? CoreOptions.vmOption( paxRunnerVmOption ) : null;
         NONSTANDARD_COMPONENT_FACTORY_BEHAVIOR = false;
         return OptionUtils.combine( base, vmOption );
     }
@@ -584,7 +584,7 @@ public abstract class ComponentTestBase
             "(" + ComponentConstants.COMPONENT_FACTORY + "=" + componentfactory + ")" );
         TestCase.assertNotNull( refs );
         TestCase.assertEquals( 1, refs.length );
-        final ComponentFactory factory = (ComponentFactory) bundleContext.getService( refs[0] );
+        final ComponentFactory factory = ( ComponentFactory ) bundleContext.getService( refs[0] );
         TestCase.assertNotNull( factory );
         return factory;
     }
@@ -984,7 +984,7 @@ public abstract class ComponentTestBase
         {
             int eventType = event.getType();
             String msg = getFrameworkEventMessage( eventType );
-            int level = ( eventType == FrameworkEvent.ERROR )? LogService.LOG_ERROR: LogService.LOG_WARNING;
+            int level = ( eventType == FrameworkEvent.ERROR ) ? LogService.LOG_ERROR : LogService.LOG_WARNING;
             log( level, msg, event.getThrowable() );
             if ( event.getThrowable() != null && firstFrameworkThrowable == null )
             {
@@ -1054,7 +1054,7 @@ public abstract class ComponentTestBase
 
         private String getFrameworkEventMessage(int event)
         {
-            switch (event)
+            switch ( event )
             {
                 case FrameworkEvent.ERROR:
                     return "FrameworkEvent: ERROR";

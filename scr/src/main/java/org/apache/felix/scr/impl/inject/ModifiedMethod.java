@@ -20,22 +20,19 @@ package org.apache.felix.scr.impl.inject;
 
 import org.apache.felix.scr.impl.metadata.DSVersion;
 
-
 public class ModifiedMethod extends ActivateMethod
 {
 
-    public ModifiedMethod( final String methodName,
-            final Class<?> componentClass, final DSVersion dsVersion, final boolean configurableServiceProperties, boolean supportsInterfaces )
+    public ModifiedMethod(final String methodName, final Class<?> componentClass, final DSVersion dsVersion, final boolean configurableServiceProperties, boolean supportsInterfaces)
     {
-        super( methodName, methodName != null, componentClass, dsVersion, configurableServiceProperties, supportsInterfaces );
+        super( methodName, methodName != null, componentClass, dsVersion, configurableServiceProperties,
+            supportsInterfaces );
     }
-
 
     protected boolean acceptEmpty()
     {
         return true;
     }
-
 
     protected String getMethodNamePrefix()
     {

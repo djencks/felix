@@ -81,15 +81,15 @@ public abstract class RegionConfigurationSupport
         // If RegionConfigurationSupport *directly* implements ConfigurationListener then we get NoClassDefFoundError
         // when SCR is started without a wiring to an exporter of Config Admin API. This construction allows the
         // class loading exception to be caught and confined.
-        ConfigurationListener serviceDelegator = new ConfigurationListener() 
+        ConfigurationListener serviceDelegator = new ConfigurationListener()
         {
             @Override
-            public void configurationEvent(ConfigurationEvent event) 
+            public void configurationEvent(ConfigurationEvent event)
             {
-                RegionConfigurationSupport.this.configurationEvent(event);
+                RegionConfigurationSupport.this.configurationEvent( event );
             }
         };
-        this.m_registration = caBundleContext.registerService(ConfigurationListener.class, serviceDelegator, props );
+        this.m_registration = caBundleContext.registerService( ConfigurationListener.class, serviceDelegator, props );
     }
 
     public Long getBundleId()
@@ -225,11 +225,11 @@ public abstract class RegionConfigurationSupport
     {
         final TargetedPID pid = new TargetedPID( event.getPid() );
         String rawFactoryPid = event.getFactoryPid();
-        final TargetedPID factoryPid = rawFactoryPid == null? null: new TargetedPID( rawFactoryPid );
+        final TargetedPID factoryPid = rawFactoryPid == null ? null : new TargetedPID( rawFactoryPid );
 
         // iterate over all components which must be configured with this pid
         // (since DS 1.2, components may specify a specific configuration PID (112.4.4 configuration-pid)
-        Collection<ComponentHolder<?>> holders = getComponentHolders( factoryPid != null? factoryPid: pid );
+        Collection<ComponentHolder<?>> holders = getComponentHolders( factoryPid != null ? factoryPid : pid );
 
         logger.log( LogService.LOG_DEBUG,
             "configurationEvent: Handling {0} of Configuration PID={1} for component holders {2}",
@@ -239,7 +239,7 @@ public abstract class RegionConfigurationSupport
         {
             if ( !componentHolder.getComponentMetadata().isConfigurationIgnored() )
             {
-                switch (event.getType())
+                switch ( event.getType() )
                 {
                     case ConfigurationEvent.CM_DELETED:
                         if ( factoryPid != null || !configureComponentHolder( componentHolder ) )
@@ -262,7 +262,7 @@ public abstract class RegionConfigurationSupport
                             break;
                         }
 
-                        TargetedPID targetedPid = factoryPid == null? pid: factoryPid;
+                        TargetedPID targetedPid = factoryPid == null ? pid : factoryPid;
                         TargetedPID oldTargetedPID = componentHolder.getConfigurationTargetedPID( pid, factoryPid );
                         if ( factoryPid != null || targetedPid.equals( oldTargetedPID )
                             || targetedPid.bindsStronger( oldTargetedPID ) )
@@ -304,7 +304,7 @@ public abstract class RegionConfigurationSupport
                             break;
                         }
 
-                        TargetedPID targetedPid = factoryPid == null? pid: factoryPid;
+                        TargetedPID targetedPid = factoryPid == null ? pid : factoryPid;
                         TargetedPID oldTargetedPID = componentHolder.getConfigurationTargetedPID( pid, factoryPid );
                         if ( targetedPid.equals( oldTargetedPID ) )
                         {
@@ -390,7 +390,7 @@ public abstract class RegionConfigurationSupport
 
     private String getEventType(ConfigurationEvent event)
     {
-        switch (event.getType())
+        switch ( event.getType() )
         {
             case ConfigurationEvent.CM_UPDATED:
                 return "UPDATED";
