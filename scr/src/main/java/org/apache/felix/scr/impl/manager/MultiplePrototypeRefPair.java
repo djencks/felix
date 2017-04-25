@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.manager;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,10 +36,10 @@ public class MultiplePrototypeRefPair<S, T> extends RefPair<S, T>
     private final ServiceObjects<T> serviceObjects;
     private final ConcurrentMap<ComponentContextImpl<S>, T> instances = new ConcurrentHashMap<ComponentContextImpl<S>, T>();
 
-    public MultiplePrototypeRefPair( BundleContext context, ServiceReference<T> ref )
+    public MultiplePrototypeRefPair(BundleContext context, ServiceReference<T> ref)
     {
-        super(ref);
-        this.serviceObjects = context.getServiceObjects(ref);
+        super( ref );
+        this.serviceObjects = context.getServiceObjects( ref );
     }
 
     @Override
@@ -58,13 +57,13 @@ public class MultiplePrototypeRefPair<S, T> extends RefPair<S, T>
     @Override
     public boolean setServiceObject(ComponentContextImpl<S> key, T serviceObject)
     {
-        return instances.putIfAbsent(key, serviceObject) == null;
+        return instances.putIfAbsent( key, serviceObject ) == null;
     }
 
     @Override
     public T unsetServiceObject(ComponentContextImpl<S> key)
     {
-        return instances.get(key);
+        return instances.get( key );
     }
 
     @Override
@@ -74,19 +73,18 @@ public class MultiplePrototypeRefPair<S, T> extends RefPair<S, T>
     }
 
     @Override
-    public boolean getServiceObject(ComponentContextImpl<S> key, BundleContext context,
-        SimpleLogger logger)
+    public boolean getServiceObject(ComponentContextImpl<S> key, BundleContext context, SimpleLogger logger)
     {
-    	final T service = key.getComponentServiceObjectsHelper().getPrototypeRefInstance(this.getRef(), serviceObjects);
+        final T service = key.getComponentServiceObjectsHelper().getPrototypeRefInstance( this.getRef(),
+            serviceObjects );
         if ( service == null )
         {
             setFailed();
-            logger.log(
-                 LogService.LOG_WARNING,
-                 "Could not get service from serviceobjects for ref {0}", new Object[] {getRef()}, null );
+            logger.log( LogService.LOG_WARNING, "Could not get service from serviceobjects for ref {0}",
+                new Object[] { getRef() }, null );
             return false;
         }
-        if (!setServiceObject(key, service))
+        if ( !setServiceObject( key, service ) )
         {
             // Another thread got the service before, so unget our
             serviceObjects.ungetService( service );

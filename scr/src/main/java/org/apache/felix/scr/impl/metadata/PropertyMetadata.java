@@ -27,59 +27,65 @@ import java.util.StringTokenizer;
  * defined in the descriptor
  *
  */
-public class PropertyMetadata {
+public class PropertyMetadata
+{
 
-	// Name of the property (required)
-	private String m_name;
+    // Name of the property (required)
+    private String m_name;
 
-	// Type of the property (optional)
-	private String m_type;
+    // Type of the property (optional)
+    private String m_type;
 
-	// Value of the type (optional)
-	// - before validate: raw value from XML (String or String[])
-	// - after validate: converted value provided to component
-	private Object m_value;
+    // Value of the type (optional)
+    // - before validate: raw value from XML (String or String[])
+    // - after validate: converted value provided to component
+    private Object m_value;
 
-	// Flag that indicates if this PropertyMetadata has been validated and thus has become immutable
-	private boolean m_validated = false;
+    // Flag that indicates if this PropertyMetadata has been validated and thus has become immutable
+    private boolean m_validated = false;
 
-	/**
-	 * Set the name
-	 *
-	 * @param name
-	 */
-	public void setName(String name) {
-		if (m_validated == true) {
-			return;
-		}
+    /**
+     * Set the name
+     *
+     * @param name
+     */
+    public void setName(String name)
+    {
+        if ( m_validated == true )
+        {
+            return;
+        }
 
-		m_name = name;
-	}
+        m_name = name;
+    }
 
+    /**
+     * Set the type
+     *
+     * @param type
+     */
+    public void setType(String type)
+    {
+        if ( m_validated == true )
+        {
+            return;
+        }
+        m_type = type;
+    }
 
-	/**
-	 * Set the type
-	 *
-	 * @param type
-	 */
-	public void setType(String type) {
-		if (m_validated == true) {
-			return;
-		}
-		m_type = type;
-	}
-
-	/**
-	 * Set the value
-	 *
-	 * @param value
-	 */
-	public void setValue(String value) {
-		if (m_validated == true) {
-			return;
-		}
+    /**
+     * Set the value
+     *
+     * @param value
+     */
+    public void setValue(String value)
+    {
+        if ( m_validated == true )
+        {
+            return;
+        }
         m_value = value;
-	}
+    }
 
     /**
      * Set multiple values as an array, where the values are contained in
@@ -87,16 +93,20 @@ public class PropertyMetadata {
      *
      * @param values
      */
-    public void setValues(String values) {
-        if (m_validated == true) {
+    public void setValues(String values)
+    {
+        if ( m_validated == true )
+        {
             return;
         }
         // splite th values
         List<String> valueList = new ArrayList<String>();
-        StringTokenizer tokener = new StringTokenizer(values, "\r\n");
-        while (tokener.hasMoreTokens()) {
+        StringTokenizer tokener = new StringTokenizer( values, "\r\n" );
+        while ( tokener.hasMoreTokens() )
+        {
             String value = tokener.nextToken().trim();
-            if (value.length() > 0) {
+            if ( value.length() > 0 )
+            {
                 valueList.add( value );
             }
         }
@@ -108,7 +118,8 @@ public class PropertyMetadata {
      *
      * @return the name of the property
      */
-    public String getName() {
+    public String getName()
+    {
         return m_name;
     }
 
@@ -117,7 +128,8 @@ public class PropertyMetadata {
      *
      * @return the type of the property
      */
-    public String getType() {
+    public String getType()
+    {
         return m_type;
     }
 
@@ -126,14 +138,15 @@ public class PropertyMetadata {
      *
      * @return the value of the property as an Object
      */
-    public Object getValue() {
+    public Object getValue()
+    {
         return m_value;
     }
 
     /**
      * Method used to verify if the semantics of this metadata are correct
      */
-    public void validate( ComponentMetadata componentMetadata )
+    public void validate(ComponentMetadata componentMetadata)
     {
         if ( m_name == null )
         {
@@ -147,13 +160,13 @@ public class PropertyMetadata {
         }
         else if ( componentMetadata.getDSVersion().isDS11() && m_type.equals( "Char" ) )
         {
-            throw componentMetadata
-                .validationFailure( "Illegal property type 'Char' used for DS 1.1 descriptor, use 'Character' instead" );
+            throw componentMetadata.validationFailure(
+                "Illegal property type 'Char' used for DS 1.1 descriptor, use 'Character' instead" );
         }
         else if ( !componentMetadata.getDSVersion().isDS11() && m_type.equals( "Character" ) )
         {
-            throw componentMetadata
-                .validationFailure( "Illegal property type 'Character' used for DS 1.0 descriptor, use 'Char' instead" );
+            throw componentMetadata.validationFailure(
+                "Illegal property type 'Character' used for DS 1.0 descriptor, use 'Char' instead" );
         }
 
         // validate and covert value
@@ -163,17 +176,17 @@ public class PropertyMetadata {
             {
                 if ( m_value instanceof String )
                 {
-                    m_value = toType( ( String ) m_value );
+                    m_value = toType( (String) m_value );
                 }
                 else
                 {
-                    m_value = toTypeArray( ( String[] ) m_value );
+                    m_value = toTypeArray( (String[]) m_value );
                 }
             }
             catch ( NumberFormatException nfe )
             {
-                throw componentMetadata.validationFailure( getName() + ": Cannot convert property value to "
-                    + getType() );
+                throw componentMetadata.validationFailure(
+                    getName() + ": Cannot convert property value to " + getType() );
             }
             catch ( IllegalArgumentException e )
             {
@@ -184,14 +197,13 @@ public class PropertyMetadata {
         m_validated = true;
     }
 
-
     /**
      * @throws IllegalArgumentException if the property type is not valid
      *          according to the spec
      * @throws NumberFormatException if the string value cannot be converted
      *          to the numeric type indicated by the property type
      */
-    private Object toType( String value )
+    private Object toType(String value)
     {
         // 112.4.5 Parsing of the value is done by the valueOf(String) method (P. 291)
         // Should the type accept lowercase too?
@@ -225,7 +237,7 @@ public class PropertyMetadata {
             // For Character types, the conversion is handled by Integer.valueOf method.
             // (since valueOf is defined in terms of parseInt we directly call
             // parseInt to prevent unneeded Object creation)
-            return Character.valueOf( ( char ) Integer.parseInt( value ) );
+            return Character.valueOf( (char) Integer.parseInt( value ) );
         }
         else if ( m_type.equals( "Boolean" ) )
         {
@@ -241,14 +253,13 @@ public class PropertyMetadata {
         }
     }
 
-
     /**
      * @throws IllegalArgumentException if the property type is not valid
      *          according to the spec
      * @throws NumberFormatException if the string value cannot be converted
      *          to the numeric type indicated by the property type
      */
-    private Object toTypeArray( String[] valueList )
+    private Object toTypeArray(String[] valueList)
     {
         // 112.4.5 Except for String objects, the result will be translated to an array of primitive types.
         if ( m_type.equals( "String" ) )
@@ -315,7 +326,7 @@ public class PropertyMetadata {
             char[] array = new char[valueList.length];
             for ( int i = 0; i < array.length; i++ )
             {
-                array[i] = ( char ) Integer.parseInt( valueList[i] );
+                array[i] = (char) Integer.parseInt( valueList[i] );
             }
             return array;
         }

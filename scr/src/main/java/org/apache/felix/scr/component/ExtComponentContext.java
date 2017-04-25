@@ -18,11 +18,9 @@
  */
 package org.apache.felix.scr.component;
 
-
 import java.util.Dictionary;
 
 import org.osgi.service.component.ComponentContext;
-
 
 /**
  * The <code>ExtComponentContext</code> is a custom extension of the
@@ -50,6 +48,6 @@ public interface ExtComponentContext extends ComponentContext
      * @throws IllegalStateException if this method is called for a
      *      Component Factory component
      */
-    void setServiceProperties( Dictionary<String, ?> properties );
+    void setServiceProperties(Dictionary<String, ?> properties);
 
 }

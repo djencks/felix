@@ -36,7 +36,7 @@ public class C
 
     private void unsetB(B b)
     {
-        if (this.b == b)
+        if ( this.b == b )
         {
             this.b = null;
         }

@@ -24,9 +24,7 @@ import org.osgi.framework.ServiceEvent;
 public interface ExtendedServiceListenerContext<U extends ServiceEvent>
 {
 
-    void addServiceListener(String className, Filter filter,
-        ExtendedServiceListener<U> listener);
+    void addServiceListener(String className, Filter filter, ExtendedServiceListener<U> listener);
 
-    void removeServiceListener(String className, Filter filter,
-        ExtendedServiceListener<U> listener);
+    void removeServiceListener(String className, Filter filter, ExtendedServiceListener<U> listener);
 }

@@ -56,16 +56,15 @@ public class ScrManagedServiceServiceFactory implements ServiceFactory<ScrManage
         catch ( Throwable t )
         {
             // assume MetaType Service API not available
-            logger
-                .log(
-                    LogService.LOG_INFO,
-                    "Cannot create MetaType providing ManagedService; not providing Metatype information but just accepting configuration",
-                    null );
+            logger.log( LogService.LOG_INFO,
+                "Cannot create MetaType providing ManagedService; not providing Metatype information but just accepting configuration",
+                null );
         }
         return new ScrManagedService( this.scrConfiguration );
     }
 
-    public void ungetService(Bundle bundle, ServiceRegistration<ScrManagedService> registration, ScrManagedService service)
+    public void ungetService(Bundle bundle, ServiceRegistration<ScrManagedService> registration,
+        ScrManagedService service)
     {
         // nothing really todo; GC will do the rest
     }

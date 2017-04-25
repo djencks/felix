@@ -20,20 +20,16 @@ package org.apache.felix.scr.impl.inject;
 
 import org.apache.felix.scr.impl.metadata.DSVersion;
 
-
 /**
  * Component method to be invoked on service property update of a bound service.
  */
-public class UpdatedMethod extends BindMethod
-implements org.apache.felix.scr.impl.helper.ReferenceMethod
+public class UpdatedMethod extends BindMethod implements org.apache.felix.scr.impl.helper.ReferenceMethod
 {
 
-    public UpdatedMethod( final String methodName,
-            final Class<?> componentClass, final String referenceClassName, final DSVersion dsVersion, final boolean configurableServiceProperties )
+    public UpdatedMethod(final String methodName, final Class<?> componentClass, final String referenceClassName, final DSVersion dsVersion, final boolean configurableServiceProperties)
     {
         super( methodName, componentClass, referenceClassName, dsVersion, configurableServiceProperties );
     }
-
 
     @Override
     protected String getMethodNamePrefix()

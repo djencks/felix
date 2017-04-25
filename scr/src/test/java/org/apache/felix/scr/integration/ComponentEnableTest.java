@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration;
 
-
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -34,7 +33,6 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 
-
 @RunWith(JUnit4TestRunner.class)
 public class ComponentEnableTest extends ComponentTestBase
 {
@@ -45,27 +43,25 @@ public class ComponentEnableTest extends ComponentTestBase
         descriptorFile = "/integration_test_enable.xml";
     }
 
-
     @Test
     public void test_Component_Enable() throws Exception
     {
         final String enable = "org.apache.felix.scr.integration.components.enable";
         final String name = "org.apache.felix.scr.integration.components.SimpleComponent";
-        
-        ComponentConfigurationDTO dto = findComponentConfigurationByName(enable, ComponentConfigurationDTO.SATISFIED);
-        
-        EnableComponent ec = getServiceFromConfiguration(dto, EnableComponent.class);
-        
-        TestCase.assertEquals(0, SimpleComponent.INSTANCES.size());
 
-        ec.enable(name);
+        ComponentConfigurationDTO dto = findComponentConfigurationByName( enable, ComponentConfigurationDTO.SATISFIED );
+
+        EnableComponent ec = getServiceFromConfiguration( dto, EnableComponent.class );
+
+        TestCase.assertEquals( 0, SimpleComponent.INSTANCES.size() );
+
+        ec.enable( name );
         delay();
-        TestCase.assertEquals(1, SimpleComponent.INSTANCES.size());
-        ec.enable(name);
+        TestCase.assertEquals( 1, SimpleComponent.INSTANCES.size() );
+        ec.enable( name );
         delay();
-        TestCase.assertEquals(1, SimpleComponent.INSTANCES.size());
+        TestCase.assertEquals( 1, SimpleComponent.INSTANCES.size() );
 
     }
-
 
 }

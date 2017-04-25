@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.integration.components.circular;
 
 import java.util.ArrayList;

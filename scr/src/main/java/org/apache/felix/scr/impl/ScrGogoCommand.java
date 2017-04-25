@@ -61,11 +61,11 @@ class ScrGogoCommand
     {
         try
         {
-            scrCommand.list(null, new PrintWriter(System.out));
+            scrCommand.list( null, new PrintWriter( System.out ) );
         }
         catch ( IllegalArgumentException e )
         {
-            System.err.println(e.getMessage());
+            System.err.println( e.getMessage() );
         }
     }
 
@@ -74,24 +74,25 @@ class ScrGogoCommand
     {
         try
         {
-            scrCommand.list(bundleIdentifier, new PrintWriter(System.out));
+            scrCommand.list( bundleIdentifier, new PrintWriter( System.out ) );
         }
         catch ( IllegalArgumentException e )
         {
-            System.err.println(e.getMessage());
+            System.err.println( e.getMessage() );
         }
     }
 
     @Descriptor("Dump information of a component or component configuration")
-    public void info(@Descriptor("Name of the component or ID of the component configuration") final String componentIdentifier)
+    public void info(
+        @Descriptor("Name of the component or ID of the component configuration") final String componentIdentifier)
     {
         try
         {
-            scrCommand.info(componentIdentifier, new PrintWriter(System.out));
+            scrCommand.info( componentIdentifier, new PrintWriter( System.out ) );
         }
         catch ( IllegalArgumentException e )
         {
-            System.err.println(e.getMessage());
+            System.err.println( e.getMessage() );
         }
     }
 
@@ -100,11 +101,11 @@ class ScrGogoCommand
     {
         try
         {
-            scrCommand.change(componentIdentifier, new PrintWriter(System.out), true);
+            scrCommand.change( componentIdentifier, new PrintWriter( System.out ), true );
         }
         catch ( IllegalArgumentException e )
         {
-            System.err.println(e.getMessage());
+            System.err.println( e.getMessage() );
         }
     }
 
@@ -113,18 +114,18 @@ class ScrGogoCommand
     {
         try
         {
-            scrCommand.change(componentIdentifier, new PrintWriter(System.out), false);
+            scrCommand.change( componentIdentifier, new PrintWriter( System.out ), false );
         }
         catch ( IllegalArgumentException e )
         {
-            System.err.println(e.getMessage());
+            System.err.println( e.getMessage() );
         }
     }
 
     @Descriptor("Show the current SCR configuration")
     public void config()
     {
-        scrCommand.config(new PrintWriter(System.out));
+        scrCommand.config( new PrintWriter( System.out ) );
     }
 
 }

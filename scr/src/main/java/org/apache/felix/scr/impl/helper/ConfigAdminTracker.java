@@ -50,18 +50,20 @@ public class ConfigAdminTracker
                     boolean visible = false;
                     try
                     {
-                        ConfigurationAdmin ca = componentActivator.getBundleContext().getService(reference);
+                        ConfigurationAdmin ca = componentActivator.getBundleContext().getService( reference );
                         if ( ca != null )
                         {
                             visible = true;
-                            componentActivator.getBundleContext().ungetService(reference);
+                            componentActivator.getBundleContext().ungetService( reference );
                         }
                     }
-                    catch ( final Exception ex)
+                    catch ( final Exception ex )
                     {
-                        componentActivator.log(LogService.LOG_ERROR,
-                                "Configuration admin API visible to bundle " + componentActivator.getBundleContext().getBundle() +
-                                " is not the same as the Configuration Admin API visible to the SCR implementation.", null, null, ex);
+                        componentActivator.log( LogService.LOG_ERROR,
+                            "Configuration admin API visible to bundle "
+                                + componentActivator.getBundleContext().getBundle()
+                                + " is not the same as the Configuration Admin API visible to the SCR implementation.",
+                            null, null, ex );
                     }
 
                     if ( !visible )

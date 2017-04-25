@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -27,69 +26,67 @@ import java.util.Map;
 import org.apache.felix.scr.component.ExtComponentContext;
 import org.osgi.service.component.ComponentContext;
 
-
 public class MutatingServiceImpl implements MutatingService
 {
     private ComponentContext activateContext;
 
-    private void activate( ComponentContext activateContext )
+    private void activate(ComponentContext activateContext)
     {
         this.activateContext = activateContext;
     }
 
-    private void modified( ComponentContext activateContext )
+    private void modified(ComponentContext activateContext)
     {
 
     }
 
-    private Map activateMutate( ComponentContext activateContext )
+    private Map activateMutate(ComponentContext activateContext)
     {
         this.activateContext = activateContext;
-        Map result = new Hashtable( (Map )activateContext.getProperties() );
-        if (activateContext.getServiceReference() != null) 
+        Map result = new Hashtable( (Map) activateContext.getProperties() );
+        if ( activateContext.getServiceReference() != null )
         {
             result.put( "theValue", "anotherValue1" );
         }
-        if (result.containsKey( ".p2" ))
+        if ( result.containsKey( ".p2" ) )
         {
             result.put( ".theValue", "privateValue" );
         }
         return result;
     }
 
-    private Map modifiedMutate( ComponentContext activateContext )
+    private Map modifiedMutate(ComponentContext activateContext)
     {
-        Map result = new Hashtable( (Map )activateContext.getProperties() );
+        Map result = new Hashtable( (Map) activateContext.getProperties() );
         result.put( "theValue", "anotherValue2" );
         return result;
     }
 
-    private Map deactivateMutate( ComponentContext activateContext )
+    private Map deactivateMutate(ComponentContext activateContext)
     {
-        Map result = new Hashtable( (Map )activateContext.getProperties() );
+        Map result = new Hashtable( (Map) activateContext.getProperties() );
         result.put( "theValue", "anotherValue3" );
         return result;
     }
 
-    public void updateProperties( Dictionary changes )
+    public void updateProperties(Dictionary changes)
     {
-        ( ( ExtComponentContext ) activateContext ).setServiceProperties( changes );
+        ( (ExtComponentContext) activateContext ).setServiceProperties( changes );
     }
 
-    private Map bindSimpleService( SimpleService ss )
+    private Map bindSimpleService(SimpleService ss)
     {
         return Collections.singletonMap( "SimpleService", "bound" );
     }
 
-    private Map unbindSimpleService( SimpleService ss )
+    private Map unbindSimpleService(SimpleService ss)
     {
         return Collections.singletonMap( "SimpleService", "unbound" );
     }
 
-    private Map updateSimpleService( SimpleService ss )
+    private Map updateSimpleService(SimpleService ss)
     {
         return Collections.singletonMap( "SimpleService", "updated" );
     }
-
 
 }

@@ -29,7 +29,10 @@ import org.apache.felix.scr.impl.helper.Logger;
  */
 public class ReferenceMetadata
 {
-	public enum ReferenceScope {bundle, prototype, prototype_required}
+    public enum ReferenceScope
+    {
+        bundle, prototype, prototype_required
+    }
 
     // constant for option single reference - 0..1
     public static final String CARDINALITY_0_1 = "0..1";
@@ -161,11 +164,11 @@ public class ReferenceMetadata
         FIELD_STRATEGY_VALID.add( FIELD_STRATEGY_UPDATE );
 
         FIELD_VALUE_TYPE_VALID = new TreeSet<String>();
-        FIELD_VALUE_TYPE_VALID.add ( FIELD_VALUE_TYPE_PROPERTIES );
-        FIELD_VALUE_TYPE_VALID.add ( FIELD_VALUE_TYPE_REFERENCE );
-        FIELD_VALUE_TYPE_VALID.add ( FIELD_VALUE_TYPE_SERVICE );
-        FIELD_VALUE_TYPE_VALID.add ( FIELD_VALUE_TYPE_SERVICEOBJECTS );
-        FIELD_VALUE_TYPE_VALID.add ( FIELD_VALUE_TYPE_TUPLE );
+        FIELD_VALUE_TYPE_VALID.add( FIELD_VALUE_TYPE_PROPERTIES );
+        FIELD_VALUE_TYPE_VALID.add( FIELD_VALUE_TYPE_REFERENCE );
+        FIELD_VALUE_TYPE_VALID.add( FIELD_VALUE_TYPE_SERVICE );
+        FIELD_VALUE_TYPE_VALID.add( FIELD_VALUE_TYPE_SERVICEOBJECTS );
+        FIELD_VALUE_TYPE_VALID.add( FIELD_VALUE_TYPE_TUPLE );
     }
 
     /////////////////////////////////////////////// setters ///////////////////////////////////
@@ -175,7 +178,7 @@ public class ReferenceMetadata
      *
      * @param name
      */
-    public void setName( String name )
+    public void setName(String name)
     {
         if ( m_validated )
         {
@@ -185,13 +188,12 @@ public class ReferenceMetadata
         m_name = name;
     }
 
-
     /**
      * Setter for the interfaceName attribute
      *
      * @param interfaceName
      */
-    public void setInterface( String interfaceName )
+    public void setInterface(String interfaceName)
     {
         if ( m_validated )
         {
@@ -202,13 +204,12 @@ public class ReferenceMetadata
 
     }
 
-
     /**
      * Setter for the cardinality attribute
      *
      * @param cardinality
      */
-    public void setCardinality( String cardinality )
+    public void setCardinality(String cardinality)
     {
         if ( m_validated )
         {
@@ -222,13 +223,12 @@ public class ReferenceMetadata
         m_isMultiple = CARDINALITY_0_N.equals( cardinality ) || CARDINALITY_1_N.equals( cardinality );
     }
 
-
     /**
      *	Setter for the policy attribute
      *
      * @param policy
      */
-    public void setPolicy( String policy )
+    public void setPolicy(String policy)
     {
         if ( m_validated )
         {
@@ -241,13 +241,12 @@ public class ReferenceMetadata
         m_isStatic = POLICY_STATIC.equals( policy );
     }
 
-
     /**
      *	Setter for the policy option attribute
      *
      * @param policyOption
      */
-    public void setPolicyOption( String policyOption )
+    public void setPolicyOption(String policyOption)
     {
         if ( m_validated )
         {
@@ -260,29 +259,27 @@ public class ReferenceMetadata
         m_isReluctant = POLICY_OPTION_RELUCTANT.equals( policyOption );
     }
 
-
     /**
      * Setter for the target attribute (filter)
      *
      * @param target
      */
-    public void setTarget( String target )
+    public void setTarget(String target)
     {
         if ( m_validated )
         {
             return;
         }
 
-        m_target = ( target == null || target.length() == 0 ) ? null : target;
+        m_target = ( target == null || target.length() == 0 )? null: target;
     }
-
 
     /**
      * Setter for the bind method attribute
      *
      * @param bind
      */
-    public void setBind( String bind )
+    public void setBind(String bind)
     {
         if ( m_validated )
         {
@@ -292,13 +289,12 @@ public class ReferenceMetadata
         m_bind = bind;
     }
 
-
     /**
      * Setter for the updated method attribute
      *
      * @param updated
      */
-    public void setUpdated( String updated )
+    public void setUpdated(String updated)
     {
         if ( m_validated )
         {
@@ -308,13 +304,12 @@ public class ReferenceMetadata
         m_updated = updated;
     }
 
-
     /**
      * Setter for the unbind method attribute
      *
      * @param unbind
      */
-    public void setUnbind( String unbind )
+    public void setUnbind(String unbind)
     {
         if ( m_validated )
         {
@@ -324,13 +319,12 @@ public class ReferenceMetadata
         m_unbind = unbind;
     }
 
-
     /**
      * Setter for the field attribute
      *
      * @param field the field name
      */
-    public void setField( final String field )
+    public void setField(final String field)
     {
         if ( m_validated )
         {
@@ -345,7 +339,7 @@ public class ReferenceMetadata
      *
      * @param strategy the field strategy
      */
-    public void setFieldOption( final String strategy )
+    public void setFieldOption(final String strategy)
     {
         if ( m_validated )
         {
@@ -354,7 +348,7 @@ public class ReferenceMetadata
 
         m_field_option = strategy;
 
-        m_isReplace = FIELD_STRATEGY_REPLACE.equals(strategy);
+        m_isReplace = FIELD_STRATEGY_REPLACE.equals( strategy );
     }
 
     /**
@@ -362,7 +356,7 @@ public class ReferenceMetadata
      *
      * @param valuetype the field value type
      */
-    public void setFieldCollectionType( final String valuetype )
+    public void setFieldCollectionType(final String valuetype)
     {
         if ( m_validated )
         {
@@ -372,18 +366,18 @@ public class ReferenceMetadata
         m_field_collection_type = valuetype;
     }
 
-    public void setScope(String scopeName) {
+    public void setScope(String scopeName)
+    {
         if ( m_validated )
         {
             return;
         }
-		this.m_scopeName = scopeName;
-	}
-
+        this.m_scopeName = scopeName;
+    }
 
     /////////////////////////////////////////////// getters ///////////////////////////////////
 
-	/**
+    /**
      * Returns the name of the reference
      *
      * @return A string containing the reference's name
@@ -392,7 +386,6 @@ public class ReferenceMetadata
     {
         return m_name;
     }
-
 
     /**
      * Returns the fully qualified name of the class that is used by the component to access the service
@@ -404,7 +397,6 @@ public class ReferenceMetadata
         return m_interface;
     }
 
-
     /**
      * Get the cardinality as a string
      *
@@ -414,7 +406,6 @@ public class ReferenceMetadata
     {
         return m_cardinality;
     }
-
 
     /**
      * Get the policy as a string
@@ -426,7 +417,6 @@ public class ReferenceMetadata
         return m_policy;
     }
 
-
     /**
      * Get the policy option as a string
      *
@@ -437,7 +427,6 @@ public class ReferenceMetadata
         return m_policy_option;
     }
 
-
     /**
      * Returns the filter expression that further constrains the set of target services
      *
@@ -447,7 +436,6 @@ public class ReferenceMetadata
     {
         return m_target;
     }
-
 
     /**
      * Get the name of a method in the component implementation class that is used to notify that
@@ -460,7 +448,6 @@ public class ReferenceMetadata
         return m_bind;
     }
 
-
     /**
      * Get the name of a method in the component implementation class that is used to notify that
      * the service properties of a bound service have been updated
@@ -471,7 +458,6 @@ public class ReferenceMetadata
     {
         return m_updated;
     }
-
 
     /**
      * Get the name of a method in the component implementation class that is used to notify that
@@ -484,7 +470,6 @@ public class ReferenceMetadata
         return m_unbind;
     }
 
-
     /**
      * Get the name of a field in the component implementation class that is used to hold
      * the reference
@@ -495,7 +480,6 @@ public class ReferenceMetadata
     {
         return m_field;
     }
-
 
     /**
      * Get the strategy of a field in the component implementation class that is used to hold
@@ -541,7 +525,6 @@ public class ReferenceMetadata
         return m_isOptional;
     }
 
-
     /**
      * Test if dependency is multiple (0..n or 1..n)
      *
@@ -551,7 +534,6 @@ public class ReferenceMetadata
     {
         return m_isMultiple;
     }
-
 
     /**
      * Test if policy option is reluctant
@@ -590,16 +572,16 @@ public class ReferenceMetadata
         return getName() + ".cardinality.minimum";
     }
 
-
-    public ReferenceScope getScope() {
-		return m_scope;
-	}
+    public ReferenceScope getScope()
+    {
+        return m_scope;
+    }
 
     /**
      *  Method used to verify if the semantics of this metadata are correct
      *
      */
-    void validate(final ComponentMetadata componentMetadata, final Logger logger )
+    void validate(final ComponentMetadata componentMetadata, final Logger logger)
     {
         final DSVersion dsVersion = componentMetadata.getDSVersion();
 
@@ -617,7 +599,6 @@ public class ReferenceMetadata
         {
             throw componentMetadata.validationFailure( "An interface must be declared for the reference" );
         }
-
 
         if ( m_cardinality == null )
         {
@@ -650,28 +631,31 @@ public class ReferenceMetadata
             throw componentMetadata.validationFailure( "Policy option must be reluctant for DS < 1.2" );
         }
 
-        if (m_scopeName != null) {
-        	if ( !dsVersion.isDS13() )
-        	{
-        		throw componentMetadata.validationFailure( "reference scope can be set only for DS >= 1.3");
-        	}
-        	try
-        	{
-        		m_scope = ReferenceScope.valueOf(m_scopeName);
-        	}
-        	catch (final IllegalArgumentException e)
-        	{
-        		throw componentMetadata.validationFailure( "reference scope must be 'bundle' or 'prototype' not " + m_scopeName);
+        if ( m_scopeName != null )
+        {
+            if ( !dsVersion.isDS13() )
+            {
+                throw componentMetadata.validationFailure( "reference scope can be set only for DS >= 1.3" );
+            }
+            try
+            {
+                m_scope = ReferenceScope.valueOf( m_scopeName );
+            }
+            catch ( final IllegalArgumentException e )
+            {
+                throw componentMetadata.validationFailure(
+                    "reference scope must be 'bundle' or 'prototype' not " + m_scopeName );
 
-        	}
+            }
         }
 
         // checks for event based injection
         // updated method is only supported in namespace xxx and later
-        if ( m_updated != null && !(dsVersion.isDS12() || dsVersion == DSVersion.DS11Felix) )
+        if ( m_updated != null && !( dsVersion.isDS12() || dsVersion == DSVersion.DS11Felix ) )
         {
             // FELIX-3648 validation must fail (instead of just ignore)
-            throw componentMetadata.validationFailure( "updated method declaration requires DS 1.2 or later namespace " );
+            throw componentMetadata.validationFailure(
+                "updated method declaration requires DS 1.2 or later namespace " );
         }
 
         // checks for field injection
@@ -695,9 +679,10 @@ public class ReferenceMetadata
             if ( !m_isMultiple )
             {
                 // update is not allowed for unary references
-                if ( m_field_option.equals(FIELD_STRATEGY_UPDATE) )
+                if ( m_field_option.equals( FIELD_STRATEGY_UPDATE ) )
                 {
-                    throw componentMetadata.validationFailure( "Field strategy update not allowed for unary field references." );
+                    throw componentMetadata.validationFailure(
+                        "Field strategy update not allowed for unary field references." );
                 }
             }
 
@@ -707,7 +692,8 @@ public class ReferenceMetadata
                 // value type must not be specified for unary references
                 if ( m_field_collection_type != null )
                 {
-                    throw componentMetadata.validationFailure( "Field value type must not be set for unary field references." );
+                    throw componentMetadata.validationFailure(
+                        "Field value type must not be set for unary field references." );
                 }
             }
             else
@@ -718,7 +704,8 @@ public class ReferenceMetadata
                 }
                 else if ( !FIELD_VALUE_TYPE_VALID.contains( m_field_collection_type ) )
                 {
-                    throw componentMetadata.validationFailure( "Field value type must be one of " + FIELD_VALUE_TYPE_VALID );
+                    throw componentMetadata.validationFailure(
+                        "Field value type must be one of " + FIELD_VALUE_TYPE_VALID );
                 }
             }
         }
@@ -728,16 +715,9 @@ public class ReferenceMetadata
 
     public String getDebugInfo()
     {
-        return getName() +
-                "interface=" + this.getInterface() +
-                ", filter=" + this.getTarget() +
-                ", policy=" + this.getPolicy() +
-                ", cardinality=" + this.getCardinality() +
-                ", bind=" + this.getBind() +
-                ", unbind=" + this.getUnbind() +
-                ", updated=" + this.getUpdated() +
-                ", field=" + this.getField() +
-                ", field-option=" + this.getFieldOption() +
-                ", field-collection-type=" + this.getFieldCollectionType();
+        return getName() + "interface=" + this.getInterface() + ", filter=" + this.getTarget() + ", policy="
+            + this.getPolicy() + ", cardinality=" + this.getCardinality() + ", bind=" + this.getBind() + ", unbind="
+            + this.getUnbind() + ", updated=" + this.getUpdated() + ", field=" + this.getField() + ", field-option="
+            + this.getFieldOption() + ", field-collection-type=" + this.getFieldCollectionType();
     }
 }

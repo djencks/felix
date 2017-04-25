@@ -21,22 +21,26 @@ package org.apache.felix.scr.integration.components;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
-public class Felix4188Component {
+public class Felix4188Component
+{
 
     public BundleContext bundleContext;
     public Throwable throwable;
 
     void start()
     {
-        bundleContext = FrameworkUtil.getBundle(getClass()).getBundleContext();
+        bundleContext = FrameworkUtil.getBundle( getClass() ).getBundleContext();
     }
 
     void stop()
     {
-        try {
-            Thread.sleep(2000);
+        try
+        {
+            Thread.sleep( 2000 );
             bundleContext.getBundle();
-        } catch (Throwable t) {
+        }
+        catch ( Throwable t )
+        {
             throwable = t;
         }
     }

@@ -18,9 +18,7 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import org.osgi.framework.Bundle;
-
 
 /**
  * The <code>ComponentRegistryKey</code> isused as the key in the
@@ -35,23 +33,20 @@ final class ComponentRegistryKey
     private final long bundleId;
     private final String componentName;
 
-
-    ComponentRegistryKey( final Bundle bundle, final String componentName )
+    ComponentRegistryKey(final Bundle bundle, final String componentName)
     {
         this.bundleId = bundle.getBundleId();
         this.componentName = componentName;
     }
 
-
     public int hashCode()
     {
-        int code = ( int ) this.bundleId;
+        int code = (int) this.bundleId;
         code += 31 * this.componentName.hashCode();
         return code;
     }
 
-
-    public boolean equals( Object obj )
+    public boolean equals(Object obj)
     {
         if ( this == obj )
         {
@@ -60,24 +55,21 @@ final class ComponentRegistryKey
 
         if ( obj instanceof ComponentRegistryKey )
         {
-            ComponentRegistryKey other = ( ComponentRegistryKey ) obj;
+            ComponentRegistryKey other = (ComponentRegistryKey) obj;
             return this.bundleId == other.bundleId && this.componentName.equals( other.componentName );
         }
 
         return false;
     }
 
-
     public long getBundleId()
     {
         return bundleId;
     }
 
-
     public String getComponentName()
     {
         return componentName;
     }
-    
-    
+
 }

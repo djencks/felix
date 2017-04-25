@@ -17,7 +17,6 @@
  * under the License.
  */
 
-
 package org.apache.felix.scr.impl.inject;
 
 import java.util.HashMap;
@@ -47,39 +46,46 @@ public class ComponentMethodsImpl implements ComponentMethods
 
     private final Map<String, ReferenceMethods> bindMethodMap = new HashMap<String, ReferenceMethods>();
 
-    public synchronized void initComponentMethods( ComponentMetadata componentMetadata, Class<?> implementationObjectClass )
+    public synchronized void initComponentMethods(ComponentMetadata componentMetadata,
+        Class<?> implementationObjectClass)
     {
-        if (m_activateMethod != null)
+        if ( m_activateMethod != null )
         {
             return;
         }
         DSVersion dsVersion = componentMetadata.getDSVersion();
         boolean configurableServiceProperties = componentMetadata.isConfigurableServiceProperties();
         boolean supportsInterfaces = componentMetadata.isConfigureWithInterfaces();
-        m_activateMethod = new ActivateMethod( componentMetadata.getActivate(), componentMetadata
-                .isActivateDeclared(), implementationObjectClass, dsVersion, configurableServiceProperties, supportsInterfaces );
+        m_activateMethod = new ActivateMethod( componentMetadata.getActivate(), componentMetadata.isActivateDeclared(),
+            implementationObjectClass, dsVersion, configurableServiceProperties, supportsInterfaces );
         m_deactivateMethod = new DeactivateMethod( componentMetadata.getDeactivate(),
-                componentMetadata.isDeactivateDeclared(), implementationObjectClass, dsVersion, configurableServiceProperties, supportsInterfaces );
+            componentMetadata.isDeactivateDeclared(), implementationObjectClass, dsVersion,
+            configurableServiceProperties, supportsInterfaces );
 
-        m_modifiedMethod = new ModifiedMethod( componentMetadata.getModified(), implementationObjectClass, dsVersion, configurableServiceProperties, supportsInterfaces );
+        m_modifiedMethod = new ModifiedMethod( componentMetadata.getModified(), implementationObjectClass, dsVersion,
+            configurableServiceProperties, supportsInterfaces );
 
-        for ( ReferenceMetadata referenceMetadata: componentMetadata.getDependencies() )
+        for ( ReferenceMetadata referenceMetadata : componentMetadata.getDependencies() )
         {
             final String refName = referenceMetadata.getName();
             final ReferenceMethods methods;
-            if ( referenceMetadata.getField() != null && referenceMetadata.getBind() != null)
+            if ( referenceMetadata.getField() != null && referenceMetadata.getBind() != null )
             {
                 methods = new DuplexReferenceMethods(
-                        new FieldMethods( referenceMetadata, implementationObjectClass, dsVersion, configurableServiceProperties),
-                        new BindMethods( referenceMetadata, implementationObjectClass, dsVersion, configurableServiceProperties));
+                    new FieldMethods( referenceMetadata, implementationObjectClass, dsVersion,
+                        configurableServiceProperties ),
+                    new BindMethods( referenceMetadata, implementationObjectClass, dsVersion,
+                        configurableServiceProperties ) );
             }
             else if ( referenceMetadata.getField() != null )
             {
-                methods = new FieldMethods( referenceMetadata, implementationObjectClass, dsVersion, configurableServiceProperties);
+                methods = new FieldMethods( referenceMetadata, implementationObjectClass, dsVersion,
+                    configurableServiceProperties );
             }
             else
             {
-                methods = new BindMethods( referenceMetadata, implementationObjectClass, dsVersion, configurableServiceProperties);
+                methods = new BindMethods( referenceMetadata, implementationObjectClass, dsVersion,
+                    configurableServiceProperties );
             }
             bindMethodMap.put( refName, methods );
         }
@@ -100,7 +106,7 @@ public class ComponentMethodsImpl implements ComponentMethods
         return m_modifiedMethod;
     }
 
-    public ReferenceMethods getBindMethods(String refName )
+    public ReferenceMethods getBindMethods(String refName)
     {
         return bindMethodMap.get( refName );
     }

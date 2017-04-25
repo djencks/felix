@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration;
 
-
 import junit.framework.TestCase;
 
 import org.apache.felix.scr.integration.components.SimpleComponent;
@@ -27,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
-
 
 @RunWith(JUnit4TestRunner.class)
 public class ComponentConfigurationPidTest extends ComponentTestBase
@@ -48,27 +46,27 @@ public class ComponentConfigurationPidTest extends ComponentTestBase
         delay();
         TestCase.assertNull( SimpleComponent.INSTANCE );
 
-        getConfigurationsDisabledThenEnable(name, 0, ComponentConfigurationDTO.UNSATISFIED_REFERENCE);
+        getConfigurationsDisabledThenEnable( name, 0, ComponentConfigurationDTO.UNSATISFIED_REFERENCE );
 
         TestCase.assertNull( SimpleComponent.INSTANCE );
 
         configure( pid );
         delay();
 
-        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         TestCase.assertNotNull( SimpleComponent.INSTANCE );
         TestCase.assertEquals( PROP_NAME, SimpleComponent.INSTANCE.getProperty( PROP_NAME ) );
 
         deleteConfig( pid );
         delay();
 
-        ComponentDescriptionDTO cd = checkConfigurationCount(name, 0, -1);
+        ComponentDescriptionDTO cd = checkConfigurationCount( name, 0, -1 );
         TestCase.assertNull( SimpleComponent.INSTANCE );
 
         disableAndCheck( cd );
         TestCase.assertNull( SimpleComponent.INSTANCE );
     }
-    
+
     @Test
     public void test_configurationpid_must_not_use_name_as_pid() throws Exception
     {
@@ -77,18 +75,18 @@ public class ComponentConfigurationPidTest extends ComponentTestBase
         deleteConfig( pid );
         delay();
 
-        getConfigurationsDisabledThenEnable(name, 0, ComponentConfigurationDTO.UNSATISFIED_REFERENCE);
+        getConfigurationsDisabledThenEnable( name, 0, ComponentConfigurationDTO.UNSATISFIED_REFERENCE );
         TestCase.assertNull( SimpleComponent.INSTANCE );
 
         configure( pid );
         delay();
 
-        ComponentDescriptionDTO cd = checkConfigurationCount(name, 0, -1);
+        ComponentDescriptionDTO cd = checkConfigurationCount( name, 0, -1 );
         TestCase.assertNull( SimpleComponent.INSTANCE );
 
         deleteConfig( pid );
         delay();
-        
+
         disableAndCheck( cd );
     }
 }

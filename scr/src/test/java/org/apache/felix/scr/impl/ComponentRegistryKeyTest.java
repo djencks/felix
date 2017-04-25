@@ -18,9 +18,7 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import junit.framework.TestCase;
-
 
 public class ComponentRegistryKeyTest extends TestCase
 {
@@ -33,7 +31,6 @@ public class ComponentRegistryKeyTest extends TestCase
 
     private final ComponentRegistryKey b1_b = key( 1, "b" );
     private final ComponentRegistryKey b2_b = key( 2, "b" );
-
 
     public void test_globally_unique_key()
     {
@@ -57,12 +54,11 @@ public class ComponentRegistryKeyTest extends TestCase
         TestCase.assertFalse( b2_b.equals( b1_a_0 ) );
     }
 
-
-    private static ComponentRegistryKey key( final long bundleId, final String name )
+    private static ComponentRegistryKey key(final long bundleId, final String name)
     {
         return new ComponentRegistryKey( new MockBundle()
         {
-//            @Override
+            //            @Override
             public long getBundleId()
             {
                 return bundleId;

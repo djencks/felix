@@ -18,12 +18,10 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
 
 public class ActivatorComponent
 {
@@ -33,20 +31,20 @@ public class ActivatorComponent
     public static final String FLAG_FAIL_DEACTIVATE = "failDeactivate";
 
     public static final String FLAG_REGISTER_SERVICE = "registerService";
-    
+
     private static ActivatorComponent activatorComponent;
 
     private ServiceRegistration registration;
 
     private SimpleService simpleService;
-    
+
     public static ActivatorComponent getInstance()
     {
-    	return activatorComponent;
+        return activatorComponent;
     }
 
     @SuppressWarnings("unused")
-    private void myActivate( BundleContext context, Map<?, ?> configuration )
+    private void myActivate(BundleContext context, Map<?, ?> configuration)
     {
         if ( configuration.containsKey( FLAG_FAIL_ACTIVATE ) )
         {
@@ -58,14 +56,13 @@ public class ActivatorComponent
         }
         if ( activatorComponent != null )
         {
-        	throw new IllegalStateException( "not the only activator component");
+            throw new IllegalStateException( "not the only activator component" );
         }
         this.activatorComponent = this;
     }
 
-
     @SuppressWarnings("unused")
-    private void myDeactivate( Map<?, ?> configuration )
+    private void myDeactivate(Map<?, ?> configuration)
     {
         if ( configuration.containsKey( FLAG_FAIL_DEACTIVATE ) )
         {
@@ -78,22 +75,19 @@ public class ActivatorComponent
         }
     }
 
-
     public SimpleService getSimpleService()
     {
         return simpleService;
     }
 
-
     @SuppressWarnings("unused")
-    private void bindSimpleService( SimpleService simpleService )
+    private void bindSimpleService(SimpleService simpleService)
     {
         this.simpleService = simpleService;
     }
 
-
     @SuppressWarnings("unused")
-    private void unbindSimpleService( SimpleService simpleService )
+    private void unbindSimpleService(SimpleService simpleService)
     {
         if ( this.simpleService == simpleService )
         {

@@ -24,8 +24,8 @@ import org.osgi.framework.ServiceReference;
 
 public class T1MapSR extends T1
 {
-    
-    void packageT1MapSR( Map props, ServiceReference sr)
+
+    void packageT1MapSR(Map props, ServiceReference sr)
     {
         if ( props != null && !props.isEmpty() && sr != null )
         {
@@ -37,6 +37,5 @@ public class T1MapSR extends T1
         }
 
     }
-
 
 }

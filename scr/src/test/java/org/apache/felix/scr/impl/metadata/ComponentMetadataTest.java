@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.metadata;
 
-
 import java.lang.reflect.Array;
 import java.util.List;
 
@@ -27,12 +26,10 @@ import junit.framework.TestCase;
 import org.apache.felix.scr.impl.MockLogger;
 import org.osgi.service.component.ComponentException;
 
-
 public class ComponentMetadataTest extends TestCase
 {
 
     private MockLogger logger = new MockLogger();
-
 
     // test various combinations of component metadata with respect to
     //  -- immediate: true, false, unset
@@ -77,7 +74,6 @@ public class ComponentMetadataTest extends TestCase
             // expect
         }
     }
-
 
     public void testDelayed()
     {
@@ -129,7 +125,6 @@ public class ComponentMetadataTest extends TestCase
             // expect
         }
     }
-
 
     public void testFactory()
     {
@@ -246,7 +241,6 @@ public class ComponentMetadataTest extends TestCase
 
     }
 
-
     public void test_component_no_name_ds10()
     {
         final ComponentMetadata cm1 = createComponentMetadata( Boolean.TRUE, null );
@@ -262,7 +256,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_component_no_name_ds11()
     {
         final ComponentMetadata cm1 = createComponentMetadata11( Boolean.TRUE, null );
@@ -271,7 +264,6 @@ public class ComponentMetadataTest extends TestCase
         assertEquals( "Expected name to equal implementation class name", cm1.getImplementationClassName(),
             cm1.getName() );
     }
-
 
     public void test_component_activate_ds10()
     {
@@ -284,7 +276,6 @@ public class ComponentMetadataTest extends TestCase
         cm2.setActivate( "someMethod" );
         failDS10Validation( cm2, "activate", logger );
     }
-
 
     public void test_component_activate_ds11()
     {
@@ -300,7 +291,6 @@ public class ComponentMetadataTest extends TestCase
         assertTrue( "Activate method expected to be declared", cm2.isActivateDeclared() );
     }
 
-
     public void test_component_deactivate_ds10()
     {
         final ComponentMetadata cm1 = createComponentMetadata( Boolean.TRUE, null );
@@ -312,7 +302,6 @@ public class ComponentMetadataTest extends TestCase
         cm2.setDeactivate( "someMethod" );
         failDS10Validation( cm2, "deactivate", logger );
     }
-
 
     public void test_component_deactivate_ds11()
     {
@@ -328,7 +317,6 @@ public class ComponentMetadataTest extends TestCase
         assertTrue( "Deactivate method expected to be declared", cm2.isDeactivateDeclared() );
     }
 
-
     public void test_component_modified_ds10()
     {
         final ComponentMetadata cm1 = createComponentMetadata( Boolean.TRUE, null );
@@ -339,7 +327,6 @@ public class ComponentMetadataTest extends TestCase
         cm2.setModified( "someName" );
         failDS10Validation( cm2, "modified", logger );
     }
-
 
     public void test_component_modified_ds11()
     {
@@ -352,7 +339,6 @@ public class ComponentMetadataTest extends TestCase
         cm2.validate( logger );
         assertEquals( "Modified method name", "someMethod", cm2.getModified() );
     }
-
 
     public void test_component_configuration_policy_ds10()
     {
@@ -377,7 +363,6 @@ public class ComponentMetadataTest extends TestCase
         cm5.setConfigurationPolicy( "undefined" );
         failDS10Validation( cm5, "configuration-policy", logger );
     }
-
 
     public void test_component_configuration_policy_ds11()
     {
@@ -417,7 +402,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_reference_valid()
     {
         // two references, should validate
@@ -426,7 +410,6 @@ public class ComponentMetadataTest extends TestCase
         cm1.addDependency( createReferenceMetadata( "name2" ) );
         cm1.validate( logger );
     }
-
 
     public void test_reference_duplicate_name()
     {
@@ -441,10 +424,9 @@ public class ComponentMetadataTest extends TestCase
         }
         catch ( ComponentException ee )
         {
-             //expected
+            //expected
         }
     }
-
 
     public void test_reference_no_name_ds10()
     {
@@ -462,7 +444,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_reference_no_name_ds11()
     {
         // un-named reference, illegal for DS 1.1
@@ -472,7 +453,6 @@ public class ComponentMetadataTest extends TestCase
         cm4.validate( logger );
         assertEquals( "Reference name defaults to interface", rm4.getInterface(), rm4.getName() );
     }
-
 
     public void test_reference_updated_ds10()
     {
@@ -486,7 +466,6 @@ public class ComponentMetadataTest extends TestCase
         failDS10Validation( cm3, "updated", logger );
     }
 
-
     public void test_reference_updated_ds11()
     {
         // updated method ignored for DS 1.1
@@ -498,7 +477,6 @@ public class ComponentMetadataTest extends TestCase
         // according to DS 1.2 must fail validation (FELIX-3648)
         failDS10Validation( cm3, "updated", logger );
     }
-
 
     public void test_reference_updated_ds11_felix()
     {
@@ -514,7 +492,6 @@ public class ComponentMetadataTest extends TestCase
         assertEquals( "my_updated_method", rm3.getUpdated() );
     }
 
-
     public void test_reference_updated_ds12()
     {
         // updated method accepted for DS 1.2
@@ -528,7 +505,6 @@ public class ComponentMetadataTest extends TestCase
 
         assertEquals( "my_updated_method", rm3.getUpdated() );
     }
-
 
     public void test_duplicate_implementation_ds10()
     {
@@ -545,7 +521,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_duplicate_implementation_ds11()
     {
         final ComponentMetadata cm = createComponentMetadata11( Boolean.TRUE, null );
@@ -560,7 +535,6 @@ public class ComponentMetadataTest extends TestCase
             // expected
         }
     }
-
 
     public void test_duplicate_service_ds10()
     {
@@ -578,7 +552,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_duplicate_service_ds11()
     {
         final ComponentMetadata cm = createComponentMetadata11( Boolean.TRUE, null );
@@ -595,7 +568,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_property_no_name_ds10()
     {
         final ComponentMetadata cm = createComponentMetadata( null, null );
@@ -610,7 +582,6 @@ public class ComponentMetadataTest extends TestCase
             // expected
         }
     }
-
 
     public void test_property_no_name_ds11()
     {
@@ -627,7 +598,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_property_char_ds10() throws ComponentException
     {
         final ComponentMetadata cm = createComponentMetadata( null, null );
@@ -637,7 +607,6 @@ public class ComponentMetadataTest extends TestCase
         assertTrue( prop.getValue() instanceof Character );
         assertEquals( new Character( 'x' ), prop.getValue() );
     }
-
 
     public void test_property_char_ds11()
     {
@@ -654,7 +623,6 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     public void test_property_non_character()
     {
         final ComponentMetadata cm = createComponentMetadata( null, null );
@@ -664,8 +632,8 @@ public class ComponentMetadataTest extends TestCase
         assertProperty( "Float", new Float( 2.5 ), cm );
         assertProperty( "Long", new Long( 2 ), cm );
         assertProperty( "Integer", new Integer( 2 ), cm );
-        assertProperty( "Short", new Short( ( short ) 2 ), cm );
-        assertProperty( "Byte", new Byte( ( byte ) 2 ), cm );
+        assertProperty( "Short", new Short( (short) 2 ), cm );
+        assertProperty( "Byte", new Byte( (byte) 2 ), cm );
         assertProperty( "Boolean", Boolean.TRUE, cm );
 
         assertPropertyFail( "Double", "x", cm );
@@ -676,7 +644,6 @@ public class ComponentMetadataTest extends TestCase
         assertPropertyFail( "Byte", "x", cm );
     }
 
-
     public void test_property_array_non_character()
     {
         final ComponentMetadata cm = createComponentMetadata( null, null );
@@ -685,8 +652,8 @@ public class ComponentMetadataTest extends TestCase
         assertPropertyArray( "Float", new Float( 2.5 ), cm );
         assertPropertyArray( "Long", new Long( 2 ), cm );
         assertPropertyArray( "Integer", new Integer( 2 ), cm );
-        assertPropertyArray( "Short", new Short( ( short ) 2 ), cm );
-        assertPropertyArray( "Byte", new Byte( ( byte ) 2 ), cm );
+        assertPropertyArray( "Short", new Short( (short) 2 ), cm );
+        assertPropertyArray( "Byte", new Byte( (byte) 2 ), cm );
         assertPropertyArray( "Boolean", Boolean.TRUE, cm );
 
         assertPropertyArrayFail( "Double", "x", cm );
@@ -696,7 +663,6 @@ public class ComponentMetadataTest extends TestCase
         assertPropertyArrayFail( "Short", "x", cm );
         assertPropertyArrayFail( "Byte", "x", cm );
     }
-
 
     public void test_property_character_ds10()
     {
@@ -714,12 +680,12 @@ public class ComponentMetadataTest extends TestCase
 
     public void test_configuration_pid_use_ds12()
     {
-      ComponentMetadata cm = createComponentMetadata11( null, null );
+        ComponentMetadata cm = createComponentMetadata11( null, null );
         try
         {
-          cm.setConfigurationPid( new String[] {"configurationPid"} );
-          cm.validate( logger );
-          fail( "Expect validation failure for illegal configuration-pid usage in ds 1.1 namespace" );
+            cm.setConfigurationPid( new String[] { "configurationPid" } );
+            cm.validate( logger );
+            fail( "Expect validation failure for illegal configuration-pid usage in ds 1.1 namespace" );
         }
         catch ( ComponentException ce )
         {
@@ -729,21 +695,21 @@ public class ComponentMetadataTest extends TestCase
         cm = createComponentMetadata12( null, null );
         try
         {
-          cm.setConfigurationPid( new String[] {"configurationPid"} );
-          cm.validate( logger );
+            cm.setConfigurationPid( new String[] { "configurationPid" } );
+            cm.validate( logger );
         }
         catch ( ComponentException ce )
         {
-          ce.printStackTrace();
-          fail( "Expect correct validation for legal configuration-pid usage in ds 1.2 or later namespace" );
+            ce.printStackTrace();
+            fail( "Expect correct validation for legal configuration-pid usage in ds 1.2 or later namespace" );
         }
     }
 
     public void test_get_configuration_pid_method()
     {
-        doTest_get_configuration_pid_method(DSVersion.DS10);
-        doTest_get_configuration_pid_method(DSVersion.DS11);
-        doTest_get_configuration_pid_method(DSVersion.DS12);
+        doTest_get_configuration_pid_method( DSVersion.DS10 );
+        doTest_get_configuration_pid_method( DSVersion.DS11 );
+        doTest_get_configuration_pid_method( DSVersion.DS12 );
     }
 
     private void doTest_get_configuration_pid_method(DSVersion specVersion)
@@ -755,7 +721,7 @@ public class ComponentMetadataTest extends TestCase
             ComponentMetadata cm = new ComponentMetadata( specVersion );
             try
             {
-                cm.setImplementationClassName("implementation.class");
+                cm.setImplementationClassName( "implementation.class" );
                 cm.setName( null );
                 cm.validate( logger );
             }
@@ -765,16 +731,16 @@ public class ComponentMetadataTest extends TestCase
             }
             List<String> pid = cm.getConfigurationPid();
             assertFalse( "Expect non-null configuration pid when component name is not specified", pid.isEmpty() );
-            assertEquals( "Expect configuration-pid to be equals to component implementation",
-                          "implementation.class", pid.get( 0 ) );
+            assertEquals( "Expect configuration-pid to be equals to component implementation", "implementation.class",
+                pid.get( 0 ) );
         }
 
         // Make sure that getConfigurationPid returns the name of the component, if specified
         ComponentMetadata cm = new ComponentMetadata( specVersion );
         try
         {
-            cm.setImplementationClassName("implementation.class");
-            cm.setName("my.component.name");
+            cm.setImplementationClassName( "implementation.class" );
+            cm.setName( "my.component.name" );
             cm.validate( logger );
         }
         catch ( ComponentException ce )
@@ -783,8 +749,7 @@ public class ComponentMetadataTest extends TestCase
         }
         List<String> pid = cm.getConfigurationPid();
         assertFalse( "Expect non-null configuration pid when component name is not specified", pid.isEmpty() );
-        assertEquals( "Expect configuration-pid to be equals to component name",
-                      "my.component.name", pid.get( 0 ) );
+        assertEquals( "Expect configuration-pid to be equals to component name", "my.component.name", pid.get( 0 ) );
     }
 
     public void test_property_character_ds11() throws ComponentException
@@ -797,12 +762,11 @@ public class ComponentMetadataTest extends TestCase
         assertEquals( new Character( 'x' ), prop.getValue() );
     }
 
-
     //---------- Helper methods
 
     // method also used by XmlHandlerTest
-    static void failDS10Validation( final ComponentMetadata metadata, final String expectedValidationReason,
-        final MockLogger logger )
+    static void failDS10Validation(final ComponentMetadata metadata, final String expectedValidationReason,
+        final MockLogger logger)
     {
         try
         {
@@ -818,9 +782,8 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
     // Creates Component Metadata for the given namespace
-    private ComponentMetadata createComponentMetadata( DSVersion dsVersion, Boolean immediate, String factory )
+    private ComponentMetadata createComponentMetadata(DSVersion dsVersion, Boolean immediate, String factory)
     {
         ComponentMetadata meta = new ComponentMetadata( dsVersion );
         meta.setName( "place.holder" );
@@ -836,27 +799,25 @@ public class ComponentMetadataTest extends TestCase
         return meta;
     }
 
-
     // Creates DS 1.0 Component Metadata
-    private ComponentMetadata createComponentMetadata( Boolean immediate, String factory )
+    private ComponentMetadata createComponentMetadata(Boolean immediate, String factory)
     {
         return createComponentMetadata( DSVersion.DS10, immediate, factory );
     }
 
-
     // Creates DS 1.1 Component Metadata
-    private ComponentMetadata createComponentMetadata11( Boolean immediate, String factory )
+    private ComponentMetadata createComponentMetadata11(Boolean immediate, String factory)
     {
         return createComponentMetadata( DSVersion.DS11, immediate, factory );
     }
 
     // Creates DS 1.2 Component Metadata
-    private ComponentMetadata createComponentMetadata12( Boolean immediate, String factory )
+    private ComponentMetadata createComponentMetadata12(Boolean immediate, String factory)
     {
         return createComponentMetadata( DSVersion.DS12, immediate, factory );
     }
 
-    private ServiceMetadata createServiceMetadata( Boolean serviceFactory )
+    private ServiceMetadata createServiceMetadata(Boolean serviceFactory)
     {
         ServiceMetadata meta = new ServiceMetadata();
         meta.addProvide( "place.holder.service" );
@@ -867,8 +828,7 @@ public class ComponentMetadataTest extends TestCase
         return meta;
     }
 
-
-    private ReferenceMetadata createReferenceMetadata( String name )
+    private ReferenceMetadata createReferenceMetadata(String name)
     {
         ReferenceMetadata meta = new ReferenceMetadata();
         meta.setName( name );
@@ -876,8 +836,7 @@ public class ComponentMetadataTest extends TestCase
         return meta;
     }
 
-
-    private PropertyMetadata createPropertyMetadata( String propertyName, String type, String value )
+    private PropertyMetadata createPropertyMetadata(String propertyName, String type, String value)
     {
         PropertyMetadata meta = new PropertyMetadata();
         if ( propertyName != null )
@@ -895,8 +854,7 @@ public class ComponentMetadataTest extends TestCase
         return meta;
     }
 
-
-    private void assertProperty( String type, Object value, ComponentMetadata cmeta )
+    private void assertProperty(String type, Object value, ComponentMetadata cmeta)
     {
         PropertyMetadata meta = createPropertyMetadata( "dummy", type, String.valueOf( value ) );
         meta.validate( cmeta );
@@ -904,8 +862,7 @@ public class ComponentMetadataTest extends TestCase
         assertEquals( value, meta.getValue() );
     }
 
-
-    private void assertPropertyArray( String type, Object value, ComponentMetadata cmeta )
+    private void assertPropertyArray(String type, Object value, ComponentMetadata cmeta)
     {
         PropertyMetadata meta = createPropertyMetadata( "dummy", type, null );
         meta.setValues( String.valueOf( value ) );
@@ -918,8 +875,7 @@ public class ComponentMetadataTest extends TestCase
         assertEquals( value, Array.get( propVal, 0 ) );
     }
 
-
-    private void assertPropertyFail( String type, String value, ComponentMetadata cmeta )
+    private void assertPropertyFail(String type, String value, ComponentMetadata cmeta)
     {
         try
         {
@@ -933,8 +889,7 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
-    private void assertPropertyArrayFail( String type, String value, ComponentMetadata cmeta )
+    private void assertPropertyArrayFail(String type, String value, ComponentMetadata cmeta)
     {
         try
         {
@@ -949,8 +904,7 @@ public class ComponentMetadataTest extends TestCase
         }
     }
 
-
-    private void assertPrimitiveType( final Class expectedBoxClass, final Class actualClass )
+    private void assertPrimitiveType(final Class expectedBoxClass, final Class actualClass)
     {
         if ( expectedBoxClass == String.class )
         {

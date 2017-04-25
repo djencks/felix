@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.impl.inject;
 
-
 public class SuitableMethodNotAccessibleException extends Exception
 {
 }

@@ -28,17 +28,17 @@ public class B
     private Map<String, Object> setA(A a)
     {
         this.a = a;
-        return Collections.<String, Object> singletonMap("foo", "bar");
+        return Collections.<String, Object> singletonMap( "foo", "bar" );
     }
 
     private Map<String, Object> unsetA(A a)
     {
-        if (this.a == a)
+        if ( this.a == a )
         {
             this.a = null;
             return Collections.emptyMap();
         }
-        return Collections.<String, Object> singletonMap("foo", "bar");
+        return Collections.<String, Object> singletonMap( "foo", "bar" );
     }
 
 }

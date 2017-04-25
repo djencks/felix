@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration;
 
-
 import junit.framework.TestCase;
 
 import org.apache.felix.scr.integration.components.SimpleComponent;
@@ -27,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.service.component.runtime.dto.ComponentConfigurationDTO;
-
 
 @RunWith(JUnit4TestRunner.class)
 public class ServiceChangedTest extends ComponentTestBase
@@ -40,20 +38,19 @@ public class ServiceChangedTest extends ComponentTestBase
         descriptorFile = "/integration_test_simple_components_service_binding.xml";
     }
 
-
     @Test
     public void test_optional_single_dynamic() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_optional_single_dynamic_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
 
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -62,59 +59,58 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // set target to not match any more
         srv1.setFilterProperty( "don't match" );
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp11 = SimpleComponent.INSTANCE;
         TestCase.assertSame( comp10, comp11 );
         TestCase.assertNull( comp11.m_singleRef );
         TestCase.assertTrue( comp11.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 1, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_singleRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertSame( comp10, comp12 );
         TestCase.assertEquals( srv2, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 2, comp10.m_singleRefBind );
-        TestCase.assertEquals( 1, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_singleRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
         TestCase.assertEquals( srv2, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 2, comp10.m_singleRefBind );
-        TestCase.assertEquals( 1, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_singleRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
         TestCase.assertEquals( srv1, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 3, comp10.m_singleRefBind );
-        TestCase.assertEquals( 2, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 2, comp10.m_singleRefUnbind );
     }
-
 
     @Test
     public void test_required_single_dynamic() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_required_single_dynamic_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
-		
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
+
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -123,56 +119,55 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // set target to not match any more -> deactivate this component
         srv1.setFilterProperty( "don't match" );
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE );
         TestCase.assertNull( SimpleComponent.INSTANCE );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 1, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_singleRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp12 );
         TestCase.assertEquals( srv2, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp12.m_singleRefBind );
-        TestCase.assertEquals( 0, comp12.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_singleRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
         TestCase.assertEquals( srv2, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp12.m_singleRefBind );
-        TestCase.assertEquals( 0, comp12.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_singleRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
         TestCase.assertEquals( srv1, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 2, comp12.m_singleRefBind );
-        TestCase.assertEquals( 1, comp12.m_singleRefUnbind);
+        TestCase.assertEquals( 1, comp12.m_singleRefUnbind );
     }
-
 
     @Test
     public void test_optional_multiple_dynamic() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_optional_multiple_dynamic_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -181,30 +176,30 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // set target to not match any more
         srv1.setFilterProperty( "don't match" );
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp11 = SimpleComponent.INSTANCE;
         TestCase.assertSame( comp10, comp11 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertFalse( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 1, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_multiRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertSame( comp10, comp12 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertFalse( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 2, comp10.m_multiRefBind );
-        TestCase.assertEquals( 1, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_multiRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
@@ -212,7 +207,7 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 3, comp10.m_multiRefBind );
-        TestCase.assertEquals( 1, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_multiRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
@@ -220,22 +215,21 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertFalse( comp10.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 3, comp10.m_multiRefBind );
-        TestCase.assertEquals( 2, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 2, comp10.m_multiRefUnbind );
     }
-
 
     @Test
     public void test_required_multiple_dynamic() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_required_multiple_dynamic_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -244,30 +238,30 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // set target to not match any more
         srv1.setFilterProperty( "don't match" );
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE );
         final SimpleComponent comp11 = SimpleComponent.INSTANCE;
         TestCase.assertNull( comp11 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertFalse( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 1, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_multiRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp12 );
         TestCase.assertNull( comp12.m_singleRef );
         TestCase.assertFalse( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertTrue( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 1, comp12.m_multiRefBind );
-        TestCase.assertEquals( 0, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_multiRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
@@ -275,7 +269,7 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertTrue( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertTrue( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 2, comp12.m_multiRefBind );
-        TestCase.assertEquals( 0, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_multiRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
@@ -283,22 +277,21 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertTrue( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertFalse( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 2, comp12.m_multiRefBind );
-        TestCase.assertEquals( 1, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp12.m_multiRefUnbind );
     }
-
 
     @Test
     public void test_optional_single_static() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_optional_single_static_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -307,31 +300,31 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // set target to not match any more -> recreate !
         srv1.setFilterProperty( "don't match" );
         delay(); // async reactivation
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp11 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp11 );
         TestCase.assertNull( comp11.m_singleRef );
         TestCase.assertTrue( comp11.m_multiRef.isEmpty() );
         TestCase.assertEquals( 0, comp11.m_singleRefBind );
-        TestCase.assertEquals( 0, comp11.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp11.m_singleRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp12 );
         TestCase.assertSame( comp11, comp12 );
         TestCase.assertNull( comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 0, comp12.m_singleRefBind );
-        TestCase.assertEquals( 0, comp12.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_singleRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
@@ -342,7 +335,7 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertNull( comp13.m_singleRef );
         TestCase.assertTrue( comp13.m_multiRef.isEmpty() );
         TestCase.assertEquals( 0, comp13.m_singleRefBind );
-        TestCase.assertEquals( 0, comp13.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp13.m_singleRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
@@ -354,22 +347,21 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertNull( comp14.m_singleRef );
         TestCase.assertTrue( comp14.m_multiRef.isEmpty() );
         TestCase.assertEquals( 0, comp14.m_singleRefBind );
-        TestCase.assertEquals( 0, comp14.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp14.m_singleRefUnbind );
     }
-
 
     @Test
     public void test_required_single_static() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_required_single_static_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -378,27 +370,27 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertEquals( srv1, comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 0, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_singleRefUnbind );
 
         // set target to not match any more -> deactivate this component
         srv1.setFilterProperty( "don't match" );
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE );
         TestCase.assertNull( SimpleComponent.INSTANCE );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp10.m_singleRefBind );
-        TestCase.assertEquals( 1, comp10.m_singleRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_singleRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp12 );
         TestCase.assertEquals( srv2, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp12.m_singleRefBind );
-        TestCase.assertEquals( 0, comp12.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_singleRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
@@ -408,7 +400,7 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertEquals( srv2, comp12.m_singleRef );
         TestCase.assertTrue( comp12.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp12.m_singleRefBind );
-        TestCase.assertEquals( 0, comp12.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_singleRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
@@ -420,22 +412,21 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertEquals( srv1, comp14.m_singleRef );
         TestCase.assertTrue( comp14.m_multiRef.isEmpty() );
         TestCase.assertEquals( 1, comp14.m_singleRefBind );
-        TestCase.assertEquals( 0, comp14.m_singleRefUnbind);
+        TestCase.assertEquals( 0, comp14.m_singleRefUnbind );
     }
-
 
     @Test
     public void test_optional_multiple_static() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_optional_multiple_static_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -444,28 +435,28 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // set target to not match any more
         srv1.setFilterProperty( "don't match" );
         delay(); // async reactivation (for unbind)
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp11 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp11 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertFalse( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 1, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_multiRefUnbind );
         TestCase.assertNull( comp11.m_singleRef );
         TestCase.assertFalse( comp11.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 0, comp11.m_multiRefBind );
-        TestCase.assertEquals( 0, comp11.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp11.m_multiRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding (not expected for an optional static ref)
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp12 );
         TestCase.assertSame( comp11, comp12 );
@@ -473,7 +464,7 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertFalse( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertFalse( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 0, comp12.m_multiRefBind );
-        TestCase.assertEquals( 0, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_multiRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
@@ -481,13 +472,13 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertFalse( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertFalse( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 0, comp12.m_multiRefBind );
-        TestCase.assertEquals( 0, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_multiRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
         delay(); // allow reactivation delay (for unbind/bind)
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp13 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp13 );
         TestCase.assertSame( comp11, comp13 );
@@ -496,22 +487,21 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertFalse( comp13.m_multiRef.contains( srv1 ) );
         TestCase.assertFalse( comp13.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 0, comp13.m_multiRefBind );
-        TestCase.assertEquals( 0, comp13.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp13.m_multiRefUnbind );
     }
-
 
     @Test
     public void test_required_multiple_static() throws Exception
     {
         final SimpleServiceImpl srv1 = SimpleServiceImpl.create( bundleContext, "srv1" );
         String name = "test_required_multiple_static_target";
-		getDisabledConfigurationAndEnable(name, ComponentConfigurationDTO.ACTIVE);
+        getDisabledConfigurationAndEnable( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp10 = SimpleComponent.INSTANCE;
         TestCase.assertNotNull( comp10 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // update a service property
         srv1.update( "srv1-modified" );
@@ -520,30 +510,30 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertTrue( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 0, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp10.m_multiRefUnbind );
 
         // set target to not match any more
         srv1.setFilterProperty( "don't match" );
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.UNSATISFIED_REFERENCE );
         final SimpleComponent comp11 = SimpleComponent.INSTANCE;
         TestCase.assertNull( comp11 );
         TestCase.assertNull( comp10.m_singleRef );
         TestCase.assertFalse( comp10.m_multiRef.contains( srv1 ) );
         TestCase.assertEquals( 1, comp10.m_multiRefBind );
-        TestCase.assertEquals( 1, comp10.m_multiRefUnbind);
+        TestCase.assertEquals( 1, comp10.m_multiRefUnbind );
 
         final SimpleServiceImpl srv2 = SimpleServiceImpl.create( bundleContext, "srv2" );
         delay(); // async binding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp12 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp12 );
         TestCase.assertNull( comp12.m_singleRef );
         TestCase.assertFalse( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertTrue( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 1, comp12.m_multiRefBind );
-        TestCase.assertEquals( 0, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_multiRefUnbind );
 
         // make srv1 match again, expect not changes in bindings
         srv1.setFilterProperty( "match" );
@@ -551,13 +541,13 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertFalse( comp12.m_multiRef.contains( srv1 ) );
         TestCase.assertTrue( comp12.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 1, comp12.m_multiRefBind );
-        TestCase.assertEquals( 0, comp12.m_multiRefUnbind);
+        TestCase.assertEquals( 0, comp12.m_multiRefUnbind );
 
         // make srv2 to not match, expect binding to srv1
         srv2.setFilterProperty( "don't match" );
         delay(); // allow reactivation/rebinding
 
-        findComponentConfigurationByName(name, ComponentConfigurationDTO.ACTIVE);
+        findComponentConfigurationByName( name, ComponentConfigurationDTO.ACTIVE );
         final SimpleComponent comp13 = SimpleComponent.INSTANCE;
         TestCase.assertNotSame( comp10, comp13 );
         TestCase.assertNotSame( comp11, comp13 );
@@ -566,6 +556,6 @@ public class ServiceChangedTest extends ComponentTestBase
         TestCase.assertTrue( comp13.m_multiRef.contains( srv1 ) );
         TestCase.assertFalse( comp13.m_multiRef.contains( srv2 ) );
         TestCase.assertEquals( 1, comp13.m_multiRefBind );
-        TestCase.assertEquals( 0, comp13.m_multiRefUnbind);
-   }
+        TestCase.assertEquals( 0, comp13.m_multiRefUnbind );
+    }
 }

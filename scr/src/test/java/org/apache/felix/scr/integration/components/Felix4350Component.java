@@ -18,53 +18,59 @@
  */
 package org.apache.felix.scr.integration.components;
 
-public class Felix4350Component {
+public class Felix4350Component
+{
 
-	private static Felix4350Component m_instance;
-	private static int m_activateCount;
-	private static int m_deactivateCount;
-	
+    private static Felix4350Component m_instance;
+    private static int m_activateCount;
+    private static int m_deactivateCount;
+
     private SimpleComponent component1;
     private SimpleComponent2 component2;
 
-    public void bindComponent1(SimpleComponent component1) {
+    public void bindComponent1(SimpleComponent component1)
+    {
         this.component1 = component1;
     }
 
-    public void unbindComponent1(SimpleComponent component1) {
+    public void unbindComponent1(SimpleComponent component1)
+    {
         this.component1 = null;
     }
 
-    public void bindComponent2(SimpleComponent2 component2) {
+    public void bindComponent2(SimpleComponent2 component2)
+    {
         this.component2 = component2;
     }
 
-    public void unbindComponent2(SimpleComponent2 component2) {
+    public void unbindComponent2(SimpleComponent2 component2)
+    {
         this.component2 = null;
     }
 
-    public void start() {
-    	m_instance = this;
-    	m_activateCount++;
+    public void start()
+    {
+        m_instance = this;
+        m_activateCount++;
     }
 
-    public void stop() {
-    	m_instance = null;
-    	m_deactivateCount++;
+    public void stop()
+    {
+        m_instance = null;
+        m_deactivateCount++;
     }
-    
+
     public static void check(int activateCount, int deactivateCount, boolean activated)
     {
-    	if (activateCount != m_activateCount ||
-    			deactivateCount != m_deactivateCount ||
-    			activated == (m_instance == null))
-    	{
-    		String message = "activation: expected " + activateCount + " actual " + m_activateCount +
-    				" deactivation: expected " + deactivateCount + " actual " + m_deactivateCount +
-    				" activated: expected " + activated + " actual " + (m_instance != null);
-    		throw new IllegalStateException( message );
-    		
-    	}
+        if ( activateCount != m_activateCount || deactivateCount != m_deactivateCount
+            || activated == ( m_instance == null ) )
+        {
+            String message = "activation: expected " + activateCount + " actual " + m_activateCount
+                + " deactivation: expected " + deactivateCount + " actual " + m_deactivateCount
+                + " activated: expected " + activated + " actual " + ( m_instance != null );
+            throw new IllegalStateException( message );
+
+        }
     }
-    
+
 }

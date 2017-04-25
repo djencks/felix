@@ -20,7 +20,6 @@ package org.apache.felix.scr.impl.inject;
 
 import org.apache.felix.scr.impl.metadata.DSVersion;
 
-
 public class DeactivateMethod extends ActivateMethod
 {
 
@@ -30,10 +29,10 @@ public class DeactivateMethod extends ActivateMethod
         return true;
     }
 
-    public DeactivateMethod( final String methodName,
-            final boolean methodRequired, final Class<?> componentClass, final DSVersion dsVersion, final boolean configurableServiceProperties, boolean supportsInterfaces )
+    public DeactivateMethod(final String methodName, final boolean methodRequired, final Class<?> componentClass, final DSVersion dsVersion, final boolean configurableServiceProperties, boolean supportsInterfaces)
     {
-        super( methodName, methodRequired, componentClass, dsVersion, configurableServiceProperties, supportsInterfaces );
+        super( methodName, methodRequired, componentClass, dsVersion, configurableServiceProperties,
+            supportsInterfaces );
     }
 
     protected String getMethodNamePrefix()

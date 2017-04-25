@@ -18,15 +18,13 @@
  */
 package org.apache.felix.scr.integration.components.activatesignature;
 
-
 import org.osgi.framework.BundleContext;
-
 
 public class Signature_Public_BundleContext extends AbstractActivateSignatureTestComponent
 {
 
     @SuppressWarnings("unused")
-    public void activate( BundleContext context )
+    public void activate(BundleContext context)
     {
         setMethodCalled( "public_activate_BundleContext" );
     }

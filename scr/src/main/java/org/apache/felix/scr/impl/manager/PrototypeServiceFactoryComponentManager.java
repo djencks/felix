@@ -26,7 +26,7 @@ public class PrototypeServiceFactoryComponentManager<S> extends ServiceFactoryCo
 
     public PrototypeServiceFactoryComponentManager(ComponentContainer<S> container, ComponentMethods componentMethods)
     {
-        super(container, componentMethods);
+        super( container, componentMethods );
     }
 
 }

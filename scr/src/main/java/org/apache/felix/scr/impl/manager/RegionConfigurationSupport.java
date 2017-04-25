@@ -81,15 +81,15 @@ public abstract class RegionConfigurationSupport
         // If RegionConfigurationSupport *directly* implements ConfigurationListener then we get NoClassDefFoundError
         // when SCR is started without a wiring to an exporter of Config Admin API. This construction allows the
         // class loading exception to be caught and confined.
-        ConfigurationListener serviceDelegator = new ConfigurationListener() 
+        ConfigurationListener serviceDelegator = new ConfigurationListener()
         {
             @Override
-            public void configurationEvent(ConfigurationEvent event) 
+            public void configurationEvent(ConfigurationEvent event)
             {
-                RegionConfigurationSupport.this.configurationEvent(event);
+                RegionConfigurationSupport.this.configurationEvent( event );
             }
         };
-        this.m_registration = caBundleContext.registerService(ConfigurationListener.class, serviceDelegator, props );
+        this.m_registration = caBundleContext.registerService( ConfigurationListener.class, serviceDelegator, props );
     }
 
     public Long getBundleId()

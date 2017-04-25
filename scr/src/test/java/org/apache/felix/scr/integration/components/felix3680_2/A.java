@@ -18,58 +18,49 @@
  */
 package org.apache.felix.scr.integration.components.felix3680_2;
 
-public class A {
-        void bindB( B b )
-        {
-        }
+public class A
+{
+    void bindB(B b)
+    {
+    }
 
+    void bindC(C c)
+    {
+    }
 
-        void bindC( C c )
-        {
-        }
+    void bindD(D d)
+    {
+    }
 
+    void bindE(E e)
+    {
+    }
 
-        void bindD( D d )
-        {
-        }
+    void bindF(F f)
+    {
+    }
 
+    void bindG(G g)
+    {
+    }
 
-        void bindE( E e )
-        {
-        }
+    void bindH(H h)
+    {
+    }
 
+    void bindI(I i)
+    {
+    }
 
-        void bindF( F f )
-        {
-        }
+    void bindJ(J j)
+    {
+    }
 
+    void bindK(K k)
+    {
+    }
 
-        void bindG( G g )
-        {
-        }
-
-
-        void bindH( H h )
-        {
-        }
-
-
-        void bindI( I i )
-        {
-        }
-
-
-        void bindJ( J j )
-        {
-        }
-
-
-        void bindK( K k )
-        {
-        }
-
-
-        void start()
-        {
-        }
+    void start()
+    {
+    }
 }

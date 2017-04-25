@@ -31,30 +31,29 @@ public class ExtendedServiceEvent extends ServiceEvent
 
     public ExtendedServiceEvent(ServiceEvent source)
     {
-        super(source.getType(), source.getServiceReference());
+        super( source.getType(), source.getServiceReference() );
     }
 
     public ExtendedServiceEvent(int type, ServiceReference ref)
     {
-        super(type, ref);
+        super( type, ref );
     }
 
     public void addComponentManager(AbstractComponentManager<?> manager)
     {
-        if (managers == null)
+        if ( managers == null )
             managers = new ArrayList<AbstractComponentManager<?>>();
-        managers.add(manager);
+        managers.add( manager );
     }
 
     public List<AbstractComponentManager<?>> getManagers()
     {
-        return managers == null ? Collections.<AbstractComponentManager<?>> emptyList()
-            : managers;
+        return managers == null? Collections.<AbstractComponentManager<?>> emptyList(): managers;
     }
 
     public void activateManagers()
     {
-        for (AbstractComponentManager<?> manager : getManagers())
+        for ( AbstractComponentManager<?> manager : getManagers() )
         {
             manager.activateInternal();
         }

@@ -35,15 +35,9 @@ public class FieldMethods implements ReferenceMethods
     private final ReferenceMethod unbind;
     private final InitReferenceMethod init;
 
-    public FieldMethods( final ReferenceMetadata m_dependencyMetadata,
-            final Class<?> instanceClass,
-            final DSVersion dsVersion,
-            final boolean configurableServiceProperties )
+    public FieldMethods(final ReferenceMetadata m_dependencyMetadata, final Class<?> instanceClass, final DSVersion dsVersion, final boolean configurableServiceProperties)
     {
-        final FieldHandler handler = new FieldHandler(
-                m_dependencyMetadata,
-                instanceClass
-        );
+        final FieldHandler handler = new FieldHandler( m_dependencyMetadata, instanceClass );
         bind = handler.getBind();
         unbind = handler.getUnbind();
         updated = handler.getUpdated();

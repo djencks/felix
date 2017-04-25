@@ -18,12 +18,10 @@
  */
 package org.apache.felix.scr.impl;
 
-
 import java.util.LinkedList;
 
 import org.apache.felix.scr.impl.helper.SimpleLogger;
 import org.osgi.service.log.LogService;
-
 
 /**
  * The <code>ComponentActorThread</code> is the thread used to act upon registered
@@ -39,7 +37,6 @@ class ComponentActorThread implements Runnable
         {
         }
 
-
         public String toString()
         {
             return "Component Actor Terminator";
@@ -51,13 +48,11 @@ class ComponentActorThread implements Runnable
 
     private SimpleLogger logger;
 
-
-    ComponentActorThread( SimpleLogger log )
+    ComponentActorThread(SimpleLogger log)
     {
         tasks = new LinkedList<Runnable>();
         logger = log;
     }
-
 
     // waits on Runnable instances coming into the queue. As instances come
     // in, this method calls the Runnable.run method, logs any exception
@@ -116,7 +111,6 @@ class ComponentActorThread implements Runnable
         }
     }
 
-
     // cause this thread to terminate by adding this thread to the end
     // of the queue
     void terminate()
@@ -139,17 +133,16 @@ class ComponentActorThread implements Runnable
         }
     }
 
-
     // queue the given runnable to be run as soon as possible
-    void schedule( Runnable task )
+    void schedule(Runnable task)
     {
         synchronized ( tasks )
         {
             // append to the task queue
             tasks.add( task );
 
-            logger.log( LogService.LOG_DEBUG, "Adding task [{0}] as #{1} in the queue"
-                    , new Object[] {task, tasks.size()}, null );
+            logger.log( LogService.LOG_DEBUG, "Adding task [{0}] as #{1} in the queue",
+                new Object[] { task, tasks.size() }, null );
 
             // notify the waiting thread
             tasks.notifyAll();

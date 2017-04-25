@@ -18,7 +18,6 @@
  */
 package org.apache.felix.scr.integration.components;
 
-
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import java.util.Set;
 
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
-
 
 public class SimpleComponent
 {
@@ -60,12 +58,11 @@ public class SimpleComponent
     public int m_multiRefBind = 0;
 
     public int m_multiRefUnbind = 0;
-    
+
     public int m_modified = 0;
 
-
     @SuppressWarnings("unused")
-    private void activate( ComponentContext activateContext, Map<?, ?> config )
+    private void activate(ComponentContext activateContext, Map<?, ?> config)
     {
         // fail activation if requested so
         if ( config.containsKey( PROP_ACTIVATE_FAILURE ) )
@@ -73,7 +70,7 @@ public class SimpleComponent
             throw new RuntimeException( String.valueOf( config.get( PROP_ACTIVATE_FAILURE ) ) );
         }
 
-        m_id = ( Long ) config.get( ComponentConstants.COMPONENT_ID );
+        m_id = (Long) config.get( ComponentConstants.COMPONENT_ID );
         m_activateContext = activateContext;
 
         INSTANCE = this;
@@ -94,20 +91,19 @@ public class SimpleComponent
         }
     }
 
-
     @SuppressWarnings("unused")
-    private void configure( ComponentContext context )
+    private void configure(ComponentContext context)
     {
         setConfig( context.getProperties() );
     }
 
     @SuppressWarnings("unused")
-    private void modified( ComponentContext context )
+    private void modified(ComponentContext context)
     {
         setConfig( context.getProperties() );
         m_modified++;
     }
-    
+
     @SuppressWarnings("unused")
     private void deactivate()
     {
@@ -118,14 +114,12 @@ public class SimpleComponent
         setConfig( new HashMap<Object, Object>() );
     }
 
-
-    protected void setConfig( Map<?, ?> config )
+    protected void setConfig(Map<?, ?> config)
     {
         m_config = config;
     }
 
-
-    protected void setConfig( Dictionary<?, ?> config )
+    protected void setConfig(Dictionary<?, ?> config)
     {
         Map<Object, Object> configMap = new HashMap<Object, Object>();
         for ( Enumeration<?> ce = config.keys(); ce.hasMoreElements(); )
@@ -137,23 +131,20 @@ public class SimpleComponent
         m_config = configMap;
     }
 
-
-    public Object getProperty( Object name )
+    public Object getProperty(Object name)
     {
         return m_config.get( name );
     }
 
-
     // bind method for single service binding
-    public void setSimpleService( SimpleService simpleService )
+    public void setSimpleService(SimpleService simpleService)
     {
         this.m_singleRef = simpleService;
         this.m_singleRefBind++;
     }
 
-
     // unbind method for single service binding
-    public void unsetSimpleService( SimpleService simpleService )
+    public void unsetSimpleService(SimpleService simpleService)
     {
         if ( this.m_singleRef == simpleService )
         {
@@ -162,17 +153,15 @@ public class SimpleComponent
         this.m_singleRefUnbind++;
     }
 
-
     // bind method for multi-service binding
-    public void bindSimpleService( SimpleService simpleService )
+    public void bindSimpleService(SimpleService simpleService)
     {
         this.m_multiRef.add( simpleService );
         this.m_multiRefBind++;
     }
 
-
     // unbind method for multi-service binding
-    public void unbindSimpleService( SimpleService simpleService )
+    public void unbindSimpleService(SimpleService simpleService)
     {
         this.m_multiRef.remove( simpleService );
         this.m_multiRefUnbind++;

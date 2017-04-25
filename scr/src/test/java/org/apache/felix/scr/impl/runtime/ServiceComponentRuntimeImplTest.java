@@ -45,7 +45,7 @@ public class ServiceComponentRuntimeImplTest extends TestCase
         equalCopy(new String[] {"1", "2", "3"}, scr);
         equalCopy(new Long[] {1l, 2l, 3l}, scr);
     }
-
+    
     private void equalCopy(Object o1, ServiceComponentRuntimeImpl scr)
     {
         Object o2 = scr.convert(o1);
@@ -55,65 +55,65 @@ public class ServiceComponentRuntimeImplTest extends TestCase
         {
             assertEquals("expected same value at " + i, Array.get(o1, i), Array.get(o2, i));
         }
-
+    
     }
     */
 
     public void testNullBundleServiceReferenceDTO() throws Exception
     {
-        ServiceReference<?> sr = Mockito.mock(ServiceReference.class);
-        Mockito.when(sr.getProperty(Constants.SERVICE_ID)).thenReturn(327L);
-        Mockito.when(sr.getPropertyKeys()).thenReturn(new String[] {});
+        ServiceReference<?> sr = Mockito.mock( ServiceReference.class );
+        Mockito.when( sr.getProperty( Constants.SERVICE_ID ) ).thenReturn( 327L );
+        Mockito.when( sr.getPropertyKeys() ).thenReturn( new String[] {} );
 
-        ServiceComponentRuntimeImpl scr = new ServiceComponentRuntimeImpl(null, null);
-        Method m = scr.getClass().getDeclaredMethod("serviceReferenceToDTO", ServiceReference.class);
-        m.setAccessible(true);
-        ServiceReferenceDTO dto = (ServiceReferenceDTO) m.invoke(scr, sr);
-        assertEquals(-1, dto.bundle);
+        ServiceComponentRuntimeImpl scr = new ServiceComponentRuntimeImpl( null, null );
+        Method m = scr.getClass().getDeclaredMethod( "serviceReferenceToDTO", ServiceReference.class );
+        m.setAccessible( true );
+        ServiceReferenceDTO dto = (ServiceReferenceDTO) m.invoke( scr, sr );
+        assertEquals( -1, dto.bundle );
     }
 
     public void testNullBundleServiceReferenceDTO2() throws Exception
     {
-        Bundle b = Mockito.mock(Bundle.class);
-        Mockito.when(b.getBundleId()).thenReturn(42L);
+        Bundle b = Mockito.mock( Bundle.class );
+        Mockito.when( b.getBundleId() ).thenReturn( 42L );
 
-        ServiceReference<?> sr = Mockito.mock(ServiceReference.class);
-        Mockito.when(sr.getProperty(Constants.SERVICE_ID)).thenReturn(327L);
-        Mockito.when(sr.getPropertyKeys()).thenReturn(new String[] {});
-        Mockito.when(sr.getBundle()).thenReturn(b);
+        ServiceReference<?> sr = Mockito.mock( ServiceReference.class );
+        Mockito.when( sr.getProperty( Constants.SERVICE_ID ) ).thenReturn( 327L );
+        Mockito.when( sr.getPropertyKeys() ).thenReturn( new String[] {} );
+        Mockito.when( sr.getBundle() ).thenReturn( b );
 
-        ServiceComponentRuntimeImpl scr = new ServiceComponentRuntimeImpl(null, null);
-        Method m = scr.getClass().getDeclaredMethod("serviceReferenceToDTO", ServiceReference.class);
-        m.setAccessible(true);
-        ServiceReferenceDTO dto = (ServiceReferenceDTO) m.invoke(scr, sr);
-        assertEquals(42, dto.bundle);
+        ServiceComponentRuntimeImpl scr = new ServiceComponentRuntimeImpl( null, null );
+        Method m = scr.getClass().getDeclaredMethod( "serviceReferenceToDTO", ServiceReference.class );
+        m.setAccessible( true );
+        ServiceReferenceDTO dto = (ServiceReferenceDTO) m.invoke( scr, sr );
+        assertEquals( 42, dto.bundle );
     }
 
     public void testConvert()
     {
-        ServiceComponentRuntimeImpl scr = new ServiceComponentRuntimeImpl(null, null);
-        same("foo", scr);
-        same(Boolean.TRUE, scr);
-        same(1, scr);
-        same(1l, scr);
-        same(new ServiceReferenceDTO(), scr);
-        same( new String[] {"foo", "bar"}, scr);
-        same( new Boolean[] {true, false}, scr);
-        same( new Long[] {1l, 2l}, scr);
-        same( new DTO[] {new ServiceReferenceDTO(), new BundleDTO()}, scr);
-        equalsToString(new int[] {1, 2}, scr);
-        equalsToString(Arrays.asList(new int[] {1, 2}), scr);
-        equalsToString(Arrays.asList(new String[] {"foo", "bar"}), scr);
+        ServiceComponentRuntimeImpl scr = new ServiceComponentRuntimeImpl( null, null );
+        same( "foo", scr );
+        same( Boolean.TRUE, scr );
+        same( 1, scr );
+        same( 1l, scr );
+        same( new ServiceReferenceDTO(), scr );
+        same( new String[] { "foo", "bar" }, scr );
+        same( new Boolean[] { true, false }, scr );
+        same( new Long[] { 1l, 2l }, scr );
+        same( new DTO[] { new ServiceReferenceDTO(), new BundleDTO() }, scr );
+        equalsToString( new int[] { 1, 2 }, scr );
+        equalsToString( Arrays.asList( new int[] { 1, 2 } ), scr );
+        equalsToString( Arrays.asList( new String[] { "foo", "bar" } ), scr );
     }
 
     private void equalsToString(Object o, ServiceComponentRuntimeImpl scr)
     {
-        assertEquals(String.valueOf(o), scr.convert(o));
+        assertEquals( String.valueOf( o ), scr.convert( o ) );
     }
 
     private void same(Object o, ServiceComponentRuntimeImpl scr)
     {
-        assertSame(o, scr.convert(o));
+        assertSame( o, scr.convert( o ) );
     }
 
 }

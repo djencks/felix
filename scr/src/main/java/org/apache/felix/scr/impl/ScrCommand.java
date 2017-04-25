@@ -62,13 +62,13 @@ public class ScrCommand implements ScrInfo
         {
             final long bundleId1 = c1.bundle.id;
             final long bundleId2 = c2.bundle.id;
-            int result = Long.signum(bundleId1 - bundleId2);
-            if ( result == 0)
+            int result = Long.signum( bundleId1 - bundleId2 );
+            if ( result == 0 )
             {
                 // sanity check
                 if ( c1.name == null )
                 {
-                    result = ( c2.name == null ? 0 : -1);
+                    result = ( c2.name == null? 0: -1 );
                 }
                 else if ( c2.name == null )
                 {
@@ -76,7 +76,7 @@ public class ScrCommand implements ScrInfo
                 }
                 else
                 {
-                    result = c1.name.compareTo(c2.name);
+                    result = c1.name.compareTo( c2.name );
                 }
             }
             return result;
@@ -87,7 +87,7 @@ public class ScrCommand implements ScrInfo
     {
         public int compare(final ComponentConfigurationDTO c1, final ComponentConfigurationDTO c2)
         {
-            return Long.signum(c1.id - c2.id);
+            return Long.signum( c1.id - c2.id );
         }
     };
 
@@ -99,11 +99,12 @@ public class ScrCommand implements ScrInfo
     private ServiceRegistration<?> gogoReg;
     private ServiceRegistration<?> shellReg;
 
-    static ScrCommand register(BundleContext bundleContext, ServiceComponentRuntime scrService, ScrConfigurationImpl scrConfiguration)
+    static ScrCommand register(BundleContext bundleContext, ServiceComponentRuntime scrService,
+        ScrConfigurationImpl scrConfiguration)
     {
-        final ScrCommand cmd = new ScrCommand(bundleContext, scrService, scrConfiguration);
+        final ScrCommand cmd = new ScrCommand( bundleContext, scrService, scrConfiguration );
 
-        cmd.registerCommands(bundleContext, scrService);
+        cmd.registerCommands( bundleContext, scrService );
         return cmd;
     }
 
@@ -115,24 +116,22 @@ public class ScrCommand implements ScrInfo
         this.scrConfiguration = scrConfiguration;
     }
 
-    private void registerCommands(BundleContext bundleContext,
-        ServiceComponentRuntime scrService)
+    private void registerCommands(BundleContext bundleContext, ServiceComponentRuntime scrService)
     {
         /*
          * Register the Gogo Command as a service of its own class.
          */
         try
         {
-            final ScrGogoCommand gogoCmd = new ScrGogoCommand(this);
+            final ScrGogoCommand gogoCmd = new ScrGogoCommand( this );
             final Hashtable<String, Object> props = new Hashtable<String, Object>();
-            props.put("osgi.command.scope", "scr");
-            props.put("osgi.command.function", new String[]
-                { "config", "disable", "enable", "info", "list" });
-            props.put(Constants.SERVICE_DESCRIPTION, "SCR Gogo Shell Support");
-            props.put(Constants.SERVICE_VENDOR, "The Apache Software Foundation");
-            gogoReg = bundleContext.registerService(ScrGogoCommand.class, gogoCmd, props);
+            props.put( "osgi.command.scope", "scr" );
+            props.put( "osgi.command.function", new String[] { "config", "disable", "enable", "info", "list" } );
+            props.put( Constants.SERVICE_DESCRIPTION, "SCR Gogo Shell Support" );
+            props.put( Constants.SERVICE_VENDOR, "The Apache Software Foundation" );
+            gogoReg = bundleContext.registerService( ScrGogoCommand.class, gogoCmd, props );
         }
-        catch (Throwable t)
+        catch ( Throwable t )
         {
             // Might be thrown if running in a pre-Java 5 VM
         }
@@ -145,12 +144,12 @@ public class ScrCommand implements ScrInfo
             // Register "scr" impl command service as a
             // wrapper for the bundle repository service.
             final Hashtable<String, Object> props = new Hashtable<String, Object>();
-            props.put(Constants.SERVICE_DESCRIPTION, "SCR Legacy Shell Support");
-            props.put(Constants.SERVICE_VENDOR, "The Apache Software Foundation");
-            shellReg = bundleContext.registerService(org.apache.felix.shell.Command.class, new ScrShellCommand(this),
-                props);
+            props.put( Constants.SERVICE_DESCRIPTION, "SCR Legacy Shell Support" );
+            props.put( Constants.SERVICE_VENDOR, "The Apache Software Foundation" );
+            shellReg = bundleContext.registerService( org.apache.felix.shell.Command.class, new ScrShellCommand( this ),
+                props );
         }
-        catch (Throwable th)
+        catch ( Throwable th )
         {
             // Ignore.
         }
@@ -158,7 +157,7 @@ public class ScrCommand implements ScrInfo
 
     void unregister()
     {
-        if (gogoReg != null)
+        if ( gogoReg != null )
         {
             gogoReg.unregister();
             gogoReg = null;
@@ -172,16 +171,15 @@ public class ScrCommand implements ScrInfo
 
     // ---------- Actual implementation
 
-
-    public void update( boolean infoAsService )
+    public void update(boolean infoAsService)
     {
-        if (infoAsService)
+        if ( infoAsService )
         {
             if ( reg == null )
             {
                 final Hashtable<String, Object> props = new Hashtable<String, Object>();
-                props.put(Constants.SERVICE_DESCRIPTION, "SCR Info service");
-                props.put(Constants.SERVICE_VENDOR, "The Apache Software Foundation");
+                props.put( Constants.SERVICE_DESCRIPTION, "SCR Info service" );
+                props.put( Constants.SERVICE_VENDOR, "The Apache Software Foundation" );
                 reg = bundleContext.registerService( ScrInfo.class, this, props );
             }
         }
@@ -202,21 +200,21 @@ public class ScrCommand implements ScrInfo
     {
         final List<ComponentDescriptionDTO> descriptions = new ArrayList<ComponentDescriptionDTO>();
 
-        if (bundleIdentifier != null)
+        if ( bundleIdentifier != null )
         {
             Bundle bundle = null;
             try
             {
-                final long bundleId = Long.parseLong(bundleIdentifier);
-                bundle = bundleContext.getBundle(bundleId);
+                final long bundleId = Long.parseLong( bundleIdentifier );
+                bundle = bundleContext.getBundle( bundleId );
             }
-            catch (final NumberFormatException nfe)
+            catch ( final NumberFormatException nfe )
             {
                 // might be a bundle symbolic name
                 final Bundle[] bundles = bundleContext.getBundles();
-                for (int i = 0; i < bundles.length; i++)
+                for ( int i = 0; i < bundles.length; i++ )
                 {
-                    if (bundleIdentifier.equals(bundles[i].getSymbolicName()))
+                    if ( bundleIdentifier.equals( bundles[i].getSymbolicName() ) )
                     {
                         bundle = bundles[i];
                         break;
@@ -224,73 +222,76 @@ public class ScrCommand implements ScrInfo
                 }
             }
 
-            if (bundle == null)
+            if ( bundle == null )
             {
-                throw new IllegalArgumentException("Missing bundle with ID " + bundleIdentifier);
+                throw new IllegalArgumentException( "Missing bundle with ID " + bundleIdentifier );
             }
-            if (ComponentRegistry.isBundleActive(bundle))
+            if ( ComponentRegistry.isBundleActive( bundle ) )
             {
-                descriptions.addAll(scrService.getComponentDescriptionDTOs(bundle));
-                if (descriptions.isEmpty())
+                descriptions.addAll( scrService.getComponentDescriptionDTOs( bundle ) );
+                if ( descriptions.isEmpty() )
                 {
-                    out.println("Bundle " + bundleIdentifier + " declares no components");
+                    out.println( "Bundle " + bundleIdentifier + " declares no components" );
                     return;
                 }
             }
             else
             {
-                out.println("Bundle " + bundleIdentifier + " is not active");
+                out.println( "Bundle " + bundleIdentifier + " is not active" );
                 return;
             }
         }
         else
         {
-            descriptions.addAll(scrService.getComponentDescriptionDTOs());
-            if (descriptions.isEmpty())
+            descriptions.addAll( scrService.getComponentDescriptionDTOs() );
+            if ( descriptions.isEmpty() )
             {
-                out.println("No components registered");
+                out.println( "No components registered" );
                 return;
             }
         }
 
-        Collections.sort( descriptions, DESCRIPTION_COMP);
+        Collections.sort( descriptions, DESCRIPTION_COMP );
 
-        out.println(" BundleId Component Name Default State");
-        out.println("    Component Id State      PIDs (Factory PID)");
-        for(final ComponentDescriptionDTO desc : descriptions)
+        out.println( " BundleId Component Name Default State" );
+        out.println( "    Component Id State      PIDs (Factory PID)" );
+        for ( final ComponentDescriptionDTO desc : descriptions )
         {
-            out.println( String.format( " [%1$4d]   %2$s  %3$s", desc.bundle.id, desc.name, desc.defaultEnabled ? "enabled" : "disabled" ) );
-            final List<ComponentConfigurationDTO> configs = new ArrayList<ComponentConfigurationDTO>(this.scrService.getComponentConfigurationDTOs(desc));
-            Collections.sort( configs, CONFIGURATION_COMP);
+            out.println( String.format( " [%1$4d]   %2$s  %3$s", desc.bundle.id, desc.name,
+                desc.defaultEnabled? "enabled": "disabled" ) );
+            final List<ComponentConfigurationDTO> configs = new ArrayList<ComponentConfigurationDTO>(
+                this.scrService.getComponentConfigurationDTOs( desc ) );
+            Collections.sort( configs, CONFIGURATION_COMP );
             for ( final ComponentConfigurationDTO component : configs )
             {
-                final Object servicePid = component.properties.get(Constants.SERVICE_PID);
-                final String factoryPid = (String)component.properties.get("service.factoryPid");
+                final Object servicePid = component.properties.get( Constants.SERVICE_PID );
+                final String factoryPid = (String) component.properties.get( "service.factoryPid" );
 
                 final StringBuilder pid = new StringBuilder();
-                if ( servicePid != null ) {
-                    pid.append(servicePid);
+                if ( servicePid != null )
+                {
+                    pid.append( servicePid );
                 }
-                if ( factoryPid != null ) {
-                    pid.append(" (");
-                    pid.append(factoryPid);
-                    pid.append(" )");
+                if ( factoryPid != null )
+                {
+                    pid.append( " (" );
+                    pid.append( factoryPid );
+                    pid.append( " )" );
                 }
-                out.println( String.format( "    [%1$4d] [%2$s] %3$s", component.id,
-                          toStateString( component.state ),
-                          pid.toString()) );
+                out.println( String.format( "    [%1$4d] [%2$s] %3$s", component.id, toStateString( component.state ),
+                    pid.toString() ) );
             }
         }
         out.flush();
-   }
+    }
 
     /**
      * @see org.apache.felix.scr.impl.ScrInfo#info(java.lang.String, java.io.PrintStream, java.io.PrintStream)
      */
     public void info(final String componentId, final PrintWriter out)
     {
-        final Result result = getComponentsFromArg(componentId, false);
-        if (result.components.isEmpty())
+        final Result result = getComponentsFromArg( componentId, false );
+        if ( result.components.isEmpty() )
         {
             return;
         }
@@ -308,17 +309,17 @@ public class ScrCommand implements ScrInfo
                     out.println();
                 }
                 bundleId = component.bundle.id;
-                out.println(String.format("*** Bundle: %1$s (%2$d)", component.bundle.symbolicName, bundleId));
+                out.println( String.format( "*** Bundle: %1$s (%2$d)", component.bundle.symbolicName, bundleId ) );
             }
-            out.println( "Component Description:");
+            out.println( "Component Description:" );
             out.print( "  Name: " );
             out.println( component.name );
             out.print( "  Implementation Class: " );
             out.println( component.implementationClass );
             out.print( "  Default State: " );
-            out.println( component.defaultEnabled ? "enabled" : "disabled" );
+            out.println( component.defaultEnabled? "enabled": "disabled" );
             out.print( "  Activation: " );
-            out.println( component.immediate ? "immediate" : "delayed" );
+            out.println( component.immediate? "immediate": "delayed" );
 
             // DS 1.1 new features
             out.print( "  Configuration Policy: " );
@@ -341,7 +342,7 @@ public class ScrCommand implements ScrInfo
             out.println();
 
             out.print( "  Configuration Pid: " );
-            out.print( Arrays.asList(component.configurationPid) );
+            out.print( Arrays.asList( component.configurationPid ) );
             out.println();
 
             if ( component.factory != null )
@@ -354,7 +355,7 @@ public class ScrCommand implements ScrInfo
             if ( services != null && services.length > 0 )
             {
                 out.println( "  Services: " );
-                for ( String service: services )
+                for ( String service : services )
                 {
                     out.print( "    " );
                     out.println( service );
@@ -383,32 +384,33 @@ public class ScrCommand implements ScrInfo
                     out.println( ref.policy );
                     out.print( "    Policy option: " );
                     out.println( ref.policyOption );
-                    out.print( "    Reference Scope: ");
-                    out.println( ref.scope);
+                    out.print( "    Reference Scope: " );
+                    out.println( ref.scope );
 
                 }
             }
 
             Map<String, Object> props = component.properties;
-            propertyInfo(props, out, "  ", "Component Description");
+            propertyInfo( props, out, "  ", "Component Description" );
             if ( result.configuration != null )
             {
-                info(result.configuration, out);
+                info( result.configuration, out );
             }
             else
             {
-            	Collection<ComponentConfigurationDTO> componentConfigurationDTOs = scrService.getComponentConfigurationDTOs(component);
-            	if (componentConfigurationDTOs.isEmpty())
-            	{
-            		out.println("  (No Component Configurations)");
-            	}
-            	else 
-            	{
-            		for (final ComponentConfigurationDTO cc: componentConfigurationDTOs)
-            		{
-            			info(cc, out);
-            		}
-            	}
+                Collection<ComponentConfigurationDTO> componentConfigurationDTOs = scrService.getComponentConfigurationDTOs(
+                    component );
+                if ( componentConfigurationDTOs.isEmpty() )
+                {
+                    out.println( "  (No Component Configurations)" );
+                }
+                else
+                {
+                    for ( final ComponentConfigurationDTO cc : componentConfigurationDTOs )
+                    {
+                        info( cc, out );
+                    }
+                }
             }
             out.println();
         }
@@ -424,7 +426,7 @@ public class ScrCommand implements ScrInfo
             out.print( label );
             out.println( " Properties:" );
             TreeMap<String, Object> keys = new TreeMap<String, Object>( props );
-            for ( Entry<String, Object> entry: keys.entrySet() )
+            for ( Entry<String, Object> entry : keys.entrySet() )
             {
                 out.print( prefix );
                 out.print( "    " );
@@ -434,17 +436,17 @@ public class ScrCommand implements ScrInfo
                 Object prop = entry.getValue();
                 if ( prop.getClass().isArray() )
                 {
-                    out.print("[");
-                    int length = Array.getLength(prop);
-                    for (int i = 0; i< length; i++)
+                    out.print( "[" );
+                    int length = Array.getLength( prop );
+                    for ( int i = 0; i < length; i++ )
                     {
-                        out.print(Array.get(prop, i));
-                        if ( i < length - 1)
+                        out.print( Array.get( prop, i ) );
+                        if ( i < length - 1 )
                         {
-                            out.print(", ");
+                            out.print( ", " );
                         }
                     }
-                    out.println("]");
+                    out.println( "]" );
                 }
                 else
                 {
@@ -456,14 +458,14 @@ public class ScrCommand implements ScrInfo
 
     private void info(ComponentConfigurationDTO cc, PrintWriter out)
     {
-        out.println( "  Component Configuration:");
-        out.print("    ComponentId: ");
+        out.println( "  Component Configuration:" );
+        out.print( "    ComponentId: " );
         out.println( cc.id );
-        out.print("    State: ");
-        out.println( toStateString(cc.state));
-        for ( SatisfiedReferenceDTO ref: cc.satisfiedReferences)
+        out.print( "    State: " );
+        out.println( toStateString( cc.state ) );
+        for ( SatisfiedReferenceDTO ref : cc.satisfiedReferences )
         {
-            out.print( "    SatisfiedReference: ");
+            out.print( "    SatisfiedReference: " );
             out.println( ref.name );
             out.print( "      Target: " );
             out.println( ref.target );
@@ -471,11 +473,11 @@ public class ScrCommand implements ScrInfo
             if ( serviceRefs.length > 0 )
             {
                 out.print( "      Bound to:" );
-                for ( ServiceReferenceDTO sr: serviceRefs )
+                for ( ServiceReferenceDTO sr : serviceRefs )
                 {
                     out.print( "        " );
                     out.println( sr.id );
-                    propertyInfo(sr.properties, out, "      ", "Reference" );
+                    propertyInfo( sr.properties, out, "      ", "Reference" );
                 }
             }
             else
@@ -484,9 +486,9 @@ public class ScrCommand implements ScrInfo
             }
 
         }
-        for ( UnsatisfiedReferenceDTO ref: cc.unsatisfiedReferences)
+        for ( UnsatisfiedReferenceDTO ref : cc.unsatisfiedReferences )
         {
-            out.print( "    UnsatisfiedReference: ");
+            out.print( "    UnsatisfiedReference: " );
             out.println( ref.name );
             out.print( "      Target: " );
             out.println( ref.target );
@@ -494,7 +496,7 @@ public class ScrCommand implements ScrInfo
             if ( serviceRefs.length > 0 )
             {
                 out.print( "      Target services:" );
-                for ( ServiceReferenceDTO sr: serviceRefs )
+                for ( ServiceReferenceDTO sr : serviceRefs )
                 {
                     out.print( "        " );
                     out.println( sr.id );
@@ -511,15 +513,15 @@ public class ScrCommand implements ScrInfo
 
     void change(final String componentIdentifier, final PrintWriter out, final boolean enable)
     {
-        final Result result = getComponentsFromArg(componentIdentifier, true);
+        final Result result = getComponentsFromArg( componentIdentifier, true );
 
         for ( final ComponentDescriptionDTO component : result.components )
         {
             if ( enable )
             {
-                if ( !scrService.isComponentEnabled(component) )
+                if ( !scrService.isComponentEnabled( component ) )
                 {
-                    scrService.enableComponent(component);
+                    scrService.enableComponent( component );
                     out.println( "Component " + component.name + " enabled" );
                 }
                 else
@@ -529,9 +531,9 @@ public class ScrCommand implements ScrInfo
             }
             else
             {
-                if ( scrService.isComponentEnabled(component) )
+                if ( scrService.isComponentEnabled( component ) )
                 {
-                    scrService.disableComponent(component);
+                    scrService.disableComponent( component );
                     out.println( "Component " + component.name + " disabled" );
                 }
                 else
@@ -548,20 +550,20 @@ public class ScrCommand implements ScrInfo
      */
     public void config(final PrintWriter out)
     {
-        out.print("Log Level: ");
-        out.println(scrConfiguration.getLogLevel());
-        out.print("Obsolete Component Factory with Factory Configuration: ");
-        out.println(scrConfiguration.isFactoryEnabled() ? "Supported" : "Unsupported");
-        out.print("Keep instances with no references: ");
-        out.println(scrConfiguration.keepInstances() ? "Supported" : "Unsupported");
-        out.print("Lock timeount milliseconds: ");
-        out.println(scrConfiguration.lockTimeout());
-        out.print("Stop timeount milliseconds: ");
-        out.println(scrConfiguration.stopTimeout());
-        out.print("Global extender: ");
-        out.println(scrConfiguration.globalExtender());
-        out.print("Info Service registered: ");
-        out.println(scrConfiguration.infoAsService() ? "Supported" : "Unsupported");
+        out.print( "Log Level: " );
+        out.println( scrConfiguration.getLogLevel() );
+        out.print( "Obsolete Component Factory with Factory Configuration: " );
+        out.println( scrConfiguration.isFactoryEnabled()? "Supported": "Unsupported" );
+        out.print( "Keep instances with no references: " );
+        out.println( scrConfiguration.keepInstances()? "Supported": "Unsupported" );
+        out.print( "Lock timeount milliseconds: " );
+        out.println( scrConfiguration.lockTimeout() );
+        out.print( "Stop timeount milliseconds: " );
+        out.println( scrConfiguration.stopTimeout() );
+        out.print( "Global extender: " );
+        out.println( scrConfiguration.globalExtender() );
+        out.print( "Info Service registered: " );
+        out.println( scrConfiguration.infoAsService()? "Supported": "Unsupported" );
         out.flush();
     }
 
@@ -570,43 +572,44 @@ public class ScrCommand implements ScrInfo
         switch (state)
         {
 
-        case (ComponentConfigurationDTO.UNSATISFIED_REFERENCE):
-            return "unsatisfied reference";
-        case (ComponentConfigurationDTO.ACTIVE):
-            return "active      ";
-        case (ComponentConfigurationDTO.SATISFIED):
-            return "satisfied   ";
-        case (ComponentConfigurationDTO.UNSATISFIED_CONFIGURATION):
-            return "unsatisfied config";
-        default:
-            return "unkown: " + state;
+            case ( ComponentConfigurationDTO.UNSATISFIED_REFERENCE ):
+                return "unsatisfied reference";
+            case ( ComponentConfigurationDTO.ACTIVE ):
+                return "active      ";
+            case ( ComponentConfigurationDTO.SATISFIED ):
+                return "satisfied   ";
+            case ( ComponentConfigurationDTO.UNSATISFIED_CONFIGURATION ):
+                return "unsatisfied config";
+            default:
+                return "unkown: " + state;
         }
     }
 
-    private static final class Result {
+    private static final class Result
+    {
         public List<ComponentDescriptionDTO> components = new ArrayList<ComponentDescriptionDTO>();
         public ComponentConfigurationDTO configuration;
     }
 
     private Result getComponentsFromArg(final String componentIdentifier, final boolean nameMatch)
     {
-        final Pattern p = (componentIdentifier == null ? null : Pattern.compile(componentIdentifier));
+        final Pattern p = ( componentIdentifier == null? null: Pattern.compile( componentIdentifier ) );
         final Result result = new Result();
 
-        for(final ComponentDescriptionDTO cmp : scrService.getComponentDescriptionDTOs())
+        for ( final ComponentDescriptionDTO cmp : scrService.getComponentDescriptionDTOs() )
         {
-            if (componentIdentifier != null)
+            if ( componentIdentifier != null )
             {
-                if ( p.matcher(cmp.name).matches() )
+                if ( p.matcher( cmp.name ).matches() )
                 {
-                    result.components.add(cmp);
+                    result.components.add( cmp );
                 }
                 else if ( !nameMatch )
                 {
                     boolean done = false;
-                    for (final ComponentConfigurationDTO cfg: scrService.getComponentConfigurationDTOs(cmp))
+                    for ( final ComponentConfigurationDTO cfg : scrService.getComponentConfigurationDTOs( cmp ) )
                     {
-                        if ( p.matcher( String.valueOf( cfg.id )).matches() )
+                        if ( p.matcher( String.valueOf( cfg.id ) ).matches() )
                         {
                             result.components.add( cmp );
                             result.configuration = cfg;
@@ -622,12 +625,13 @@ public class ScrCommand implements ScrInfo
             }
             else
             {
-                result.components.add(cmp);
+                result.components.add( cmp );
             }
         }
-        if (componentIdentifier != null && result.components.isEmpty())
+        if ( componentIdentifier != null && result.components.isEmpty() )
         {
-            throw new IllegalArgumentException("No Component with name or configuration with ID matching " + componentIdentifier);
+            throw new IllegalArgumentException(
+                "No Component with name or configuration with ID matching " + componentIdentifier );
         }
 
         return result;

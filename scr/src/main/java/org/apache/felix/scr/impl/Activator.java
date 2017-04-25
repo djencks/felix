@@ -160,8 +160,7 @@ public class Activator extends AbstractExtender implements SimpleLogger
         m_runtime_reg = m_context.registerService( ServiceComponentRuntime.class, runtime, null );
 
         // log SCR startup
-        log( LogService.LOG_INFO, m_bundle, " Version = {0}",
-            new Object[] { m_bundle.getVersion().toString() }, null);
+        log( LogService.LOG_INFO, m_bundle, " Version = {0}", new Object[] { m_bundle.getVersion().toString() }, null );
 
         // create and start the component actor
         m_componentActor = new ComponentActorThread( this );
@@ -313,7 +312,7 @@ public class Activator extends AbstractExtender implements SimpleLogger
      */
     private void loadComponents(Bundle bundle)
     {
-        if (bundle.getHeaders("").get(ComponentConstants.SERVICE_COMPONENT) == null)
+        if ( bundle.getHeaders( "" ).get( ComponentConstants.SERVICE_COMPONENT ) == null )
         {
             // no components in the bundle, abandon
             return;

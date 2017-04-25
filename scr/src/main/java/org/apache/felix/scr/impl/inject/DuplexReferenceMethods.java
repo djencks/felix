@@ -43,17 +43,17 @@ public class DuplexReferenceMethods implements ReferenceMethods
 
     public ReferenceMethod getBind()
     {
-        return new DuplexReferenceMethod(first.getBind(), second.getBind());
+        return new DuplexReferenceMethod( first.getBind(), second.getBind() );
     }
 
     public ReferenceMethod getUnbind()
     {
-        return new DuplexReferenceMethod(first.getUnbind(), second.getUnbind());
+        return new DuplexReferenceMethod( first.getUnbind(), second.getUnbind() );
     }
 
     public ReferenceMethod getUpdated()
     {
-        return new DuplexReferenceMethod(first.getUpdated(), second.getUpdated());
+        return new DuplexReferenceMethod( first.getUpdated(), second.getUpdated() );
     }
 
     public InitReferenceMethod getInit()
@@ -66,7 +66,7 @@ public class DuplexReferenceMethods implements ReferenceMethods
                 final InitReferenceMethod i1 = first.getInit();
                 if ( i1 != null )
                 {
-                    if ( !i1.init(componentInstance, logger))
+                    if ( !i1.init( componentInstance, logger ) )
                     {
                         return false;
                     }
@@ -74,7 +74,7 @@ public class DuplexReferenceMethods implements ReferenceMethods
                 final InitReferenceMethod i2 = second.getInit();
                 if ( i2 != null )
                 {
-                    if ( !i2.init(componentInstance, logger))
+                    if ( !i2.init( componentInstance, logger ) )
                     {
                         return false;
                     }
@@ -97,27 +97,24 @@ public class DuplexReferenceMethods implements ReferenceMethods
             this.second = second;
         }
 
-        public MethodResult invoke(Object componentInstance,
-                                   ComponentContextImpl<?> componentContext,
-                                   RefPair<?, ?> refPair,
-                                   MethodResult methodCallFailureResult,
-                                   SimpleLogger logger) {
-            if ( first.invoke(componentInstance, componentContext, refPair, methodCallFailureResult, logger) != null )
+        public MethodResult invoke(Object componentInstance, ComponentContextImpl<?> componentContext,
+            RefPair<?, ?> refPair, MethodResult methodCallFailureResult, SimpleLogger logger)
+        {
+            if ( first.invoke( componentInstance, componentContext, refPair, methodCallFailureResult, logger ) != null )
             {
-                return second.invoke(componentInstance, componentContext, refPair, methodCallFailureResult, logger);
+                return second.invoke( componentInstance, componentContext, refPair, methodCallFailureResult, logger );
             }
             return null;
         }
 
-        public <S, T> boolean getServiceObject(ComponentContextImpl<S> key,
-                RefPair<S, T> refPair, BundleContext context,
-                SimpleLogger logger)
+        public <S, T> boolean getServiceObject(ComponentContextImpl<S> key, RefPair<S, T> refPair,
+            BundleContext context, SimpleLogger logger)
         {
             // only if both return true, we return true
-            boolean result = first.getServiceObject(key, refPair, context, logger);
+            boolean result = first.getServiceObject( key, refPair, context, logger );
             if ( result )
             {
-                result = second.getServiceObject(key, refPair, context, logger);
+                result = second.getServiceObject( key, refPair, context, logger );
             }
             return result;
         }

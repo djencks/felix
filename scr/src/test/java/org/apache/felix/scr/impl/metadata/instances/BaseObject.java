@@ -18,12 +18,10 @@
  */
 package org.apache.felix.scr.impl.metadata.instances;
 
-
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
-
 
 /**
  * The <code>BaseObject</code> is a base class providing a number of methods
@@ -35,7 +33,6 @@ public class BaseObject
 
     private String m_calledMethod;
 
-
     public String getCalledMethod()
     {
         String cm = m_calledMethod;
@@ -43,8 +40,8 @@ public class BaseObject
         return cm;
     }
 
-
-    protected void setCalledMethod(String calledMethod) {
+    protected void setCalledMethod(String calledMethod)
+    {
         m_calledMethod = calledMethod;
     }
 
@@ -53,61 +50,64 @@ public class BaseObject
         setCalledMethod( "activate_no_arg" );
     }
 
-
-    protected void activate_comp( ComponentContext ctx )
+    protected void activate_comp(ComponentContext ctx)
     {
         setCalledMethod( "activate_comp" );
     }
 
-
-    void activate_comp_bundle( ComponentContext ctx, BundleContext bundle )
+    void activate_comp_bundle(ComponentContext ctx, BundleContext bundle)
     {
         setCalledMethod( "activate_comp_bundle" );
     }
 
-
-    protected void activate_suitable( ComponentContext ctx )
+    protected void activate_suitable(ComponentContext ctx)
     {
         setCalledMethod( "activate_suitable" );
     }
 
     //precedence rules
 
-    private void activate_precedence_1( ComponentContext ctx )
+    private void activate_precedence_1(ComponentContext ctx)
     {
-        setCalledMethod("activate_precedence_1_comp");
+        setCalledMethod( "activate_precedence_1_comp" );
     }
 
-    void activate_precedence_1( BundleContext bundleContext )
+    void activate_precedence_1(BundleContext bundleContext)
     {
-        setCalledMethod("activate_precedence_1_bundleContext");
+        setCalledMethod( "activate_precedence_1_bundleContext" );
     }
 
-    protected void activate_precedence_1( Map map)
+    protected void activate_precedence_1(Map map)
     {
-        setCalledMethod("activate_precedence_1_map");
+        setCalledMethod( "activate_precedence_1_map" );
     }
 
-    private void activate_precedence_2( Map map )
+    private void activate_precedence_2(Map map)
     {
-        setCalledMethod("activate_precedence_2_map");
+        setCalledMethod( "activate_precedence_2_map" );
     }
 
-    void activate_precedence_2( ComponentContext ctx, BundleContext bundle )
+    void activate_precedence_2(ComponentContext ctx, BundleContext bundle)
     {
-        setCalledMethod("activate_precedence_2_comp_bundleContext");
+        setCalledMethod( "activate_precedence_2_comp_bundleContext" );
     }
 
     protected void activate_precedence_2()
     {
-        setCalledMethod("activate_precedence_2_empty");
+        setCalledMethod( "activate_precedence_2_empty" );
     }
 
+    public @interface Ann1
+    {
+    }
 
-    public @interface Ann1 { }
-    public @interface Ann2 { }
-   
-    void activate_13_2_annotations(ComponentContext cc, Ann1 a1, BundleContext c, Ann2 a2, Map<String, Object> map, ComponentContext cc2) {
-        setCalledMethod("activate_13_2_annotations");
+    public @interface Ann2
+    {
+    }
+
+    void activate_13_2_annotations(ComponentContext cc, Ann1 a1, BundleContext c, Ann2 a2, Map<String, Object> map,
+        ComponentContext cc2)
+    {
+        setCalledMethod( "activate_13_2_annotations" );
     }
 }
